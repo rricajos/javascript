@@ -1,20 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victor Robles - Master en JavaScript Aprender JS, jQuery, Angular, NodeJS</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Script desde JavaScript</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="buttons.css">
+  <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="code.css">
+
 </head>
+
 <body>
-    <script src="01_hello_world.js"></script>
-    <script src="02_variables.js"></script>
-    <script src="03_operators.js"></script>
-    <script src="04_condition_if.js"></script>
-    <script src="05_condition_switch.js"></script>
-    <script src="06_loop_for.js"></script>
-    <script src="07_loop_for_each.js"></script>
-    <script src="08_loop_for_in.js"></script>
-    <script src="09_loop_for_of.js"></script>
-    <script src="10_loop_while.js"></script>
+  <!-- 
+  <script src="document.js"></script>
+  <script src="window.js"></script>
+  <script src="console.js"></script>
+  <script src="typeof.js"></script>
+
+  <script src="variable_declaration.js"></script>
+  <script src="variable_expression.js"></script>
+  <script src="variable_scope.js"></script>
+  
+  <script src="built-in_object_Function.js"></script>
+  <script src="built-in_object_FunctionGenerator.js"></script>
+  <script src="built-in_object_Iterable.js"></script>
+
+  <script src="control_flow_if_else.js"></script>
+  <script src="control_flow_ternary.js"></script>
+  <script src="control_flow_switch.js"></script>
+  <script src="control_flow_for.js"></script>
+  <script src="control_flow_for_each.js"></script>
+  <script src="control_flow_for_of.js"></script>
+  <script src="control_flow_for_in.js"></script>
+  <script src="control_flow_while.js"></script>
+  <script src="control_flow_do_while.js"></script>
+  
+  <script src="memory_heap_vs_stack.js"></script>
+  <script src="memory_garbage_collector.js"></script>
+
+  <script src="json.js"></script>
+  <script src="json_buffered_object_ArrayBuffer.js"></script>
+  <script src="json_buffered_object_SharedArrayBuffer.js"></script>
+  <script src="json_buffered_object_Atomics.js"></script>
+  <script src="json_buffered_object_DataView.js"></script>
+
+ 
+  <script src="built-in_object_Object.js"></script>
+  <script src="built-in_object_Aggregate_Error.js"></script> 
+  -->
+
+  <div id="subbody">
+    <h1>Machetes JavaScript by rricajos</h1>
+    <span>Tiempo dedicado: 5 horas</span>
+    <br>
+    <div id="output-container">
+      <div id="code-container">
+        
+        <div id="code"></div>
+      </div>
+
+      <div id="console-container" class="card mt-4">
+        <div id="console"></div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="buttons-containers-container">
+        <thead>
+          <tr>
+            <th>Context</th>
+            <th>Control Flow</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">document.js</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">window.js</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">console.js</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td>
+
+            <td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td>
+            <td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td>
+            <td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td><td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td><td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td><td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td><td>
+              <div class="buttons-container">
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <script>
+    var subbody = document.getElementById('subbody');
+    var isScrolling = false;
+
+    // Agrega un evento scroll al elemento con scroll
+    subbody.addEventListener('scroll', function () {
+      // Marca que el scroll se está realizando
+      isScrolling = true;
+
+      // Espera un breve periodo de tiempo y luego verifica la posición del scroll
+      setTimeout(function () {
+        if (isScrolling) {
+          // Scroll aún está en progreso
+          isScrolling = false;
+        } else {
+          // Scroll ha finalizado
+          console.log('El scroll ha finalizado.');
+        }
+      }, 200); // Puedes ajustar este valor según tus necesidades
+    });
+
+    // Realiza el scroll suave al elemento
+    document.getElementById("subbody").scrollIntoView({
+      behavior: 'smooth'
+    });
+  </script>
+  <script>
+    // Diccionario de rutas de scripts
+    var rutasScripts = {
+      script1: 'script1.js',
+      script2: 'script2.js'
+      // Puedes agregar más scripts y rutas según sea necesario
+    };
+
+    function agregarScript(nombreScript) {
+      // Limpiar scripts previos eliminando todos los elementos script existentes
+      let scriptsAnteriores = document.querySelectorAll('script');
+      scriptsAnteriores.forEach(function (scriptAnterior) {
+        scriptAnterior.parentNode.removeChild(scriptAnterior);
+      });
+
+      // Limpiar scripts previos eliminando todos los elementos script existentes
+      let previousConsoles = document.querySelectorAll('.console-line');
+      previousConsoles.forEach(function (previousConsole) {
+        previousConsole.parentNode.removeChild(previousConsole);
+      });
+
+      // Verificar si el nombre del script existe en el diccionario
+      if (rutasScripts.hasOwnProperty(nombreScript)) {
+        // Crear un nuevo elemento script
+        let nuevoScript = document.createElement('script');
+
+        // Asignar atributos al nuevo script (fuente, tipo, etc.)
+        nuevoScript.src = rutasScripts[nombreScript];
+        nuevoScript.type = 'text/javascript';
+
+        // Agregar el script al final del body (o puedes agregarlo al head)
+        document.body.appendChild(nuevoScript);
+
+        // Mostrar el código del script en el div
+        mostrarCodigo(rutasScripts[nombreScript]);
+
+        // Desactivar los botones y activar solo el botón clickeado
+        let botones = document.querySelectorAll('.btn');
+        botones.forEach(function (boton) {
+          boton.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      } else {
+        console.error('Nombre de script no válido: ' + nombreScript);
+      }
+      document.getElementById("subbody").scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+
+    function mostrarCodigo(rutaScript) {
+      // Realizar una solicitud AJAX para obtener el código del script
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', rutaScript, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          // Actualizar el contenido del div con el código del script
+          document.getElementById('code').innerText = xhr.responseText;
+        }
+      };
+      xhr.send();
+    }
+  </script>
+  <script>
+    // Sobrescribe los métodos de la consola para redirigir la salida a un div
+    (function () {
+      let consolaDiv = document.getElementById('console-container');
+      let consolaBody = document.getElementById('console');
+
+      // Guarda una referencia al antiguo método de console.log
+      let consoleLogOriginal = console.log;
+
+      // Redirige todos los métodos de console a logToDiv
+      console.log = function (message) {
+        // Llama al antiguo método
+        consoleLogOriginal.apply(console, arguments);
+
+        // Clona la salida en el div
+        logToDiv(message, 'log');
+      };
+
+      console.warn = function (message) {
+        consoleLogOriginal.apply(console, arguments);
+        logToDiv(message, 'warn');
+      };
+
+      console.error = function (message) {
+        consoleLogOriginal.apply(console, arguments);
+        logToDiv(message, 'error');
+      };
+
+      console.info = function (message) {
+        consoleLogOriginal.apply(console, arguments);
+        logToDiv(message, 'info');
+      };
+
+      function logToDiv(message, type) {
+
+        let p = document.createElement('p');
+        p.textContent = message;
+        p.style.margin = 0;
+
+        if (type) {
+          p.classList.add(type);
+          p.classList.add('console-line');
+        }
+
+        consolaBody.appendChild(p);
+      }
+
+      // Ejemplos de mensajes en la consola redirigida al div
+      // console.log('Esto es un mensaje de registro.');
+      // console.warn('¡Cuidado! Esto es una advertencia.');
+      // console.error('Algo salió mal. Esto es un error.');
+      // console.info('Información: este es un mensaje informativo.');
+
+      // Simula un error para mostrar cómo se manejarían los errores
+      try {
+        // Código que podría generar un error
+        // throw new Error('¡Esto es un error de ejemplo!');
+      } catch (error) {
+        console.error(error.message);
+      }
+    })();
+  </script>
 </body>
+
 </html>
