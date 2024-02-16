@@ -1,15 +1,46 @@
-.out-container {
+.outs-container {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  background-color: #3498db;
+  width: 95%;
+  min-width: 512px;
+
+  padding: 2%;
+}
+
+.out-code-banner-container {
+  background-color: #232321;
+
+  display: block;
+  padding: 0;
+
+  border-radius: 0.9em 0.9em 0 0;
+}
+
+.out-code-banner {
+  background-color: #FFDD00;
+  color: #232321;
+  display: block;
+  padding: 0.2em 1em;
+
+  border-radius: 1em;
+  border: solid 5px #232321;
+  font-weight: bold;
+}
+
+.out-code {
+  padding: 0 1em;
+  border-radius: 1em;
+  border: solid 5px #232321;
+  background-color: #ddd;
 }
 
 .out-pushable {
+  width: 100%;
   margin: 0.6em;
   position: relative;
   border: none;
-  background: #232321;
+  background: #2323218f;
   padding: 0;
   border-radius: 1.4em;
   cursor: pointer;
@@ -25,24 +56,18 @@
   text-decoration: none;
   display: block;
   position: relative;
-  padding: 0.2em 1em;
+
   border-radius: 1em;
   font-size: 1.25rem;
   color: #000000;
-  background: #aaa;
+  background-color: #232321;
   will-change: transform;
   transform: translateY(-8px);
   transition:
     transform 600ms cubic-bezier(.3, .7, .4, 1);
 }
 
-.out-front:hover {
-  background: #FFDD00;
-}
 
-.out-active {
-  background: #FFDD00;
-}
 
 
 .out-pushable:hover {
@@ -52,7 +77,6 @@
 
 .out-pushable .out-front {
   /* Estilos comunes para .out-front */
-  background-color: #ddd;
 
   filter: brightness(100%);
   transition: filter 250ms ease-in-out, transform 250ms cubic-bezier(.3, .7, .4, 1.5), background-color 250ms ease-in-out;
@@ -61,14 +85,14 @@
 .out-pushable.hovered .out-front {
   /* Estilos adicionales para .out-front cuando .out-pushable está en :hover */
 
-  filter: brightness(110%);
+  
   transform: translateY(-2px);
 }
 
 .out-pushable.actived .out-front {
-  background-color: #FFDD00;
+
   /* Estilos adicionales para .out-front cuando .out-pushable está en :active */
-  filter: brightness(110%);
+
   transform: translateY(-8px);
 }
 
