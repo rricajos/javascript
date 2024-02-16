@@ -1,0 +1,67 @@
+.btns-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+.btn-pushable {
+  margin: 0.6em;
+  position: relative;
+  border: none;
+  background: #232321;
+  padding: 0;
+  border-radius: 1.2em;
+  cursor: pointer;
+  outline-offset: 4px;
+  transition: filter 250ms;
+  width: 256px;
+}
+
+
+.btn-front {
+  word-wrap: break-word;
+  box-shadow:
+  inset 0 -1em 1em rgba(0, 0, 0, 0.1),
+  0 0 0 2px rgb(0, 0, 0),
+  0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  display: block;
+  position: relative;
+  padding: 12px 42px;
+  border-radius: 1em;
+  font-size: 1.25rem;
+  color: #000000;
+  background: #aaa;
+  will-change: transform;
+  transform: translateY(-4px);
+  transition:
+    transform
+    600ms
+    cubic-bezier(.3, .7, .4, 1);
+}
+.btn-front:hover {
+  background: #FFDD00;
+}
+
+.btn-active {
+  background: #FFDD00;
+}
+
+
+.btn-pushable:hover {
+  filter: brightness(110%);
+}
+.btn-pushable:hover .btn-front {
+  transform: translateY(-6px);
+  transition:
+    transform
+    250ms
+    cubic-bezier(.3, .7, .4, 1.5);
+}
+.btn-pushable:active .btn-front {
+  transform: translateY(-2px);
+  transition: transform 34ms;
+}
+
+.btn-pushable:focus:not(:focus-visible) {
+  outline: none;
+}

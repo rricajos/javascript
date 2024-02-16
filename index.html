@@ -2,354 +2,337 @@
 <html lang="es">
 
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Script desde JavaScript</title>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/console.css">
-  <link rel="stylesheet" href="css/code.css">
+  <title>Super JavaScript Treemap</title>
 
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/icons/android-chrome-512x512.png" sizes="512x512" type="image/png">
+  <link rel="icon" href="/icons/android-chrome-192x192.png" sizes="192x192" type="image/png">
+  <link rel="icon" href="/icons/apple-touch-icon.png" sizes="180x180" type="image/png">
+  <link rel="icon" href="/icons/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/icons/favicon-16x16.png" sizes="16x16" type="image/png">
+
+  <link rel="stylesheet" href="css/btn.css">
+  <link rel="stylesheet" href="css/out.css">
+
+
+  <style>
+    hr {
+      margin-bottom: 2em;
+    }
+    body {
+      background-color: #eee;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    main {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .banner {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: space-around;
+
+    }
+
+    .banner-title {
+      text-align: center;
+    }
+
+
+    .responsive-table {
+      overflow-x: auto;
+      scrollbar-color: #FFDD00 #323330;
+      scrollbar-width: thin;
+    }
+
+    /* th {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    } */
+
+    table {
+      min-width: 100%;
+      min-height: 20vh;
+    }
+
+    td {
+
+      min-width: 256px;
+
+    }
+
+    .js-output {
+
+      background-color: #aaa;
+      color: azure;
+      padding: 1em;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- 
-  <script src="document.js"></script>
-  <script src="window.js"></script>
-  <script src="console.js"></script>
-  <script src="typeof.js"></script>
 
-  <script src="variable_declaration.js"></script>
-  <script src="variable_expression.js"></script>
-  <script src="variable_scope.js"></script>
-  
+  <main>
 
-  <script src="control_flow_if_else.js"></script>
-  <script src="control_flow_ternary.js"></script>
-  <script src="control_flow_switch.js"></script>
-  <script src="control_flow_for.js"></script>
-  <script src="control_flow_for_each.js"></script>
-  <script src="control_flow_for_of.js"></script>
-  <script src="control_flow_for_in.js"></script>
-  <script src="control_flow_while.js"></script>
-  <script src="control_flow_do_while.js"></script>
-  
-  <script src="memory_heap_vs_stack.js"></script>
-  <script src="memory_garbage_collector.js"></script>
-
-  <script src="json.js"></script>
-  <script src="json_buffered_object_ArrayBuffer.js"></script>
-  <script src="json_buffered_object_SharedArrayBuffer.js"></script>
-  <script src="json_buffered_object_Atomics.js"></script>
-  <script src="json_buffered_object_DataView.js"></script>
-
-
-  <script src="collection_object_DataView.js"></script>
-
-
-  <script src="built-in_object_Object.js"></script>
-  <script src="built-in_object_Function.js"></script>
-  <script src="built-in_object_FunctionGenerator.js"></script>
-  <script src="built-in_object_Iterable.js"></script>
-  <script src="built-in_object_Aggregate_Error.js"></script> 
-  <script src="built-in_object_Aggregate_Error.js"></script> 
-  -->
-
-  <div id="subbody">
-    <h1>JavaScript Treemap</h1>
-    <span>Tiempo dedicado: 5 horas</span>
-    <br>
-    <div id="output-container">
-      <div id="code-container">
-
-        <div id="code"></div>
-      </div>
-
-      <div id="console-container" class="card mt-4">
-        <div id="console"></div>
-      </div>
+    <div class="banner">
+      <h1 class="banner-title">Super JavaScript Treemap 🌳</h1>
+      <a href="https://www.buymeacoffee.com/rricajos" target="_blank">
+        <img
+          src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
+      </a>
     </div>
-    <div style="overflow-x:auto;">
-      <table class="buttons-containers-container">
+    <hr>
+
+    <div class="responsive-table">
+      <table>
         <thead>
           <tr>
             <th>Context</th>
-            <th>Control Flow</th>
+            <th>Context</th>
+            <th>Context</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">document.js</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">window.js</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">console.js</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-              </div>
-            </td>
-
-            <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-              </div>
-            </td>
-            <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              <div class="btns-container">
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">asdfsdfasdfasdfasdfsdfasdfasdfasdfsdfasdfasdf.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
               </div>
             </td>
             <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              <div class="btns-container">
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">asdfsdfasdfasdf.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
               </div>
             </td>
             <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              <div class="btns-container">
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">asdfsdfasdfasdf.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
               </div>
             </td>
             <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-              </div>
-            </td>
-            <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-              </div>
-            </td>
-            <td>
-              <div class="buttons-container">
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Buttonasfasdfa 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button asdfa32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
-                <button class="button-32" role="button" onclick="agregarScript('script1')">Button 32</button>
+              <div class="btns-container">
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">asdfsdfasdfasdf.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">typeof.js</a>
+                </div>
               </div>
             </td>
           </tr>
         </tbody>
+
       </table>
     </div>
-  </div>
 
+    <hr>
+
+    <div class="responsive-table">
+      <table>
+        <tr>
+          <th>JavaScript Code</th>
+          <th>Console Output</th>
+        </tr>
+        <tr>
+          <td>
+
+            <div class="outs-container" id="code-output">
+              <div class="out-pushable">
+                <div class="out-front">
+                  <p class="out-p-front">
+                    // sadasdasdsd
+                  </p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+
+                </div>
+              </div>
+            </div>
+
+          </td>
+          <td>
+
+            <div class="outs-container" id="code-output">
+              <div class="out-pushable">
+                <div class="out-front">
+                  <p class="out-p-front">
+                    // sadasdasdsd
+                  </p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+                  <p class="out-p-front"> function ser(no ser) { no ser? }</p>
+
+                </div>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+
+
+    <div class="responsive-description">
+      <h2>Descripcion x asdasdsadfsdfadfdf</h2>
+      <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el
+        texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se
+        dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro
+        de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos
+        electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas
+        "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como
+        por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.</p>
+
+    </div>
+
+    <hr>
+
+    <div style="display: flex; flex-flow: row wrap; justify-content: center;">
+
+      <div style="padding: 1em;" class="badge-base LI-profile-badge" data-locale="es_ES" data-size="large"
+        data-theme="light" data-type="HORIZONTAL" data-vanity="rricajos" data-version="v1"><a
+          class="badge-base__link LI-simple-link" href="https://es.linkedin.com/in/rricajos?trk=profile-badge"></a>
+      </div>
+
+      <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+
+
+      <div style="max-width: 400px;">
+        <h2>El bosque de JavaScript</h2>
+        <p>Esta herramienta tiene como objetivo tener <strong>una comprensión global del idioma más utilizado y
+            popular.</strong> Con
+          esta base, estarás preparado para abordar los frameworks, bibliotecas y superconjuntos de JavaScript porque
+          comprenderás lo que sucede debajo y cuáles son las mejores prácticas.</p>
+        <p>
+          <sup>
+            Creo que si lo puedo utilizar gratis yo mismo, no deberia cobrar a nadie por ello. Pero si tienes en cuenta
+            el
+            tiempo que he invertido para ahorrarnos tiempo a los dos y estas agradecido por ello, te invito a que me
+            invites a un cafe 🙊
+          </sup>
+
+        </p>
+
+      </div>
+
+
+
+    </div>
+
+  </main>
 
   <script>
-    var subbody = document.getElementById('subbody');
-    var isScrolling = false;
+    console.log(window);
+  </script>
 
-    // Agrega un evento scroll al elemento con scroll
-    subbody.addEventListener('scroll', function () {
-      // Marca que el scroll se está realizando
-      isScrolling = true;
+  <script>
+    const btnPushables = document.querySelectorAll('.btn-pushable');
+    const outPushable = document.querySelector('.out-pushable');
 
-      // Espera un breve periodo de tiempo y luego verifica la posición del scroll
-      setTimeout(function () {
-        if (isScrolling) {
-          // Scroll aún está en progreso
-          isScrolling = false;
-        } else {
-          // Scroll ha finalizado
-          console.log('El scroll ha finalizado.');
-        }
-      }, 200); // Puedes ajustar este valor según tus necesidades
+    btnPushables.forEach(btnPushable => {
+      btnPushable.addEventListener('mouseover', () => {
+        outPushable.classList.add('hovered');
+      });
+
+      btnPushable.addEventListener('mouseout', () => {
+        outPushable.classList.remove('hovered');
+      });
+
+      btnPushable.addEventListener('mousedown', () => {
+        outPushable.classList.add('actived')
+       
+      }); 
+
+      btnPushable.addEventListener('mouseup', () => {
+        outPushable.classList.remove('actived')
+       
+      }); 
     });
 
-    // Realiza el scroll suave al elemento
-    document.getElementById("subbody").scrollIntoView({
-      behavior: 'smooth'
-    });
   </script>
-  <script>
-    // Diccionario de rutas de scripts
-    var rutasScripts = {
-      script1: 'script1.js',
-      script2: 'script2.js'
-      // Puedes agregar más scripts y rutas según sea necesario
-    };
 
-    function agregarScript(nombreScript) {
-      // Limpiar scripts previos eliminando todos los elementos script existentes
-      let scriptsAnteriores = document.querySelectorAll('script');
-      scriptsAnteriores.forEach(function (scriptAnterior) {
-        scriptAnterior.parentNode.removeChild(scriptAnterior);
-      });
-
-      // Limpiar scripts previos eliminando todos los elementos script existentes
-      let previousConsoles = document.querySelectorAll('.console-line');
-      previousConsoles.forEach(function (previousConsole) {
-        previousConsole.parentNode.removeChild(previousConsole);
-      });
-
-      // Verificar si el nombre del script existe en el diccionario
-      if (rutasScripts.hasOwnProperty(nombreScript)) {
-        // Crear un nuevo elemento script
-        let nuevoScript = document.createElement('script');
-
-        // Asignar atributos al nuevo script (fuente, tipo, etc.)
-        nuevoScript.src = rutasScripts[nombreScript];
-        nuevoScript.type = 'text/javascript';
-
-        // Agregar el script al final del body (o puedes agregarlo al head)
-        document.body.appendChild(nuevoScript);
-
-        // Mostrar el código del script en el div
-        mostrarCodigo(rutasScripts[nombreScript]);
-
-        // Desactivar los botones y activar solo el botón clickeado
-        let botones = document.querySelectorAll('.btn');
-        botones.forEach(function (boton) {
-          boton.classList.remove('active');
-        });
-        event.target.classList.add('active');
-      } else {
-        console.error('Nombre de script no válido: ' + nombreScript);
-      }
-      document.getElementById("subbody").scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
-
-    function mostrarCodigo(rutaScript) {
-      // Realizar una solicitud AJAX para obtener el código del script
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', rutaScript, true);
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          // Actualizar el contenido del div con el código del script
-          document.getElementById('code').innerText = xhr.responseText;
-        }
-      };
-      xhr.send();
-    }
-  </script>
-  <script>
-    // Sobrescribe los métodos de la consola para redirigir la salida a un div
-    (function () {
-      let consolaDiv = document.getElementById('console-container');
-      let consolaBody = document.getElementById('console');
-
-      // Guarda una referencia al antiguo método de console.log
-      let consoleLogOriginal = console.log;
-
-      // Redirige todos los métodos de console a logToDiv
-      console.log = function (message) {
-        // Llama al antiguo método
-        consoleLogOriginal.apply(console, arguments);
-
-        // Clona la salida en el div
-        logToDiv(message, 'log');
-      };
-
-      console.warn = function (message) {
-        consoleLogOriginal.apply(console, arguments);
-        logToDiv(message, 'warn');
-      };
-
-      console.error = function (message) {
-        consoleLogOriginal.apply(console, arguments);
-        logToDiv(message, 'error');
-      };
-
-      console.info = function (message) {
-        consoleLogOriginal.apply(console, arguments);
-        logToDiv(message, 'info');
-      };
-
-      function logToDiv(message, type) {
-
-        let p = document.createElement('p');
-        p.textContent = message;
-        p.style.margin = 0;
-
-        if (type) {
-          p.classList.add(type);
-          p.classList.add('console-line');
-        }
-
-        consolaBody.appendChild(p);
-      }
-
-      // Ejemplos de mensajes en la consola redirigida al div
-      // console.log('Esto es un mensaje de registro.');
-      // console.warn('¡Cuidado! Esto es una advertencia.');
-      // console.error('Algo salió mal. Esto es un error.');
-      // console.info('Información: este es un mensaje informativo.');
-
-      // Simula un error para mostrar cómo se manejarían los errores
-      try {
-        // Código que podría generar un error
-        // throw new Error('¡Esto es un error de ejemplo!');
-      } catch (error) {
-        console.error(error.message);
-      }
-    })();
-  </script>
 </body>
 
 </html>

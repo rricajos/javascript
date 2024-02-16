@@ -1,0 +1,78 @@
+.out-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  background-color: #3498db;
+}
+
+.out-pushable {
+  margin: 0.6em;
+  position: relative;
+  border: none;
+  background: #232321;
+  padding: 0;
+  border-radius: 1.4em;
+  cursor: pointer;
+  outline-offset: 4px;
+  transition: filter 250ms;
+}
+
+.out-front {
+  box-shadow:
+    inset 0 -3em 3em rgba(0, 0, 0, 0.1),
+    0 0 0 2px rgb(0, 0, 0),
+    0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  display: block;
+  position: relative;
+  padding: 0.2em 1em;
+  border-radius: 1em;
+  font-size: 1.25rem;
+  color: #000000;
+  background: #aaa;
+  will-change: transform;
+  transform: translateY(-8px);
+  transition:
+    transform 600ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.out-front:hover {
+  background: #FFDD00;
+}
+
+.out-active {
+  background: #FFDD00;
+}
+
+
+.out-pushable:hover {
+  filter: brightness(110%);
+}
+
+
+.out-pushable .out-front {
+  /* Estilos comunes para .out-front */
+  background-color: #ddd;
+
+  filter: brightness(100%);
+  transition: filter 250ms ease-in-out, transform 250ms cubic-bezier(.3, .7, .4, 1.5), background-color 250ms ease-in-out;
+}
+
+.out-pushable.hovered .out-front {
+  /* Estilos adicionales para .out-front cuando .out-pushable está en :hover */
+
+  filter: brightness(110%);
+  transform: translateY(-2px);
+}
+
+.out-pushable.actived .out-front {
+  background-color: #FFDD00;
+  /* Estilos adicionales para .out-front cuando .out-pushable está en :active */
+  filter: brightness(110%);
+  transform: translateY(-8px);
+}
+
+
+.out-pushable:focus:not(:focus-visible) {
+  outline: none;
+}
