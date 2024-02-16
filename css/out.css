@@ -32,7 +32,7 @@
   padding: 0 1em;
   border-radius: 1em;
   border: solid 5px #232321;
-  background-color: #ddd;
+  background-color: #eee;
 }
 
 .out-pushable {
@@ -70,15 +70,11 @@
 
 
 
-.out-pushable:hover {
-  filter: brightness(110%);
-}
-
 
 .out-pushable .out-front {
   /* Estilos comunes para .out-front */
 
-  filter: brightness(100%);
+  filter: brightness(110%);
   transition: filter 250ms ease-in-out, transform 250ms cubic-bezier(.3, .7, .4, 1.5), background-color 250ms ease-in-out;
 }
 

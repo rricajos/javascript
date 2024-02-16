@@ -1,10 +1,12 @@
 .btns-container {
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 1em 0;
 }
 
-.btn-pushable { 
+.btn-pushable {
   margin: 0.3em;
   position: relative;
   border: none;
@@ -15,16 +17,17 @@
   outline-offset: 4px;
   transition: filter 250ms;
   width: auto;
-  max-width: 256px;
+  max-width: 320px;
 }
 
 
 .btn-front {
+  filter: brightness(110%);
   word-wrap: break-word;
   box-shadow:
-  inset 0 -1em 1em rgba(0, 0, 0, 0.1),
-  0 0 0 2px rgb(0, 0, 0),
-  0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
+    inset 0 -1em 1em rgba(0, 0, 0, 0.1),
+    0 0 0 2px rgb(0, 0, 0),
+    0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
   text-decoration: none;
   display: block;
   position: relative;
@@ -32,16 +35,11 @@
   border-radius: 1em;
   font-size: 1.25rem;
   color: #000000;
-  background: #aaa;
+  background: #eee;
   will-change: transform;
   transform: translateY(-4px);
   transition:
-    transform
-    600ms
-    cubic-bezier(.3, .7, .4, 1);
-}
-.btn-front:hover {
-  background: #FFDD00;
+    transform 600ms cubic-bezier(.3, .7, .4, 1);
 }
 
 .btn-active {
@@ -52,13 +50,13 @@
 .btn-pushable:hover {
   filter: brightness(110%);
 }
+
 .btn-pushable:hover .btn-front {
   transform: translateY(-6px);
   transition:
-    transform
-    250ms
-    cubic-bezier(.3, .7, .4, 1.5);
+    transform 250ms cubic-bezier(.3, .7, .4, 1.5);
 }
+
 .btn-pushable:active .btn-front {
   transform: translateY(-2px);
   transition: transform 34ms;
