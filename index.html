@@ -5,7 +5,7 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super JavaScript TreeMap</title>
+  <title>Super JavaScript Second Brain</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="/icons/android-chrome-512x512.png" sizes="512x512" type="image/png">
@@ -19,11 +19,10 @@
 
 
   <style>
-    hr {
-      margin-bottom: 2em;
-    }
+
+
     body {
-      background-color: #ddd;
+      background-color: #eee;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
@@ -52,6 +51,32 @@
       scrollbar-width: thin;
     }
 
+    .responsive-tables-nav {
+      background-color: #aaa;
+      display: flex;
+      flex-flow: row wrap;
+      width: 100%;
+    }
+
+    .responsive-tables-nav-a {
+      text-decoration: none;
+      float: left;
+      display: block;
+
+    }
+
+    .responsive-tables-nav-span {
+      display: inline-block;
+
+      border: 2px solid black;
+      border-radius: 1em;
+      padding: 0.2em 0.4em;
+      font-size: 1.2em;
+      background-color: #323330;
+      color: #eee;
+      margin: 0.4em;
+    }
+
     /* th {
       position: -webkit-sticky;
       position: sticky;
@@ -64,17 +89,18 @@
       min-height: 20vh;
     }
 
-    td {
-
-
-
-    }
+    td {}
 
     .js-output {
 
       background-color: #aaa;
       color: azure;
       padding: 1em;
+    }
+
+
+    p {
+      font-size: 1.25rem;
     }
   </style>
 </head>
@@ -83,135 +109,195 @@
 
   <main>
 
-    <div class="banner">
+    <!-- <div class="banner">
       <h1 class="banner-title">Super JavaScript TreeMap 🌳</h1>
       <a href="https://www.buymeacoffee.com/rricajos" target="_blank">
         <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
       </a>
+    </div> -->
+
+    <div class="banner">
+      <h1 class="banner-title">JavaScript Second Brain 🧠</h1>
+      <a href="https://www.buymeacoffee.com/rricajos" target="_blank">
+        <img
+          src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
+      </a>
     </div>
 
+    <hr>
 
     <div class="responsive-table">
-      <table>
 
+      <table>
+        <thead>
+          <tr>
+            <th>Operators</th>
+            <th>Control Flow</th>
+            <th>Object Oriented Programming</th>
+          </tr>
+        </thead>
         <tbody style="padding: 1em;">
           <tr>
             <td>
               <div class="btns-container">
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>if_else</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>logical</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>switch</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>conditional</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>while</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>aritmetical</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>do_while</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>assignation</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>for</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>comparation</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>for_of</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>bitwise</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>for_in</strong>.js</a>
-                </div>
-                <div class="btn-pushable">
-                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">control_flow_<strong>for_each</strong>.js</a>
+                    title="JavaScript TypeOf">op_<strong>of</strong>.js</a>
                 </div>
               </div>
             </td>
             <td>
+
               <div class="btns-container">
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>String</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>if_else</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>Array</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>switch</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>TypedArray</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>do_while</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>Map</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>for</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>Set</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>for_of</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">builtin_iterables_<strong>Segments</strong>.js</a>
+                    title="JavaScript TypeOf">cf_<strong>for_in</strong>.js</a>
                 </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">cf_<strong>for_each</strong>.js</a>
+                </div>
+
               </div>
             </td>
+
             <td>
               <div class="btns-container">
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">built-in_storage_<strong>Set</strong>.js</a>
+                    title="JavaScript TypeOf">ob_<strong>literal</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                    title="JavaScript TypeOf">ob_<strong>keywords</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">ob_<strong>constructors</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">ob_<strong>prototypes</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">ob_<strong>inheritance</strong>.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">ob_<strong>encapsulation</strong>.js</a>
+                </div>
+                <div class="btn-pushable">
+                  <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
+                    title="JavaScript TypeOf">ob_<strong>abstraction</strong>.js</a>
                 </div>
               </div>
             </td>
-            <td>
+
+            <!-- <td>
               <div class="btns-container">
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">asdfsdfasdfasdf.js</a>
+                    title="JavaScript TypeOf">block_<strong>scope</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typasdffdeof.js</a>
+                    title="JavaScript TypeOf">block_<strong>Function</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">block_<strong>Generator</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">block_<strong>Iterable</strong>.js</a>
                 </div>
                 <div class="btn-pushable">
                   <a class="btn-front" type="text/javascript" href="javascript:console.log('hello')"
-                    title="JavaScript TypeOf">typeof.js</a>
+                    title="JavaScript TypeOf">block_<strong>IIFE</strong>.js</a>
                 </div>
               </div>
-            </td>
+            </td> -->
+
+
           </tr>
         </tbody>
 
       </table>
+      <nav class="responsive-tables-nav">
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Operators, Control Flow and OOP-->
+          <span class="responsive-tables-nav-span">Solid Base</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Work with Dates, Numbers and Strings-->
+          <span class="responsive-tables-nav-span">Common Base</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Indexed collections, Keyed collections and Structured data JSON-->
+          <span class="responsive-tables-nav-span">Collections & JSON</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Managing memory with Garbage collector -->
+          <span class="responsive-tables-nav-span">Memory Manage</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Control abstraction objects -->
+          <span class="responsive-tables-nav-span">Async</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Reflect & Proxy -->
+          <span class="responsive-tables-nav-span">Interception</span>
+        </a>
+        <a class="responsive-tables-nav-a" href="">
+          <!-- Additions for language-sensitive functionalities. -->
+          <span class="responsive-tables-nav-span">International</span>
+        </a>
+      </nav>
     </div>
 
 
@@ -220,12 +306,12 @@
       <div class="outs-container" id="code-output">
         <div class="out-pushable">
           <div class="out-front">
-  
+
             <div class="out-code-banner-container">
               <span class="out-code-banner">control_flow_for.js</span>
             </div>
-        
-  
+
+
             <div class="out-code">
               <p class="out-code-line">
                 // sadasdasdsd
@@ -234,13 +320,13 @@
               <p class="out-p-front"> function ser(no ser) { no ser? }</p>
               <p class="out-p-front"> function ser(no ser) { no ser? }</p>
             </div>
-          
-  
+
+
           </div>
         </div>
       </div>
     </div>
-    
+
 
 
 
@@ -258,44 +344,48 @@
 
     </div>
 
-
+    <hr>
     <div style="display: flex; flex-flow: row wrap; justify-content: center;">
-
-      <div style="padding: 1em;" class="badge-base LI-profile-badge" data-locale="es_ES" data-size="large"
+      <div>
+        <div style="padding: 0 1em 1em 1em;" class="badge-base LI-profile-badge" data-locale="es_ES" data-size="large"
         data-theme="light" data-type="HORIZONTAL" data-vanity="rricajos" data-version="v1"><a
           class="badge-base__link LI-simple-link" href="https://es.linkedin.com/in/rricajos?trk=profile-badge"></a>
+        <h2>Autor:</h2>
+      
+        
       </div>
-
+      
+      </div>
+      
       <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 
 
-      <div style="max-width: 400px;">
-        <h2>El bosque de JavaScript</h2>
-        <p>Esta herramienta tiene como objetivo tener <strong>una comprensión global del idioma más utilizado y
-            popular.</strong> Con
-          esta base, estarás preparado para abordar los frameworks, bibliotecas y superconjuntos de JavaScript porque
-          comprenderás lo que sucede debajo y cuáles son las mejores prácticas.</p>
-        <p>
-          <sup>
-            Creo que si lo puedo utilizar gratis yo mismo, no deberia cobrar a nadie por ello. Pero si tienes en cuenta
-            el
-            tiempo que he invertido para ahorrarnos tiempo a los dos y estas agradecido por ello, te invito a que me
-            invites a un cafe 🙊
-          </sup>
 
+      <div style="max-width: 330px; padding: 0 1em 1em 1em;">
+        <h2>Mensaje:</h2>
+        <p>
+          Esta herramienta tiene como objetivo ofrecer una comprensión global y simple del lenguaje más utilizado y
+          polivalente que conozco.
+        </p>
+        <p>
+          Con esta base, estarás preparado para abordar los frameworks, bibliotecas y superconjuntos de JavaScript
+          porque comprenderás lo que sucede debajo y cuáles son las mejores prácticas.
         </p>
 
+        <!-- <p>
+          Creo que si lo puedo utilizar gratis yo mismo, no deberia cobrar a nadie por ello. Pero si tienes en cuenta
+          el tiempo que he invertido para ahorrarnos tiempo a los dos y estas agradecido por ello, te invito a que me
+          invites a un cafe 🙊
+        </p>
+  -->
       </div>
 
+ 
 
 
     </div>
-
+    <hr>
   </main>
-
-  <script>
-    console.log(window);
-  </script>
 
   <script>
     const btnPushables = document.querySelectorAll('.btn-pushable');
@@ -312,13 +402,13 @@
 
       btnPushable.addEventListener('mousedown', () => {
         outPushable.classList.add('actived')
-       
-      }); 
+
+      });
 
       btnPushable.addEventListener('mouseup', () => {
         outPushable.classList.remove('actived')
-       
-      }); 
+
+      });
     });
 
   </script>
