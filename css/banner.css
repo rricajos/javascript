@@ -51,7 +51,7 @@
 
 .banner-badge {
   margin: 0.5em;
-  max-width: 320px;
+  max-width: 352px;
   max-height: 45px;
   
 }
@@ -66,13 +66,13 @@
 }
 .badge-cooffe-img {
 
-  border-radius: 0.5em;
+  border-radius: 0.7em;
 }
 
 .badge-git-container {
 
   width: 100%;
-  border-radius: 0.5em;
+  border-radius: 0.7em;
   max-height: 45px;
 }
 
