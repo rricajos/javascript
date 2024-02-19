@@ -1,0 +1,78 @@
+.search-box-form-container {
+  background-color: var(--black-color);
+
+}
+
+.search-box-form {
+  box-sizing: border-box;
+  padding: 0.5em 1em 0 1em;
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--max-width);
+}
+
+.search-box-form-input {
+  font-family: 'Comic Sans MS', cursive;
+  box-sizing: border-box;
+  font-size: 1.3em;
+  border-radius: 0.5em;
+  border: none;
+
+  width: 100%;
+  padding: 0.3em 0.5em;
+
+  box-shadow:
+  inset 0 -1em 1em rgba(0, 0, 0, 0.1),
+  0 0 0 2px rgb(0, 0, 0),
+  0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
+
+}
+
+.search-box-form-submit {
+  position: absolute;
+  left: -53px;
+  top: -4px;
+  background-color: var(--black-second-color);
+  height: 40px;
+  width: 48px;
+  border-radius: 0 0.5em 0.5em 0;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+  inset 0 -1em 1em rgba(0, 0, 0, 0.1),
+  0 0 0 2px rgb(0, 0, 0),
+  0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
+}
+
+.search-box-form-submit-icon {
+  color: var(--white-color);
+
+}
+
+.search-box-tags-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 0.5em 0 0 0;
+}
+
+.search-box-tag-container {
+  margin: 0.5em;  
+  
+}
+
+
+.search-box-tag {
+  background-color: var(--black-second-color);
+  border-radius: 0.5em;
+  padding: 0.5em;
+  color: var(--white-color);
+  
+}
+
+.search-box-tag:hover {
+  background-color: var(--yellow-color);
+  color: var(--black-color);
+}

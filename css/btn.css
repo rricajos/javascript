@@ -1,3 +1,10 @@
+.sjsb-scripts-btns-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  overflow-x: auto;
+}
+
 .btns-container {
   display: flex;
   flex-flow: column wrap;
@@ -12,12 +19,13 @@
   border: none;
   background: #2323218f;
   padding: 0;
-  border-radius: 1.2em;
+  border-radius: 0.5em;
   cursor: pointer;
   outline-offset: 4px;
   transition: filter 250ms;
   width: auto;
   max-width: 320px;
+  max-height: 45px;
 }
 
 
@@ -31,9 +39,8 @@
   text-decoration: none;
   display: block;
   position: relative;
-  padding: 0.5em 0.6em;
-  border-radius: 1em;
-  font-size: 1.25rem;
+ 
+
   color: #000000;
   background: #eee;
   will-change: transform;
@@ -48,11 +55,11 @@
 
 
 .btn-pushable:hover {
-  filter: brightness(110%);
+  filter: brightness(108%);
 }
 
 .btn-pushable:hover .btn-front {
-  transform: translateY(-6px);
+  transform: translateY(-7px);
   transition:
     transform 250ms cubic-bezier(.3, .7, .4, 1.5);
 }
