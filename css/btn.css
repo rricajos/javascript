@@ -1,9 +1,4 @@
-.sjsb-scripts-btns-container {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-  overflow-x: auto;
-}
+
 
 .btns-container {
   display: flex;

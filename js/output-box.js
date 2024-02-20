@@ -15,20 +15,11 @@ function fetchCode(src) {
 
 function run(id) {
   let src = document.getElementById(id).textContent.replace(/\s/g, '');
-  console.log(src)
-  // Get the HTML container
+
+  // Updaate the sctipt title HTML container 
   let codeTitle = document.getElementById("output-box-title");
   codeTitle.textContent = src;
 
-  // Get the HTML container
-  let outBox = document.getElementById("out-box");
-  outBox.classList.remove('output-box-container')
-  outBox.classList.add('output-box-container-active')
-  
-  setTimeout(() => {
-    outBox.classList.remove('output-box-container-active')
-    outBox.classList.add('output-box-container')
-  }, 1000);
   
 
 
@@ -40,7 +31,7 @@ function run(id) {
   // Clean previous HTML
   codeContainer.innerHTML = "";
 
-  fetchCode("/js/" + src)
+  fetchCode("js/" + src)
     .then(function (code) {
       // Split the code into lines
       let codeLines = code.split('\n');

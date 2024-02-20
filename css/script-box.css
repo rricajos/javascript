@@ -11,3 +11,12 @@
   border-radius: 1em;
   border: solid 2px #232321;
 }
+
+.sjsb-scripts-btns-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  scrollbar-color: var(--yellow-color) var(--black-second-color);
+  scrollbar-width: none;
+  overflow-x: scroll;
+}
