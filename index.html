@@ -104,7 +104,7 @@
       <div class="banner-badge badge-cooffe-container">
         <a href="https://www.buymeacoffee.com/rricajos" target="_blank" class="btn-pushable badge-cooffe">
           <img alt="https://www.buymeacoffee.com/rricajos" width="100%" class="btn-front badge-cooffe-img"
-            src="https://img.buymeacoffee.com/button-api/?text=No Coockies! Buy me a coffee pls&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
+            src="https://img.buymeacoffee.com/button-api/?text=No Cookies ! Buy me a coffee pls&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
         </a>
       </div>
 
@@ -132,12 +132,12 @@
 
         <!-- Operators, Control Flow and OOP-->
         <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag active btn-front" href="javascript:tag('solid_base')">Solid Base</a>
+          <a class="search-box-tag active btn-front" href="javascript:tag('solid_base')">Solid Foundation</a>
         </div>
 
         <!-- Work with Dates, Numbers and Strings-->
         <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Common Base</a>
+          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Base Formats</a>
         </div>
 
         <!-- Indexed collections, Keyed collections and Structured data JSON-->
@@ -157,12 +157,12 @@
 
         <!-- Reflect & Proxy -->
         <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Interception</a>
+          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Static Interception</a>
         </div>
 
         <!-- Additions for language-sensitive functionalities. -->
         <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">International</a>
+          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Internationalization API</a>
         </div>
       </nav>
     </form>
@@ -199,13 +199,9 @@
       <div class="sjsb-scripts-btns-container">
 
         <div class="btns-container">
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-007')">
-            <div class="btn-front script-box-item active" id="btn-007">
-              operator_<strong>typeof</strong>.js
-            </div>
-          </a>
+          
           <a class="btn-pushable script-box-item-container" href="javascript:run('btn-001')">
-            <div class="btn-front script-box-item" id="btn-001">
+            <div class="btn-front script-box-item active" id="btn-001">
               operator_<strong>logical</strong>.js
             </div>
           </a>
@@ -232,6 +228,11 @@
           <a class="btn-pushable script-box-item-container" href="javascript:run('btn-006')">
             <div class="btn-front script-box-item" id="btn-006">
               operator_<strong>bitwise</strong>.js
+            </div>
+          </a>
+          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-007')">
+            <div class="btn-front script-box-item" id="btn-007">
+              operator_<strong>typeof</strong>.js
             </div>
           </a>
         </div>
@@ -318,23 +319,20 @@
 
 
       <!-- OUTPUT BOX ------------------------------------------------------------------------------>
-      <div class="output-box-container">
-        <div class="outs-container" id="code-output">
+      <div class="output-box-container" id="out-box">
+        <div class="output-box">
           <div class="out-pushable">
             <div class="out-front">
 
-              <div class="out-code-banner-container">
-                <span class="out-code-banner">control_flow_for.js</span>
+              <div class="output-box-banner-container">
+                <span class="output-box-banner" id="output-box-title">control_flow_for.js</span>
               </div>
 
 
-              <div class="out-code">
-                <p class="out-code-line">
+              <div class="output-box-code-container" id="output-box-code">
+                <p class="output-box-code-line">
                   // sadasdasdsd
                 </p>
-                <p class="out-p-front"> function ser(no ser) { no ser? }</p>
-                <p class="out-p-front"> function ser(no ser) { no ser? }</p>
-                <p class="out-p-front"> function ser(no ser) { no ser? }</p>
               </div>
 
 
@@ -361,8 +359,7 @@
 
     <div class="responsive-description">
       <hr>
-      <h2>Solid Base</h2>
-
+      <h2>Solid Foundation</h2>
       <p>
         A solid foundation, for me, starts with operators, flow control and language orientation (there are some
         frameworks that allow you to program aspect-oriented).
@@ -393,8 +390,8 @@
       <hr>
       <h2>Interceptable Objects</h2>
       <p>
-        In javascript the interceptable or proposed instances for this purpose are Reflect and Proxy. They contain
-        static internal methods that allow default forwarding behavior on proxy handler traps.
+        In JavaScript, interceptable instances can be handled for Reflect and Proxy. They contain static internal
+        methods that allow default forwarding behavior on proxy handler traps.
       </p>
       <hr>
       <h2>Internationalization API</h2>
@@ -474,10 +471,7 @@
   </script>
   <script>
 
-    function run(id) {
-      const a = document.getElementById(id).textContent;
-      console.log(a.replace(/ /g, ''));
-    }
+    
 
 
     const btnSearchTagPushables = document.querySelectorAll('.search-box-tag.btn-front');
@@ -527,7 +521,7 @@
     });
 
   </script>
-
+  <script src="js/output-box.js"></script>
 </body>
 
 </html>

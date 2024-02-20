@@ -17,7 +17,7 @@
   margin: 0.3em;
   position: relative;
   border: none;
-  background: #2323218f;
+  background-color: var(--black-second-color);
   padding: 0;
   border-radius: 0.5em;
   cursor: pointer;
@@ -44,14 +44,11 @@
   color: #000000;
   background: #eee;
   will-change: transform;
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   transition:
     transform 600ms cubic-bezier(.3, .7, .4, 1);
 }
 
-.btn-active {
-  background: #FFDD00;
-}
 
 
 .btn-pushable:hover {
@@ -59,7 +56,7 @@
 }
 
 .btn-pushable:hover .btn-front {
-  transform: translateY(-7px);
+  transform: translateY(-5px);
   transition:
     transform 250ms cubic-bezier(.3, .7, .4, 1.5);
 }
