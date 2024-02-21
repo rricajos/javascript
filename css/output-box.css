@@ -46,8 +46,11 @@
   border: 5px solid var(--black-second-color);
   
   border-top: 2px solid var(--black-second-color);
-  background-color: #eee;
+  background-color: #fff;
   min-height: 128px;
 
+  font-family:  monospace;
+  font-size: 1em
+  ;
 
 }
