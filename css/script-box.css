@@ -1,15 +1,22 @@
 .script-box-item-container {
   margin: 0.5em 0.5em;
-  background-color: var(--black-color);
+  background-color: var(--white-second-color);
   border-radius: 1.5em;
 }
 
-.script-box-item {
+.script-box-item:hover  {
 
+  background-color: var(--yellow-color);
+
+}
+
+.script-box-item {
+  background-color: var(--white-color);
+  color: var(--black-color);
   font-size: 1.1em;
   padding: 0.2em 1em;
   border-radius: 1em;
-  border: solid 2px #232321;
+  border: solid 2px var(--white-second-color);
 }
 
 .sjsb-scripts-btns-container {

@@ -27,10 +27,10 @@
 .btn-front {
   filter: brightness(110%);
   word-wrap: break-word;
-  box-shadow:
+  /* box-shadow:
     inset 0 -1em 1em rgba(0, 0, 0, 0.1),
     0 0 0 2px rgb(0, 0, 0),
-    0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3);
+    0.1em 0.1em 0.3em rgba(0, 0, 0, 0.3); */
   text-decoration: none;
   display: block;
   position: relative;

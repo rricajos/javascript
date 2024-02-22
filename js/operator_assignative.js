@@ -1,9 +1,7 @@
 let x = 10;
-let y = 5;
-//////////////////////////////////////////////////////////////
-// classic: 
-let addition = x += y;
-let substraction = x -= y;
-let multiplication = x *= y;
-let division = x /= y  ;
-let modulus = x %= y;
+x += 10; // 20
+x -= 5;  // 15
+x *= 2;  // 30
+x /= 3;  // 10
+x %= 2;  // 0
+
