@@ -1,17 +1,17 @@
 .banner {
-  padding: 2em 0em;
+  height: 225px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   justify-content: space-around;
-  background-image: url('../src/banner_black_and_white.png');
+  background-image: url('../src/banner_main.png');
   background-position: center top;
 
-
+  transition: height 0.15s ease-in-out;
 }
 
 /* Styles for screens with a width up to 600 pixels */
-@media screen and (max-width: 719px) {
+/* @media screen and (max-width: 719px) {
   .banner {
     background-size: cover;
     background-attachment: fixed;
@@ -24,19 +24,21 @@
     background-size: contain;
   }
 
-}
+} */
 .banner-title-container {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-
+  padding: 1em;
 }
 
 .banner-title {
+  font-family: monospace;
   color: var(--yellow-color);
-  text-shadow: 2px 4px 4px var(--black-color);
-  -webkit-text-stroke: 2px var(--black-color);
-  font-size: 3em;
+  /* text-shadow: 2px 4px 4px var(--black-color);
+  -webkit-text-stroke: 2px var(--black-color); */
+  font-size: 2em;
+  width: 100%;
   text-align: center;
 }
 

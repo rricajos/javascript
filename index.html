@@ -45,72 +45,10 @@
 
   <!-- BANNER ----------------------------------------------------------------------->
 
-  <div class="banner">
-    <div class="banner-title-container">
-
-      <h2 class="banner-title"> JavaScript Brain Box </h2>
-
-    </div>
-
-    <div class="banner-badges-container">
-
-      <!-- github status -->
-      <div class="banner-badge badge-git-container ">
-        <div class="btn-pushable">
-          <a href="https://github.com/rricajos/javascript" target="_blank" class="badge-git-container-a btn-front">
-
-            <div class="badge-git-icon-and-text-container">
-              <img src="icons/github-icon.png" alt="JSBB git project icon" class="badge-git-image">
-              <h2 class="badge-git-title"> Open Source | MIT License</h2>
-            </div>
-
-
-            <div class="badge-git-stars-container">
-              <i class="badge-git-star-icon material-icons  ">star</i>
-              <div id="repo-stars">
-                <!-- fetch github stars -->
-                <script>
-                  function getStars(repoUrl) {
-                    return new Promise((resolve, reject) => {
-                      fetch(repoUrl)
-                        .then(response => response.json())
-                        .then(data => resolve(data.stargazers_count))
-                        .catch(error => reject(error));
-                    });
-                  }
-
-                  // URL del repositorio en GitHub
-                  const repoUrl = 'https://api.github.com/repos/rricajos/javascript';
-
-                  // Usar la función getStars con promesas
-                  getStars(repoUrl)
-                    .then(stars => {
-                      const x = document.getElementById("repo-stars");
-                      x.textContent = `${stars}`
-
-                    })
-                    .catch(error => {
-                      console.error('Error al recuperar la información del repositorio:', error);
-                    });
-                </script>
-              </div>
-            </div>
-          </a>
-        </div>
-
-      </div>
-
-      <!-- buy me a cofee-->
-      <div class="banner-badge badge-cooffe-container">
-        <a href="https://www.buymeacoffee.com/rricajos" target="_blank" class="btn-pushable badge-cooffe">
-          <img alt="https://www.buymeacoffee.com/rricajos" width="100%" class="btn-front badge-cooffe-img"
-            src="https://img.buymeacoffee.com/button-api/?text=No Cookies ! Buy me a coffee pls&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
-        </a>
-      </div>
+  <div class="banner" id="banner">
 
 
 
-    </div>
 
 
 
@@ -119,8 +57,14 @@
 
   <!-- SEARCH BOX ------------------------------------------------------------------------------>
   <div class="search-box-form-container">
+
     <form class="search-box-form">
-      <input class="search-box-form-input" type="text" id="query" name="query" placeholder="#common_base"
+      <!-- <div class="banner-title-container">
+
+        <h2 class="banner-title"> JavaScript ToolBox </h2>
+  
+      </div> -->
+      <input class="search-box-form-input" type="text" id="query" name="query" placeholder="JavaScript ToolBox"
         autocomplete="off" oninput="search()">
       <a class="btn-pushable" href="javascript:" style="position: absolute;">
         <div class="search-box-form-submit">
@@ -199,7 +143,7 @@
       <div class="sjsb-scripts-btns-container">
 
         <div class="btns-container">
-          
+
           <a class="btn-pushable script-box-item-container" href="javascript:run('btn-001')">
             <div class="btn-front script-box-item active" id="btn-001">
               operator_<strong>logical</strong>.js
@@ -321,18 +265,18 @@
       <!-- OUTPUT BOX ------------------------------------------------------------------------------>
       <div id="output-box-container" class="out-pushable">
         <div id="output-box" class="out-front">
-   
-
-              <div class="output-box-banner-container">
-                <span class="output-box-banner" id="output-box-title">control_flow_for.js</span>
-              </div>
 
 
-              <div class="output-box-code-container" id="output-box-code">
-                <p class="output-box-code-line">
-                  // sadasdasdsd
-                </p>
-              </div>
+          <div class="output-box-banner-container">
+            <span class="output-box-banner" id="output-box-title">control_flow_for.js</span>
+          </div>
+
+
+          <div class="output-box-code-container" id="output-box-code">
+            <p class="output-box-code-line">
+              // sadasdasdsd
+            </p>
+          </div>
 
 
         </div>
@@ -354,7 +298,7 @@
 
 
 
-    <div class="responsive-description">
+    <!-- <div class="responsive-description">
       <hr>
       <h2>Solid Foundation</h2>
       <p>
@@ -397,30 +341,19 @@
         constructors and other language-sensitive functions. Together, they comprise the ECMAScript Internationalization
         API, which provides language-sensitive string comparison, number formatting, date and time formatting, and more.
       </p>
-    </div>
+    </div> -->
 
-    <hr>
+
     <div style="display: flex; flex-flow: row wrap; justify-content: center;">
-      <div>
-        <div style="padding: 0 1em 1em 1em;" class="badge-base LI-profile-badge" data-locale="es_ES" data-size="large"
-          data-theme="light" data-type="HORIZONTAL" data-vanity="rricajos" data-version="v1"><a
-            class="badge-base__link LI-simple-link" href="https://es.linkedin.com/in/rricajos?trk=profile-badge"></a>
-          <h2>Autor:</h2>
-
-
-        </div>
-
-      </div>
-
-      <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 
 
 
-      <div style="max-width: 330px; padding: 0 1em 1em 1em;">
+
+
+      <div style=" padding: 1em 2em;">
         <h2>Mensaje:</h2>
         <p>
-          Esta herramienta tiene como objetivo ofrecer una comprensión global y simple del lenguaje más utilizado y
-          polivalente que conozco.
+          Esta herramienta tiene como objetivo ofrecer una comprensión global y simple del lenguaje JavaScript.
         </p>
         <p>
           Con esta base, estarás preparado para abordar los frameworks, bibliotecas y superconjuntos de JavaScript
@@ -434,6 +367,65 @@
             invites a un cafe 🙊
           </p>
         -->
+        <div class="banner-badges-container">
+
+          <!-- github status -->
+          <div class="banner-badge badge-git-container ">
+            <div class="btn-pushable">
+              <a href="https://github.com/rricajos/javascript" target="_blank" class="badge-git-container-a btn-front">
+
+                <div class="badge-git-icon-and-text-container">
+                  <img src="icons/github-icon.png" alt="JSBB git project icon" class="badge-git-image">
+                  <h2 class="badge-git-title"> Open Source | MIT License</h2>
+                </div>
+
+
+                <div class="badge-git-stars-container">
+                  <i class="badge-git-star-icon material-icons  ">star</i>
+                  <div id="repo-stars">
+                    <!-- fetch github stars -->
+                    <script>
+                      function getStars(repoUrl) {
+                        return new Promise((resolve, reject) => {
+                          fetch(repoUrl)
+                            .then(response => response.json())
+                            .then(data => resolve(data.stargazers_count))
+                            .catch(error => reject(error));
+                        });
+                      }
+
+                      // URL del repositorio en GitHub
+                      const repoUrl = 'https://api.github.com/repos/rricajos/javascript';
+
+                      // Usar la función getStars con promesas
+                      getStars(repoUrl)
+                        .then(stars => {
+                          const x = document.getElementById("repo-stars");
+                          x.textContent = `${stars}`
+
+                        })
+                        .catch(error => {
+                          console.error('Error al recuperar la información del repositorio:', error);
+                        });
+                    </script>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+          </div>
+
+          <!-- buy me a cofee-->
+          <div class="banner-badge badge-cooffe-container">
+            <a href="https://www.buymeacoffee.com/rricajos" target="_blank" class="btn-pushable badge-cooffe">
+              <img alt="https://www.buymeacoffee.com/rricajos" width="100%" class="btn-front badge-cooffe-img"
+                src="https://img.buymeacoffee.com/button-api/?text=No Cookies ! Buy me a coffee pls&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
+            </a>
+          </div>
+
+
+
+        </div>
       </div>
 
 
@@ -459,16 +451,31 @@
       // var resultadosElemento = document.getElementById("resultados");
       // resultadosElemento.innerHTML = "Realizando búsqueda para: " + query;
     });
+    const banner = document.getElementById("banner");
+    function smoothScrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
 
     function search() {
+      smoothScrollToTop()
+      var query = document.getElementById("query").value;
+      if (query != "") {
+        banner.style.height = "0px";
+      } else {
+        banner.style.height = "222px";
+      }
+      console.log(query)
       // Puedes realizar acciones adicionales en tiempo real mientras el usuario escribe
       // Pero ten en cuenta que la búsqueda completa se realizará al enviar el formulario
-      console.log("hello")
+
     }
   </script>
   <script>
 
-    
+
 
 
     const btnSearchTagPushables = document.querySelectorAll('.search-box-tag.btn-front');
