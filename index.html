@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="css/search-box.css">
   <link rel="stylesheet" href="css/script-box.css">
   <link rel="stylesheet" href="css/output-box.css">
+  <link rel="stylesheet" href="css/cubes.css">
 
   <!-- icons -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -43,20 +44,14 @@
 
 <body>
 
-  <!-- BANNER ----------------------------------------------------------------------->
-
-  <div class="banner" id="banner">
-
-
+  <!-- Banner image (banner.js) -->
+  <header class="banner" id="banner">
+  </header>
 
 
 
-
-  </div>
-
-
-  <!-- SEARCH BOX ------------------------------------------------------------------------------>
-  <div class="search-box-form-container">
+  <!-- Navegation panel  -->
+  <nav aria-label="a" class="search-box-form-container">
 
     <form class="search-box-form">
       <!-- <div class="banner-title-container">
@@ -72,411 +67,86 @@
         </div>
       </a>
       </input>
-      <nav class="search-box-tags-container">
 
-        <!-- Operators, Control Flow and OOP-->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag active btn-front" href="javascript:tag('solid_base')">Solid Foundation</a>
-        </div>
-
-        <!-- Work with Dates, Numbers and Strings-->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Base Formats</a>
-        </div>
-
-        <!-- Indexed collections, Keyed collections and Structured data JSON-->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Collections & JSON</a>
-        </div>
-
-        <!-- Managing memory with Garbage collector -->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Memory Manage</a>
-        </div>
-
-        <!-- Control abstraction objects -->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Asyncronous</a>
-        </div>
-
-        <!-- Reflect & Proxy -->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Static Interception</a>
-        </div>
-
-        <!-- Additions for language-sensitive functionalities. -->
-        <div class="search-box-tag-container btn-pushable">
-          <a class="search-box-tag btn-front" href="javascript:tag('solid_base')">Internationalization API</a>
-        </div>
-      </nav>
     </form>
-  </div>
 
+    <div id="super-cubes-container">
 
-
-  <main>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!---------------------------------------------------------------------------------------------->
-    <!-- SJSB MAIN FUNCTION ------------------------------------------------------------------------>
-    <div class="sjsb-container">
-
-
-
-
-      <!-- SCRIPTS BOX ----------------------------------------------------------------------------->
-      <div class="sjsb-scripts-btns-container">
-
-        <div class="btns-container">
-
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-001')">
-            <div class="btn-front script-box-item active" id="btn-001">
-              operator_<strong>logical</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-002')">
-            <div class="btn-front script-box-item" id="btn-002">
-              operator_<strong>conditional</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-003')">
-            <div class="btn-front script-box-item" id="btn-003">
-              operator_<strong>aritmetical</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-004')">
-            <div class="btn-front script-box-item" id="btn-004">
-              operator_<strong>assignative</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-005')">
-            <div class="btn-front script-box-item" id="btn-005">
-              operator_<strong>comparative</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-006')">
-            <div class="btn-front script-box-item" id="btn-006">
-              operator_<strong>bitwise</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-007')">
-            <div class="btn-front script-box-item" id="btn-007">
-              operator_<strong>typeof</strong>.js
-            </div>
-          </a>
+      <div class="cube">
+        <div class="cube-container">
+          <div class="cube-side cube-top-side">Basics</div>
+          <div class="cube-side cube-left-side">Basics</div>
+          <div class="cube-side cube-right-side">Basics</div>
+         
         </div>
-
-        <div class="btns-container">
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-008')">
-            <div class="btn-front script-box-item" id="btn-008">
-              control_flow_<strong>if_else</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-009')">
-            <div class="btn-front script-box-item" id="btn-009">
-              control_flow_<strong>switch</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-010')">
-            <div class="btn-front script-box-item" id="btn-010">
-              control_flow_<strong>do_while</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-011')">
-            <div class="btn-front script-box-item" id="btn-011">
-              control_flow_<strong>for</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-012')">
-            <div class="btn-front script-box-item" id="btn-012">
-              control_flow_<strong>for_of</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-013')">
-            <div class="btn-front script-box-item" id="btn-013">
-              control_flow_<strong>for_in</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-014')">
-            <div class="btn-front script-box-item" id="btn-014">
-              control_flow_<strong>for_each</strong>.js
-            </div>
-          </a>
-        </div>
-
-        <div class="btns-container">
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-015')">
-            <div class="btn-front script-box-item" id="btn-015">
-              oop_<strong>literals</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-016')">
-            <div class="btn-front script-box-item" id="btn-017">
-              oop_<strong>keywords</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-018')">
-            <div class="btn-front script-box-item" id="btn-018">
-              oop_<strong>constructors</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-019')">
-            <div class="btn-front script-box-item" id="btn-019">
-              oop_<strong>prototypes</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-020')">
-            <div class="btn-front script-box-item" id="btn-020">
-              oop_<strong>inheritance</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-021')">
-            <div class="btn-front script-box-item" id="btn-021">
-              oop_<strong>encapsulation</strong>.js
-            </div>
-          </a>
-          <a class="btn-pushable script-box-item-container" href="javascript:run('btn-022')">
-            <div class="btn-front script-box-item" id="btn-022">
-              oop_<strong>abstraction</strong>.js
-            </div>
-          </a>
-        </div>
-
-      </div>
-
-
-
-
-      <!-- OUTPUT BOX ------------------------------------------------------------------------------>
-      <div id="output-box-container" class="out-pushable">
-        <div id="output-box" class="out-front">
-
-
-          <div class="output-box-banner-container">
-            <span class="output-box-banner" id="output-box-title">control_flow_for.js</span>
-          </div>
-
-
-          <div class="output-box-code-container" id="output-box-code">
-            <p class="output-box-code-line">
-              // sadasdasdsd
-            </p>
-          </div>
-
-
-        </div>
-      </div>
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- <div class="responsive-description">
-      <hr>
-      <h2>Solid Foundation</h2>
-      <p>
-        A solid foundation, for me, starts with operators, flow control and language orientation (there are some
-        frameworks that allow you to program aspect-oriented).
-      </p>
-      <hr>
-      <h2>Base Formats</h2>
-      <p>
-        The base formats in all high-level languages are characters, numbers and time. I think it is important to learn
-        how to handle them to save a lot of time.
-      </p>
-      <hr>
-      <h2>Collections & JSON</h2>
-      <p>
-        Collections allow us to manage keyed, structured and indexed data. JavaScript Object Notation, more commonly
-        known by the acronym JSON, is an open data interchange format that is both human and machine-readable.
-      </p>
-      <hr>
-      <h2>Memory Manage</h2>
-      <p>
-        Memory management, or rather stack management, is vital to scale applications correctly and avoid double work.
-      </p>
-      <hr>
-      <h2>Asyncronous Code</h2>
-      <p>
-        Control abstractions can help to structure code, especially async code (without using deeply nested callbacks,
-        for example).
-      </p>
-      <hr>
-      <h2>Interceptable Objects</h2>
-      <p>
-        In JavaScript, interceptable instances can be handled for Reflect and Proxy. They contain static internal
-        methods that allow default forwarding behavior on proxy handler traps.
-      </p>
-      <hr>
-      <h2>Internationalization API</h2>
-      <p>
-        The Intl namespace object contains several constructors, as well as functions common to internationalization
-        constructors and other language-sensitive functions. Together, they comprise the ECMAScript Internationalization
-        API, which provides language-sensitive string comparison, number formatting, date and time formatting, and more.
-      </p>
-    </div> -->
-
-
-    <div style="display: flex; flex-flow: row wrap; justify-content: center;">
-
-
-
-
-
-      <div style=" padding: 1em 2em;">
-        <h2>Mensaje:</h2>
-        <p>
-          Esta herramienta tiene como objetivo ofrecer una comprensión global y simple del lenguaje JavaScript.
-        </p>
-        <p>
-          Con esta base, estarás preparado para abordar los frameworks, bibliotecas y superconjuntos de JavaScript
-          porque comprenderás lo que sucede debajo y cuáles son las mejores prácticas.
-        </p>
-
-        <!-- 
-          <p>
-            Creo que si lo puedo utilizar gratis yo mismo, no deberia cobrar a nadie por ello. Pero si tienes en cuenta
-            el tiempo que he invertido para ahorrarnos tiempo a los dos y estas agradecido por ello, te invito a que me
-            invites a un cafe 🙊
-          </p>
-        -->
-        <div class="banner-badges-container">
-
-          <!-- github status -->
-          <div class="banner-badge badge-git-container ">
-            <div class="btn-pushable">
-              <a href="https://github.com/rricajos/javascript" target="_blank" class="badge-git-container-a btn-front">
-
-                <div class="badge-git-icon-and-text-container">
-                  <img src="icons/github-icon.png" alt="JSBB git project icon" class="badge-git-image">
-                  <h2 class="badge-git-title"> Open Source | MIT License</h2>
-                </div>
-
-
-                <div class="badge-git-stars-container">
-                  <i class="badge-git-star-icon material-icons  ">star</i>
-                  <div id="repo-stars">
-                    <!-- fetch github stars -->
-                    <script>
-                      function getStars(repoUrl) {
-                        return new Promise((resolve, reject) => {
-                          fetch(repoUrl)
-                            .then(response => response.json())
-                            .then(data => resolve(data.stargazers_count))
-                            .catch(error => reject(error));
-                        });
-                      }
-
-                      // URL del repositorio en GitHub
-                      const repoUrl = 'https://api.github.com/repos/rricajos/javascript';
-
-                      // Usar la función getStars con promesas
-                      getStars(repoUrl)
-                        .then(stars => {
-                          const x = document.getElementById("repo-stars");
-                          x.textContent = `${stars}`
-
-                        })
-                        .catch(error => {
-                          console.error('Error al recuperar la información del repositorio:', error);
-                        });
-                    </script>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-          </div>
-
-          <!-- buy me a cofee-->
-          <div class="banner-badge badge-cooffe-container">
-            <a href="https://www.buymeacoffee.com/rricajos" target="_blank" class="btn-pushable badge-cooffe">
-              <img alt="https://www.buymeacoffee.com/rricajos" width="100%" class="btn-front badge-cooffe-img"
-                src="https://img.buymeacoffee.com/button-api/?text=No Cookies ! Buy me a coffee pls&emoji=&slug=rricajos&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
-            </a>
-          </div>
-
-
-
+        <div class="cube-info">
+          <h2 class="cube-info-title">Common Basics</h2>
+          <ul class="cube-info-list">
+            <li class="cube-info-list-item">Operators</li>
+            <li class="cube-info-list-item">Control Flow</li>
+            <li class="cube-info-list-item">Data Collections</li>
+          </ul>
         </div>
       </div>
 
 
+      <div class="cube">
+        <div class="cube-container">
 
+          <div class="cube-side cube-top-side">Good</div>
+          <div class="cube-side cube-left-side">Good</div>
+          <div class="cube-side cube-right-side">Good</div>
+
+        </div>
+        <div class="cube-info">
+          <h2 class="cube-info-title"> Good Skills</h2>
+          <ul class="cube-info-list">
+            <li class="cube-info-list-item">Cookies</li>
+            <li class="cube-info-list-item">API</li>
+            <li class="cube-info-list-item">Async</li>
+          
+          </ul>
+        </div>
+      </div>
+
+      <div class="cube">
+        <div class="cube-container">
+          <div class="cube-side cube-top-side">Pro</div>
+          <div class="cube-side cube-left-side">Pro</div>
+          <div class="cube-side cube-right-side">Pro</div>
+        </div>
+        <div class="cube-info">
+          <h2 class="cube-info-title">Like a Pro</h2>
+          <ul class="cube-info-list">
+            <li class="cube-info-list-item">Cookies</li>
+            <li class="cube-info-list-item">Testing libraries</li>
+            <li class="cube-info-list-item">Internationalization</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="cube">
+        <div class="cube-container">
+          <div class="cube-side cube-top-side">Geek</div>
+          <div class="cube-side cube-left-side">Geek</div>
+          <div class="cube-side cube-right-side">Geek</div>
+        </div>
+        <div class="cube-info">
+          <h2 class="cube-info-title">Geek for Geeks</h2>
+          <ul class="cube-info-list">
+            <li class="cube-info-list-item">OOP</li>
+            <li class="cube-info-list-item">Memory Manage</li>
+            <li class="cube-info-list-item">Interceptions</li>
+          </ul>
+        </div>
+      </div>
 
     </div>
-    <hr>
-  </main>
+  </nav>
+
 
 
   <script>
-    document.querySelector(".search-box-form").addEventListener("submit", function (event) {
-      // Prevenir la recarga de la página al enviar el formulario
-      event.preventDefault();
-
-      // Obtener el valor de búsqueda desde el campo de entrada
-      var query = document.getElementById("query").value;
-      console.log(query)
-
-      // Aquí podrías realizar una solicitud AJAX para buscar en tu servidor
-      // y actualizar dinámicamente los resultados en el elemento con id "resultados"
-      // (Ejemplo simplificado sin AJAX)
-      // var resultadosElemento = document.getElementById("resultados");
-      // resultadosElemento.innerHTML = "Realizando búsqueda para: " + query;
-    });
-    const banner = document.getElementById("banner");
-    function smoothScrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-
-    function search() {
-      smoothScrollToTop()
-      var query = document.getElementById("query").value;
-      if (query != "") {
-        banner.style.height = "0px";
-      } else {
-        banner.style.height = "222px";
-      }
-      console.log(query)
-      // Puedes realizar acciones adicionales en tiempo real mientras el usuario escribe
-      // Pero ten en cuenta que la búsqueda completa se realizará al enviar el formulario
-
-    }
-  </script>
-  <script>
-
-
-
 
     const btnSearchTagPushables = document.querySelectorAll('.search-box-tag.btn-front');
     btnSearchTagPushables.forEach(btnPushable => {
@@ -525,6 +195,8 @@
     });
 
   </script>
+
+  <script src="js/banner.js"></script>
   <script src="js/output-box.js"></script>
 </body>
 
