@@ -507,6 +507,31 @@
   justify-content: center;
 }
 
+/* Code editor (editable playground) */
+.code-editor {
+  width: 100%;
+  min-height: 300px;
+  max-height: 70vh;
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 0.4em;
+  padding: 1em;
+  font-family: monospace;
+  font-size: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.code-editor:focus {
+  outline: 2px solid var(--yellow-color);
+  outline-offset: -2px;
+}
+
 /* Console output panel */
 #sjsb-console {
   position: fixed;

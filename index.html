@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <!-- meta data & seo -->
@@ -9,13 +9,13 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="Ricard Penin Honrubia">
   <meta name="description"
-    content="SJSB.com its a pure scripts handbook + queris to difenret JS docs APIs and JS tests generator tool">
+    content="Super JavaScript Brain - A comprehensive vanilla JS handbook with 29 interactive topics, quizzes, code playground, and syntax-highlighted examples">
 
   <!-- open graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Super JavaScript Brain" />
   <meta property="og:description"
-    content="SJSB.com its a pure scripts handbook + queris to difenret JS docs APIs and JS tests generator tool" />
+    content="A comprehensive vanilla JS handbook with 29 interactive topics, quizzes, code playground, and syntax-highlighted examples" />
   <meta property="og:image" content="src/banner_main.png" />
   <meta property="og:url" content="sjsb.dev" />
 
@@ -27,6 +27,10 @@
   <link rel="stylesheet" href="css/cubes.css">
   <link rel="stylesheet" href="css/sections.css">
 
+  <!-- PWA -->
+  <meta name="theme-color" content="#323330">
+  <link rel="manifest" href="manifest.json">
+
   <!-- icons -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="/icons/android-chrome-512x512.png" sizes="512x512" type="image/png">
@@ -37,7 +41,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <!-- prevent duplicated content = best index engine -->
-  <link rel="canonical" href="https://rricajos.github.io/javascript/  " />
+  <link rel="canonical" href="https://rricajos.github.io/javascript/" />
 </head>
 
 <body>
@@ -158,10 +162,21 @@
   <div class="progress-dashboard" id="progressDashboard">
     <div class="progress-dashboard-info">
       <span class="progress-dashboard-label">Progress</span>
-      <span class="progress-dashboard-count" id="progressCount">0 / 23</span>
+      <span class="progress-dashboard-count" id="progressCount">0 / 29</span>
     </div>
     <div class="progress-dashboard-bar">
       <div class="progress-dashboard-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Quiz score dashboard -->
+  <div class="progress-dashboard" id="quizDashboard">
+    <div class="progress-dashboard-info">
+      <span class="progress-dashboard-label">Quiz Score</span>
+      <span class="progress-dashboard-count" id="quizCount" style="color: #2196f3;">0 / 0 correct</span>
+    </div>
+    <div class="progress-dashboard-bar">
+      <div class="progress-dashboard-fill" id="quizFill" style="width: 0%; background: linear-gradient(90deg, #2196f3, #4caf50);"></div>
     </div>
   </div>
 
@@ -555,6 +570,11 @@
 
   <script src="js/banner.js"></script>
   <script src="js/sections.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    }
+  </script>
 </body>
 
 </html>

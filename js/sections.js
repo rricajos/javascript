@@ -108,6 +108,8 @@ function updateProgressUI() {
   });
 
   updateProgressUI();
+  // Init quiz dashboard after TOPIC_QUIZZES is defined
+  setTimeout(updateQuizDashboard, 0);
 })();
 
 // ============================================================
@@ -190,6 +192,56 @@ const RELATED_TOPICS = {
     header.insertBefore(badge, arrow);
   });
 })();
+
+// ============================================================
+// QUIZ SCORE PERSISTENCE (localStorage)
+// ============================================================
+
+const QUIZ_KEY = 'sjsb_quiz_scores';
+
+function getQuizScores() {
+  try {
+    return JSON.parse(localStorage.getItem(QUIZ_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveQuizAnswer(topicName, questionIdx, isCorrect) {
+  const scores = getQuizScores();
+  if (!scores[topicName]) scores[topicName] = {};
+  scores[topicName][questionIdx] = isCorrect;
+  localStorage.setItem(QUIZ_KEY, JSON.stringify(scores));
+  updateQuizDashboard();
+}
+
+function updateQuizDashboard() {
+  const scores = getQuizScores();
+  let totalCorrect = 0;
+  let totalAnswered = 0;
+  let totalQuestions = 0;
+
+  Object.keys(TOPIC_QUIZZES).forEach(function (topic) {
+    const quizLen = TOPIC_QUIZZES[topic].length;
+    totalQuestions += quizLen;
+    if (scores[topic]) {
+      Object.keys(scores[topic]).forEach(function (qIdx) {
+        totalAnswered++;
+        if (scores[topic][qIdx]) totalCorrect++;
+      });
+    }
+  });
+
+  const el = document.getElementById('quizDashboard');
+  if (!el) return;
+
+  if (totalAnswered > 0) {
+    el.classList.add('visible');
+    const pct = Math.round((totalCorrect / totalQuestions) * 100);
+    document.getElementById('quizCount').textContent = totalCorrect + ' / ' + totalQuestions + ' correct';
+    document.getElementById('quizFill').style.width = pct + '%';
+  } else {
+    el.classList.remove('visible');
+  }
+}
 
 // ============================================================
 // MINI-QUIZ DATA
@@ -403,19 +455,90 @@ function renderCode(contentEl, code) {
   const toolbar = document.createElement('div');
   toolbar.className = 'code-toolbar';
 
+  // Track current code (may be edited by user)
+  let currentCode = code;
+
   const runBtn = document.createElement('button');
   runBtn.className = 'code-toolbar-btn';
   runBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">play_arrow</i> Run';
-  runBtn.title = 'Execute code in console (F12)';
+  runBtn.title = 'Execute code in console';
   runBtn.addEventListener('click', function () {
-    runCode(code);
+    runCode(currentCode);
   });
 
   const copyBtn = document.createElement('button');
   copyBtn.className = 'code-toolbar-btn';
   copyBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">content_copy</i> Copy';
   copyBtn.addEventListener('click', function () {
-    copyCode(code, copyBtn);
+    copyCode(currentCode, copyBtn);
+  });
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'code-toolbar-btn';
+  editBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">edit</i> Edit';
+  editBtn.title = 'Edit code before running';
+  editBtn.addEventListener('click', function () {
+    const codeBlock = contentEl.querySelector('.code-block');
+    const existingEditor = contentEl.querySelector('.code-editor');
+
+    if (existingEditor) {
+      // Switch back to read-only view
+      currentCode = existingEditor.value;
+      existingEditor.remove();
+      codeBlock.style.display = '';
+      // Re-render with edited code
+      codeBlock.innerHTML = '';
+      const lines = currentCode.split('\n');
+      const frag = document.createDocumentFragment();
+      lines.forEach(function (line, index) {
+        const span = document.createElement('span');
+        span.className = 'code-line';
+        const lineNum = document.createElement('span');
+        lineNum.className = 'code-line-number';
+        lineNum.textContent = index + 1;
+        span.appendChild(lineNum);
+        const lineContent = document.createElement('span');
+        lineContent.style.flex = '1';
+        lineContent.style.minHeight = '1.2em';
+        if (/^\/\/\/{3,}/.test(line.trim())) {
+          lineContent.className = 'code-separator';
+          lineContent.textContent = line;
+        } else if (/^\s*\/\//.test(line)) {
+          lineContent.className = 'code-comment';
+          lineContent.textContent = line;
+        } else {
+          lineContent.innerHTML = highlightLine(line);
+        }
+        span.appendChild(lineContent);
+        frag.appendChild(span);
+      });
+      codeBlock.appendChild(frag);
+      editBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">edit</i> Edit';
+    } else {
+      // Switch to editor mode
+      codeBlock.style.display = 'none';
+      const editor = document.createElement('textarea');
+      editor.className = 'code-editor';
+      editor.value = currentCode;
+      editor.spellcheck = false;
+      editor.addEventListener('input', function () {
+        currentCode = editor.value;
+      });
+      // Handle Tab key for indentation
+      editor.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = editor.selectionStart;
+          const end = editor.selectionEnd;
+          editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+          editor.selectionStart = editor.selectionEnd = start + 2;
+          currentCode = editor.value;
+        }
+      });
+      contentEl.insertBefore(editor, codeBlock.nextSibling);
+      editor.focus();
+      editBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">visibility</i> View';
+    }
   });
 
   const sep = document.createElement('span');
@@ -445,6 +568,7 @@ function renderCode(contentEl, code) {
 
   toolbar.appendChild(runBtn);
   toolbar.appendChild(copyBtn);
+  toolbar.appendChild(editBtn);
   toolbar.appendChild(shareBtn);
   toolbar.appendChild(sep);
   toolbar.appendChild(sizeDown);
@@ -524,6 +648,9 @@ function renderCode(contentEl, code) {
     quizDiv.className = 'topic-quiz';
     quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz</div>';
 
+    const savedScores = getQuizScores();
+    const topicScores = savedScores[topicName] || {};
+
     quizData.forEach(function (item, qIdx) {
       const qDiv = document.createElement('div');
       qDiv.className = 'quiz-question';
@@ -536,19 +663,31 @@ function renderCode(contentEl, code) {
         const btn = document.createElement('button');
         btn.className = 'quiz-option-btn';
         btn.textContent = opt;
+
+        // Restore previous answer state
+        if (topicScores[qIdx] !== undefined) {
+          btn.disabled = true;
+          btn.classList.add('quiz-disabled');
+          if (oIdx === item.answer) {
+            btn.classList.add('quiz-correct');
+          } else if (!topicScores[qIdx] && oIdx !== item.answer) {
+            // We don't know which wrong answer was picked, just show correct
+          }
+        }
+
         btn.addEventListener('click', function () {
-          // Disable all buttons for this question
           optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
             b.disabled = true;
             b.classList.add('quiz-disabled');
           });
-          if (oIdx === item.answer) {
+          const isCorrect = oIdx === item.answer;
+          if (isCorrect) {
             btn.classList.add('quiz-correct');
           } else {
             btn.classList.add('quiz-wrong');
-            // Highlight correct answer
             optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
           }
+          saveQuizAnswer(topicName, qIdx, isCorrect);
         });
         optsDiv.appendChild(btn);
       });
@@ -689,6 +828,46 @@ function runCode(code) {
     var sessionStorage = window.sessionStorage;
     var navigator = window.navigator;
     var requestAnimationFrame = window.requestAnimationFrame;
+
+    // Web Components stubs
+    var HTMLElement = (function () {
+      function HTMLElement() {}
+      HTMLElement.prototype.attachShadow = function() {
+        var shadow = Object.assign({}, document.createElement('div'));
+        shadow.getElementById = function(){ return document.createElement('div'); };
+        shadow.innerHTML = '';
+        this.shadowRoot = shadow;
+        return shadow;
+      };
+      HTMLElement.prototype.getAttribute = function(){ return ''; };
+      HTMLElement.prototype.setAttribute = function(){};
+      HTMLElement.prototype.addEventListener = function(){};
+      HTMLElement.prototype.dispatchEvent = function(){ return true; };
+      HTMLElement.prototype.connectedCallback = function(){};
+      HTMLElement.prototype.disconnectedCallback = function(){};
+      HTMLElement.prototype.attributeChangedCallback = function(){};
+      HTMLElement.observedAttributes = [];
+      return HTMLElement;
+    })();
+    var HTMLButtonElement = HTMLElement;
+    var customElements = {
+      _registry: {},
+      define: function(name, cls, opts) { this._registry[name] = cls; },
+      get: function(name) { return this._registry[name]; },
+      whenDefined: function() { return Promise.resolve(); }
+    };
+    var CustomEvent = function(type, opts) {
+      this.type = type;
+      this.detail = (opts && opts.detail) || null;
+      this.bubbles = (opts && opts.bubbles) || false;
+      this.composed = (opts && opts.composed) || false;
+    };
+    var Event = function(type, opts) {
+      this.type = type;
+      this.bubbles = (opts && opts.bubbles) || false;
+      this.preventDefault = function(){};
+      this.stopPropagation = function(){};
+    };
   `;
 
   try {
@@ -721,46 +900,145 @@ function copyCode(code, btn) {
 function highlightLine(line) {
   if (!line.trim()) return '\n';
 
-  let html = line
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  var KEYWORDS = /^(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|typeof|instanceof|in|of|async|await|yield|try|catch|finally|throw|import|export|default|from|true|false|null|undefined|NaN|Infinity|void|delete|static|get|set)$/;
 
-  const commentIndex = findCommentIndex(html);
-  let codePart = html;
-  let commentPart = '';
+  // Tokenize the line character by character
+  var tokens = [];
+  var i = 0;
+  var len = line.length;
 
-  if (commentIndex !== -1) {
-    codePart = html.substring(0, commentIndex);
-    commentPart = '<span class="code-comment">' + html.substring(commentIndex) + '</span>';
+  while (i < len) {
+    var ch = line[i];
+
+    // Inline comment
+    if (ch === '/' && i + 1 < len && line[i + 1] === '/') {
+      tokens.push({ type: 'comment', value: line.substring(i) });
+      break;
+    }
+
+    // Strings: single/double quotes
+    if (ch === '"' || ch === "'") {
+      var start = i;
+      var quote = ch;
+      i++;
+      while (i < len && line[i] !== quote) {
+        if (line[i] === '\\') i++;
+        i++;
+      }
+      i++; // closing quote
+      tokens.push({ type: 'string', value: line.substring(start, i) });
+      continue;
+    }
+
+    // Template literals (backticks) with ${...} support
+    if (ch === '`') {
+      var start = i;
+      i++;
+      var tmplParts = [{ type: 'string-start', value: '`' }];
+      var buf = '';
+      while (i < len && line[i] !== '`') {
+        if (line[i] === '\\') {
+          buf += line[i] + (line[i + 1] || '');
+          i += 2;
+          continue;
+        }
+        if (line[i] === '$' && i + 1 < len && line[i + 1] === '{') {
+          // Push accumulated string part
+          tmplParts.push({ type: 'string-mid', value: buf + '${' });
+          buf = '';
+          i += 2;
+          // Read expression inside ${...}
+          var depth = 1;
+          var exprStart = i;
+          while (i < len && depth > 0) {
+            if (line[i] === '{') depth++;
+            else if (line[i] === '}') depth--;
+            if (depth > 0) i++;
+          }
+          tmplParts.push({ type: 'expr', value: line.substring(exprStart, i) });
+          tmplParts.push({ type: 'string-mid', value: '}' });
+          i++; // skip closing }
+          continue;
+        }
+        buf += line[i];
+        i++;
+      }
+      tmplParts.push({ type: 'string-end', value: buf + (i < len ? '`' : '') });
+      i++; // closing backtick
+      tokens.push({ type: 'template', parts: tmplParts });
+      continue;
+    }
+
+    // Numbers
+    if (/\d/.test(ch) || (ch === '.' && i + 1 < len && /\d/.test(line[i + 1]))) {
+      var start = i;
+      if (ch === '0' && i + 1 < len && /[xXbBoO]/.test(line[i + 1])) {
+        i += 2;
+        while (i < len && /[\da-fA-F_]/.test(line[i])) i++;
+      } else {
+        while (i < len && /[\d.]/.test(line[i])) i++;
+        if (i < len && line[i] === 'n') i++; // BigInt
+      }
+      tokens.push({ type: 'number', value: line.substring(start, i) });
+      continue;
+    }
+
+    // Words (identifiers / keywords)
+    if (/[a-zA-Z_$]/.test(ch)) {
+      var start = i;
+      while (i < len && /[\w$]/.test(line[i])) i++;
+      var word = line.substring(start, i);
+      if (KEYWORDS.test(word)) {
+        tokens.push({ type: 'keyword', value: word });
+      } else {
+        // Check if followed by ( → function call
+        var j = i;
+        while (j < len && line[j] === ' ') j++;
+        if (j < len && line[j] === '(') {
+          tokens.push({ type: 'function', value: word });
+        } else {
+          tokens.push({ type: 'text', value: word });
+        }
+      }
+      continue;
+    }
+
+    // Everything else (operators, punctuation, whitespace)
+    tokens.push({ type: 'text', value: ch });
+    i++;
   }
 
-  codePart = codePart.replace(
-    /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,
-    '<span class="code-string">$1</span>'
-  );
+  // Render tokens to HTML
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
-  codePart = codePart.replace(
-    /\b(\d+\.?\d*n?)\b/g,
-    '<span class="code-number">$1</span>'
-  );
-
-  codePart = codePart.replace(
-    /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|typeof|instanceof|in|of|async|await|yield|try|catch|finally|throw|import|export|default|from|true|false|null|undefined|NaN|Infinity|void|delete|static|get|set)\b/g,
-    '<span class="code-keyword">$1</span>'
-  );
-
-  // Function names: word followed by (
-  codePart = codePart.replace(
-    /\b([a-zA-Z_$][\w$]*)\s*(?=\()/g,
-    function (match, name) {
-      // Don't re-highlight keywords already wrapped in spans
-      if (/<\/span>/.test(match)) return match;
-      return '<span class="code-function">' + name + '</span>';
+  var html = '';
+  tokens.forEach(function (tok) {
+    if (tok.type === 'comment') {
+      html += '<span class="code-comment">' + esc(tok.value) + '</span>';
+    } else if (tok.type === 'string') {
+      html += '<span class="code-string">' + esc(tok.value) + '</span>';
+    } else if (tok.type === 'template') {
+      tok.parts.forEach(function (part) {
+        if (part.type === 'expr') {
+          html += esc(part.value);
+        } else {
+          html += '<span class="code-string">' + esc(part.value) + '</span>';
+        }
+      });
+    } else if (tok.type === 'number') {
+      html += '<span class="code-number">' + esc(tok.value) + '</span>';
+    } else if (tok.type === 'keyword') {
+      html += '<span class="code-keyword">' + esc(tok.value) + '</span>';
+    } else if (tok.type === 'function') {
+      html += '<span class="code-function">' + esc(tok.value) + '</span>';
+    } else {
+      html += esc(tok.value);
     }
-  );
+  });
 
-  return codePart + commentPart;
+  return html;
 }
 
 function findCommentIndex(line) {
