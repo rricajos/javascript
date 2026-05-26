@@ -135,3 +135,16 @@
   font-size: 19px !important;
 }
 
+/* Dark mode */
+[data-theme="dark"] .banner {
+  filter: brightness(0.85);
+}
+
+[data-theme="dark"] .badge-git-container-a {
+  background-color: #111;
+}
+
+[data-theme="dark"] .badge-git-stars-container {
+  background-color: #111;
+}
+

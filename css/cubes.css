@@ -72,3 +72,34 @@
   background-color: var(--yellow-color);
   transform: rotate(-15deg) skew(-15deg, -15deg) translate(50%, 50%);
 }
+
+/* Dark mode */
+[data-theme="dark"] .cube-info {
+  color: #ccc;
+}
+
+[data-theme="dark"] .cube-info-title {
+  color: var(--yellow-color);
+}
+
+[data-theme="dark"] .cube-side {
+  border-color: #444;
+}
+
+[data-theme="dark"] .cube-top-side {
+  background-color: var(--yellow-color);
+  color: #1a1a1a;
+  border-color: #555;
+}
+
+[data-theme="dark"] .cube-left-side {
+  background-color: var(--yellow-second-color);
+  color: #1a1a1a;
+  border-color: #555;
+}
+
+[data-theme="dark"] .cube-right-side {
+  background-color: var(--yellow-color);
+  color: #1a1a1a;
+  border-color: #555;
+}

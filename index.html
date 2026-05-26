@@ -22,12 +22,10 @@
   <!-- css-->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/btn.css">
-  <link rel="stylesheet" href="css/out.css">
   <link rel="stylesheet" href="css/banner.css">
   <link rel="stylesheet" href="css/search-box.css">
-  <link rel="stylesheet" href="css/script-box.css">
-  <link rel="stylesheet" href="css/output-box.css">
   <link rel="stylesheet" href="css/cubes.css">
+  <link rel="stylesheet" href="css/sections.css">
 
   <!-- icons -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -51,14 +49,9 @@
 
 
   <!-- Navegation panel  -->
-  <nav aria-label="a" class="search-box-form-container">
+  <nav aria-label="Topic navigation" class="search-box-form-container">
 
     <form class="search-box-form">
-      <!-- <div class="banner-title-container">
-
-        <h2 class="banner-title"> JavaScript ToolBox </h2>
-  
-      </div> -->
       <input class="search-box-form-input" type="text" id="query" name="query" placeholder="JavaScript ToolBox"
         autocomplete="off" oninput="search()">
       <a class="btn-pushable" href="javascript:" style="position: absolute;">
@@ -66,31 +59,31 @@
           <i class="search-box-form-submit-icon material-icons ">search</i>
         </div>
       </a>
-      </input>
-
     </form>
+
+    <div class="search-results-count" id="searchResultsCount"></div>
 
     <div id="super-cubes-container">
 
-      <div class="cube">
+      <div class="cube" onclick="scrollToSection('section-basics')">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Basics</div>
           <div class="cube-side cube-left-side">Basics</div>
           <div class="cube-side cube-right-side">Basics</div>
-         
+
         </div>
         <div class="cube-info">
           <h2 class="cube-info-title">Common Basics</h2>
           <ul class="cube-info-list">
+            <li class="cube-info-list-item">Variables & Types</li>
             <li class="cube-info-list-item">Operators</li>
             <li class="cube-info-list-item">Control Flow</li>
-            <li class="cube-info-list-item">Data Collections</li>
           </ul>
         </div>
       </div>
 
 
-      <div class="cube">
+      <div class="cube" onclick="scrollToSection('section-good')">
         <div class="cube-container">
 
           <div class="cube-side cube-top-side">Good</div>
@@ -101,15 +94,15 @@
         <div class="cube-info">
           <h2 class="cube-info-title"> Good Skills</h2>
           <ul class="cube-info-list">
-            <li class="cube-info-list-item">Cookies</li>
-            <li class="cube-info-list-item">API</li>
-            <li class="cube-info-list-item">Async</li>
-          
+            <li class="cube-info-list-item">Functions</li>
+            <li class="cube-info-list-item">Strings</li>
+            <li class="cube-info-list-item">Destructuring</li>
+
           </ul>
         </div>
       </div>
 
-      <div class="cube">
+      <div class="cube" onclick="scrollToSection('section-pro')">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Pro</div>
           <div class="cube-side cube-left-side">Pro</div>
@@ -118,14 +111,30 @@
         <div class="cube-info">
           <h2 class="cube-info-title">Like a Pro</h2>
           <ul class="cube-info-list">
-            <li class="cube-info-list-item">Cookies</li>
-            <li class="cube-info-list-item">Testing libraries</li>
-            <li class="cube-info-list-item">Internationalization</li>
+            <li class="cube-info-list-item">DOM & Collections</li>
+            <li class="cube-info-list-item">Error & Async</li>
+            <li class="cube-info-list-item">Modules</li>
           </ul>
         </div>
       </div>
-      
-      <div class="cube">
+
+      <div class="cube" onclick="scrollToSection('section-browser')">
+        <div class="cube-container">
+          <div class="cube-side cube-top-side">Web</div>
+          <div class="cube-side cube-left-side">Web</div>
+          <div class="cube-side cube-right-side">Web</div>
+        </div>
+        <div class="cube-info">
+          <h2 class="cube-info-title">Browser & Web</h2>
+          <ul class="cube-info-list">
+            <li class="cube-info-list-item">Storage & APIs</li>
+            <li class="cube-info-list-item">DOM Events</li>
+            <li class="cube-info-list-item">Web Components</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cube" onclick="scrollToSection('section-geek')">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Geek</div>
           <div class="cube-side cube-left-side">Geek</div>
@@ -134,9 +143,9 @@
         <div class="cube-info">
           <h2 class="cube-info-title">Geek for Geeks</h2>
           <ul class="cube-info-list">
-            <li class="cube-info-list-item">OOP</li>
-            <li class="cube-info-list-item">Memory Manage</li>
-            <li class="cube-info-list-item">Interceptions</li>
+            <li class="cube-info-list-item">OOP & Classes</li>
+            <li class="cube-info-list-item">Proxy & Reflect</li>
+            <li class="cube-info-list-item">Testing & Perf</li>
           </ul>
         </div>
       </div>
@@ -145,59 +154,407 @@
   </nav>
 
 
+  <!-- Global progress dashboard -->
+  <div class="progress-dashboard" id="progressDashboard">
+    <div class="progress-dashboard-info">
+      <span class="progress-dashboard-label">Progress</span>
+      <span class="progress-dashboard-count" id="progressCount">0 / 23</span>
+    </div>
+    <div class="progress-dashboard-bar">
+      <div class="progress-dashboard-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
 
-  <script>
+  <!-- Content sections -->
+  <main class="sections-container">
 
-    const btnSearchTagPushables = document.querySelectorAll('.search-box-tag.btn-front');
-    btnSearchTagPushables.forEach(btnPushable => {
-      // btnPushable.addEventListener('mouseover', () => {
-      //   btnPushable.classList.add('hovered');
-      // });
+    <!-- BASICS -->
+    <section class="section" id="section-basics" data-category="basics">
+      <h2 class="section-title">Common Basics</h2>
 
+      <div class="section-topic" data-topic="variables_and_types">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">code</i>
+            Variables & Types
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">var / let / const, primitive types, typeof, type coercion, template literals, equality</p>
+        <div class="section-topic-content" id="topic-variables_and_types"></div>
+      </div>
 
-      // btnPushable.addEventListener('mouseout', () => {
-      //   btnPushable.classList.remove('hovered');
-      // });
+      <div class="section-topic" data-topic="operator_aritmetical">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">calculate</i>
+            Arithmetic Operators
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">+, -, *, /, %, ++, -- , prefix and postfix</p>
+        <div class="section-topic-content" id="topic-operator_aritmetical"></div>
+      </div>
 
-      btnPushable.addEventListener('click', () => {
-        btnSearchTagPushables.forEach(btn => {
-          btn.classList.remove('active')
-        });
-        btnPushable.classList.add('active')
+      <div class="section-topic" data-topic="operator_assignative">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">assignment</i>
+            Assignment Operators
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">+=, -=, *=, /=, %=</p>
+        <div class="section-topic-content" id="topic-operator_assignative"></div>
+      </div>
 
-      });
-    });
+      <div class="section-topic" data-topic="operator_logical">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">rule</i>
+            Logical Operators
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">! (NOT), && (AND), || (OR)</p>
+        <div class="section-topic-content" id="topic-operator_logical"></div>
+      </div>
 
-    const btnScriptsPushables = document.querySelectorAll('.btn-front.script-box-item ');
-    // const outPushable = document.querySelector('.out-pushable');
+      <div class="section-topic" data-topic="operator_conditional">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">help_outline</i>
+            Conditional Operators
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Ternary (? :), Nullish Coalescing (??)</p>
+        <div class="section-topic-content" id="topic-operator_conditional"></div>
+      </div>
 
-    btnScriptsPushables.forEach(btnPushable => {
-      // btnPushable.addEventListener('mouseover', () => {
-      //   btnPushable.classList.add('hovered');
-      // });
+      <div class="section-topic" data-topic="control_flow">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">alt_route</i>
+            Control Flow
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">if/else, switch, for, while, do-while, for...in, for...of, break, continue</p>
+        <div class="section-topic-content" id="topic-control_flow"></div>
+      </div>
+    </section>
 
-      // btnPushable.addEventListener('mouseout', () => {
-      //   btnPushable.classList.remove('hovered');
-      // });
+    <!-- GOOD SKILLS -->
+    <section class="section" id="section-good" data-category="good">
+      <h2 class="section-title">Good Skills</h2>
 
-      btnPushable.addEventListener('click', () => {
-        btnScriptsPushables.forEach(btn => {
-          btn.classList.remove('active')
-        });
-        btnPushable.classList.add('active')
+      <div class="section-topic" data-topic="closures_and_scope">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">layers</i>
+            Closures & Scope
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Lexical scope, closures, data privacy, IIFE, hoisting, temporal dead zone, common pitfalls</p>
+        <div class="section-topic-content" id="topic-closures_and_scope"></div>
+      </div>
 
-      });
+      <div class="section-topic" data-topic="functions">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">functions</i>
+            Functions
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Declaration, expression, arrow, callbacks, closures, IIFE, generators, call/apply/bind</p>
+        <div class="section-topic-content" id="topic-functions"></div>
+      </div>
 
-      // btnPushable.addEventListener('mouseup', () => {
-      //   btnPushable.classList.remove('active')
+      <div class="section-topic" data-topic="strings">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">text_fields</i>
+            Strings
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Methods, search, replace, split/join, regex, template literals, useful patterns</p>
+        <div class="section-topic-content" id="topic-strings"></div>
+      </div>
 
-      // });
-    });
+      <div class="section-topic" data-topic="regex">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">manage_search</i>
+            Regular Expressions
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Patterns, flags, character classes, quantifiers, groups, lookahead/behind, common patterns</p>
+        <div class="section-topic-content" id="topic-regex"></div>
+      </div>
 
-  </script>
+      <div class="section-topic" data-topic="json_and_dates">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">schedule</i>
+            JSON & Dates
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">JSON.stringify/parse, Date creation, getters/setters, formatting, Intl, arithmetic</p>
+        <div class="section-topic-content" id="topic-json_and_dates"></div>
+      </div>
+
+      <div class="section-topic" data-topic="destructuring_and_spread">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">unfold_more</i>
+            Destructuring & Spread
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Array/object destructuring, spread operator, rest parameters, practical patterns</p>
+        <div class="section-topic-content" id="topic-destructuring_and_spread"></div>
+      </div>
+    </section>
+
+    <!-- PRO -->
+    <section class="section" id="section-pro" data-category="pro">
+      <h2 class="section-title">Like a Pro</h2>
+
+      <div class="section-topic" data-topic="dom_manipulation">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">web</i>
+            DOM Manipulation
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Selectors, traversal, create/insert/remove elements, attributes, classes, styles, events, observers</p>
+        <div class="section-topic-content" id="topic-dom_manipulation"></div>
+      </div>
+
+      <div class="section-topic" data-topic="data_collections_arrays">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">view_list</i>
+            Arrays
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Create, search, transform, sort, slice, map, filter, reduce, flat, useful patterns</p>
+        <div class="section-topic-content" id="topic-data_collections_arrays"></div>
+      </div>
+
+      <div class="section-topic" data-topic="data_collections_objects">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">data_object</i>
+            Objects, Map & Set
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Objects, Map, Set, WeakMap, WeakSet, freeze, seal, structuredClone</p>
+        <div class="section-topic-content" id="topic-data_collections_objects"></div>
+      </div>
+
+      <div class="section-topic" data-topic="error_handling">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">bug_report</i>
+            Error Handling
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">try/catch/finally, throw, custom errors, error types, best practices</p>
+        <div class="section-topic-content" id="topic-error_handling"></div>
+      </div>
+
+      <div class="section-topic" data-topic="promises_and_async">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">sync</i>
+            Promises & Async
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Promises, async/await, fetch API, Promise.all/race/any, practical patterns</p>
+        <div class="section-topic-content" id="topic-promises_and_async"></div>
+      </div>
+
+      <div class="section-topic" data-topic="fetch_api">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">cloud_download</i>
+            Fetch API & HTTP
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">GET/POST/PUT/DELETE, headers, auth, AbortController, error handling, retry, streaming</p>
+        <div class="section-topic-content" id="topic-fetch_api"></div>
+      </div>
+
+      <div class="section-topic" data-topic="modules">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">inventory_2</i>
+            Modules
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">import/export, named/default exports, dynamic import, barrel files, CommonJS vs ESM</p>
+        <div class="section-topic-content" id="topic-modules"></div>
+      </div>
+    </section>
+
+    <!-- BROWSER & WEB -->
+    <section class="section" id="section-browser" data-category="browser">
+      <h2 class="section-title">Browser & Web</h2>
+
+      <div class="section-topic" data-topic="web_storage">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">storage</i>
+            Storage & Cookies
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">localStorage, sessionStorage, cookies, IndexedDB, JSON serialization</p>
+        <div class="section-topic-content" id="topic-web_storage"></div>
+      </div>
+
+      <div class="section-topic" data-topic="web_apis">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">public</i>
+            Web APIs
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">URL, FormData, History, Clipboard, Geolocation, Notifications, Timers, Navigator</p>
+        <div class="section-topic-content" id="topic-web_apis"></div>
+      </div>
+
+      <div class="section-topic" data-topic="dom_events">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">touch_app</i>
+            DOM Events
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Listeners, mouse, keyboard, form, propagation, delegation, drag & drop, custom events</p>
+        <div class="section-topic-content" id="topic-dom_events"></div>
+      </div>
+
+      <div class="section-topic" data-topic="web_components">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">widgets</i>
+            Web Components
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Custom Elements, Shadow DOM, templates, slots, lifecycle callbacks, practical examples</p>
+        <div class="section-topic-content" id="topic-web_components"></div>
+      </div>
+    </section>
+
+    <!-- GEEK -->
+    <section class="section" id="section-geek" data-category="geek">
+      <h2 class="section-title">Geek for Geeks</h2>
+
+      <div class="section-topic" data-topic="event_loop">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">loop</i>
+            Event Loop & Call Stack
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Call stack, execution context, microtasks vs macrotasks, async/await flow, blocking pitfalls</p>
+        <div class="section-topic-content" id="topic-event_loop"></div>
+      </div>
+
+      <div class="section-topic" data-topic="iterators_generators">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">all_inclusive</i>
+            Iterators & Generators
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Iteration protocol, custom iterables, function*, yield, yield*, async generators, lazy evaluation</p>
+        <div class="section-topic-content" id="topic-iterators_generators"></div>
+      </div>
+
+      <div class="section-topic" data-topic="classes_and_oop">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">account_tree</i>
+            OOP & Classes
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Classes, inheritance, static, private fields, getters/setters, mixins, prototypes, iterables</p>
+        <div class="section-topic-content" id="topic-classes_and_oop"></div>
+      </div>
+
+      <div class="section-topic" data-topic="proxy_and_reflect">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">security</i>
+            Proxy & Reflect
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Proxy traps, Reflect API, validation, observable, logging, metaprogramming</p>
+        <div class="section-topic-content" id="topic-proxy_and_reflect"></div>
+      </div>
+
+      <div class="section-topic" data-topic="memory_and_performance">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">memory</i>
+            Memory & Performance
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Garbage collection, memory leaks, WeakRef, debounce, throttle, memoize, Web Workers</p>
+        <div class="section-topic-content" id="topic-memory_and_performance"></div>
+      </div>
+
+      <div class="section-topic" data-topic="testing_basics">
+        <div class="section-topic-header" onclick="toggleTopic(this)">
+          <h3 class="section-topic-title">
+            <i class="material-icons section-topic-icon">science</i>
+            Testing Basics
+          </h3>
+          <i class="material-icons section-topic-arrow">expand_more</i>
+        </div>
+        <p class="section-topic-desc">Assertions, test runners, mocking, TDD, AAA pattern, async testing, coverage, Jest/Vitest</p>
+        <div class="section-topic-content" id="topic-testing_basics"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Back to top button -->
+  <button class="back-to-top" id="backToTop" onclick="smoothScrollToTop()">
+    <i class="material-icons">keyboard_arrow_up</i>
+  </button>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light theme">
+    <i class="material-icons" id="themeIcon">dark_mode</i>
+  </button>
 
   <script src="js/banner.js"></script>
-  <script src="js/output-box.js"></script>
+  <script src="js/sections.js"></script>
 </body>
 
 </html>
