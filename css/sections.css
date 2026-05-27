@@ -285,6 +285,7 @@
   box-shadow: -2px 4px 30px rgba(0, 0, 0, 0.5);
   transform-origin: top right;
   border-left: 1px solid #555;
+  overflow: hidden;
 }
 
 .quiz-slide.open {
@@ -799,13 +800,15 @@
   bottom: 0;
   left: 0;
   right: 0;
+  min-height: 120px;
   max-height: 40vh;
-  background: #1a1a1a;
+  background: #111;
   border-top: 3px solid var(--yellow-color);
   z-index: 200;
   display: flex;
   flex-direction: column;
   font-family: monospace;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .console-header {
@@ -813,10 +816,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5em 1em;
-  background: var(--black-color);
+  background: #222;
   color: var(--yellow-color);
   font-weight: bold;
   font-size: 0.9em;
+  border-bottom: 1px solid #333;
 }
 
 .console-close {
@@ -835,12 +839,13 @@
 .console-body {
   padding: 1em;
   overflow: auto;
-  color: #ddd;
-  font-size: 0.85em;
-  line-height: 1.5;
+  color: #eee;
+  font-size: 0.9em;
+  line-height: 1.6;
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+  flex: 1;
 }
 
 /* Shortcuts overlay */
@@ -987,6 +992,10 @@
   font-family: monospace;
   font-size: 0.85em;
   transition: border-color 0.15s ease, background 0.15s ease;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
 }
 
 .quiz-option-btn:hover:not(:disabled) {
