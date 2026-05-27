@@ -1202,13 +1202,14 @@ function filterTopics(query) {
   if (!nav || !cubesContainer || !cubes.length) return;
 
   var stickyTriggered = false;
+  // Record original offset once — immune to sticky height changes
+  var navOriginalTop = nav.offsetTop;
 
   function updateSticky() {
-    var navRect = nav.getBoundingClientRect();
-    if (navRect.top <= 0 && !stickyTriggered) {
+    if (window.scrollY >= navOriginalTop && !stickyTriggered) {
       nav.classList.add('cubes-sticky');
       stickyTriggered = true;
-    } else if (navRect.top > 0 && stickyTriggered) {
+    } else if (window.scrollY < navOriginalTop && stickyTriggered) {
       nav.classList.remove('cubes-sticky');
       stickyTriggered = false;
     }
