@@ -117,6 +117,14 @@ function updateProgressUI() {
       }
     });
   }
+  // Review mistakes
+  var reviewBtn = document.getElementById('reviewMistakes');
+  if (reviewBtn) {
+    reviewBtn.addEventListener('click', function () {
+      openReviewMode();
+    });
+  }
+
   // Export data
   var exportBtn = document.getElementById('exportData');
   if (exportBtn) {
@@ -182,6 +190,84 @@ function openQuizSlide(topicName) {
 function closeQuizSlide() {
   var quizSlide = document.getElementById('quizSlide');
   if (quizSlide) quizSlide.classList.remove('open');
+}
+
+// D4: Review mode — open quiz slide with only incorrectly-answered questions
+function openReviewMode() {
+  var scores = getQuizScores();
+  var quizSlide = document.getElementById('quizSlide');
+  var quizBody = document.getElementById('quizSlideBody');
+  var quizTitle = document.getElementById('quizSlideTitle');
+  if (!quizSlide || !quizBody) return;
+
+  quizBody.innerHTML = '';
+  if (quizTitle) quizTitle.textContent = 'Review Mistakes';
+
+  var failedItems = [];
+  Object.keys(TOPIC_QUIZZES).forEach(function (topic) {
+    var topicScores = scores[topic] || {};
+    TOPIC_QUIZZES[topic].forEach(function (item, qIdx) {
+      if (topicScores[qIdx] === false) {
+        failedItems.push({ topic: topic, item: item, qIdx: qIdx });
+      }
+    });
+  });
+
+  if (failedItems.length === 0) {
+    quizBody.innerHTML = '<div style="padding:2em;text-align:center;color:#aaa"><i class="material-icons" style="font-size:48px;display:block;margin-bottom:0.5em;color:var(--yellow-color)">emoji_events</i>No mistakes to review! All correct.</div>';
+    quizSlide.classList.add('open');
+    return;
+  }
+
+  var quizDiv = document.createElement('div');
+  quizDiv.className = 'topic-quiz';
+  quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:#f44336">replay</i> ' + failedItems.length + ' question' + (failedItems.length !== 1 ? 's' : '') + ' to review</div>';
+
+  failedItems.forEach(function (fi, idx) {
+    var item = fi.item;
+    var topicLabel = fi.topic.replace(/_/g, ' ');
+    var qDiv = document.createElement('div');
+    qDiv.className = 'quiz-question';
+    qDiv.innerHTML = '<p class="quiz-question-text"><span class="review-topic-label">' + topicLabel + '</span>' + (idx + 1) + '. ' + item.q + '</p>';
+
+    var optsDiv = document.createElement('div');
+    optsDiv.className = 'quiz-options';
+
+    item.opts.forEach(function (opt, oIdx) {
+      var btn = document.createElement('button');
+      btn.className = 'quiz-option-btn';
+      btn.textContent = opt;
+
+      btn.addEventListener('click', function () {
+        optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
+          b.disabled = true;
+          b.classList.add('quiz-disabled');
+        });
+        var isCorrect = oIdx === item.answer;
+        if (isCorrect) {
+          btn.classList.add('quiz-correct');
+        } else {
+          btn.classList.add('quiz-wrong');
+          optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
+        }
+        if (item.explanation) {
+          var expDiv = document.createElement('div');
+          expDiv.className = 'quiz-explanation';
+          expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+          qDiv.appendChild(expDiv);
+        }
+        saveQuizAnswer(fi.topic, fi.qIdx, isCorrect);
+      });
+      optsDiv.appendChild(btn);
+    });
+
+    qDiv.appendChild(optsDiv);
+    quizDiv.appendChild(qDiv);
+  });
+
+  quizBody.appendChild(quizDiv);
+  quizSlide.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function openDrawer(topicName) {
@@ -406,34 +492,80 @@ function saveQuizAnswer(topicName, questionIdx, isCorrect) {
   updateQuizDashboard();
 }
 
+function getTopicMedal(topicName) {
+  var scores = getQuizScores();
+  var topicScores = scores[topicName];
+  var quizData = TOPIC_QUIZZES[topicName];
+  if (!topicScores || !quizData) return null;
+  var answered = 0, correct = 0;
+  Object.keys(topicScores).forEach(function (k) {
+    answered++;
+    if (topicScores[k]) correct++;
+  });
+  if (answered < quizData.length) return null;
+  var pct = Math.round((correct / quizData.length) * 100);
+  if (pct === 100) return 'gold';
+  if (pct >= 75) return 'silver';
+  if (pct >= 50) return 'bronze';
+  return null;
+}
+
+function updateMedalBadges() {
+  document.querySelectorAll('.roadmap-node[data-topic]').forEach(function (node) {
+    var existing = node.querySelector('.quiz-medal');
+    if (existing) existing.remove();
+    var medal = getTopicMedal(node.dataset.topic);
+    if (medal) {
+      var badge = document.createElement('span');
+      badge.className = 'quiz-medal medal-' + medal;
+      badge.textContent = medal === 'gold' ? '\u{1F947}' : medal === 'silver' ? '\u{1F948}' : '\u{1F949}';
+      badge.title = medal.charAt(0).toUpperCase() + medal.slice(1) + ' medal';
+      node.appendChild(badge);
+    }
+  });
+}
+
 function updateQuizDashboard() {
-  const scores = getQuizScores();
-  let totalCorrect = 0;
-  let totalAnswered = 0;
-  let totalQuestions = 0;
+  var scores = getQuizScores();
+  var totalCorrect = 0;
+  var totalAnswered = 0;
+  var totalQuestions = 0;
+  var totalFailed = 0;
 
   Object.keys(TOPIC_QUIZZES).forEach(function (topic) {
-    const quizLen = TOPIC_QUIZZES[topic].length;
+    var quizLen = TOPIC_QUIZZES[topic].length;
     totalQuestions += quizLen;
     if (scores[topic]) {
       Object.keys(scores[topic]).forEach(function (qIdx) {
         totalAnswered++;
         if (scores[topic][qIdx]) totalCorrect++;
+        else totalFailed++;
       });
     }
   });
 
-  const el = document.getElementById('quizDashboard');
+  var el = document.getElementById('quizDashboard');
   if (!el) return;
 
   if (totalAnswered > 0) {
     el.classList.add('visible');
-    const pct = Math.round((totalCorrect / totalQuestions) * 100);
-    document.getElementById('quizCount').textContent = totalCorrect + ' / ' + totalQuestions + ' correct';
+    var pct = Math.round((totalCorrect / totalQuestions) * 100);
+    var countEl = document.getElementById('quizCount');
+    countEl.textContent = totalCorrect + ' / ' + totalQuestions + ' correct (' + pct + '%)';
+
     document.getElementById('quizFill').style.width = pct + '%';
+
+    // Show/hide review button based on failed answers
+    var reviewBtn = document.getElementById('reviewMistakes');
+    if (reviewBtn) {
+      reviewBtn.style.display = totalFailed > 0 ? 'inline-flex' : 'none';
+      reviewBtn.title = 'Review ' + totalFailed + ' incorrect answer' + (totalFailed !== 1 ? 's' : '');
+    }
   } else {
     el.classList.remove('visible');
   }
+
+  updateMedalBadges();
 }
 
 // ============================================================
@@ -447,116 +579,168 @@ const TOPIC_QUIZZES = {
     { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' }
   ],
   operator_aritmetical: [
-    { q: 'What does 10 % 3 return?', opts: ['3', '1', '0', '3.33'], answer: 1 },
-    { q: 'What is the result of 2 ** 3?', opts: ['6', '8', '9', '5'], answer: 1 }
+    { q: 'What does 10 % 3 return?', opts: ['3', '1', '0', '3.33'], answer: 1, explanation: 'The modulo operator (%) returns the remainder of division. 10 / 3 = 3 remainder 1.' },
+    { q: 'What is the result of 2 ** 3?', opts: ['6', '8', '9', '5'], answer: 1, explanation: 'The exponentiation operator (**) raises the left operand to the power of the right. 2³ = 8.' },
+    { q: 'What does +"42" evaluate to?', opts: ['NaN', '"42"', '42', 'undefined'], answer: 2, explanation: 'The unary + operator converts its operand to a number. +"42" becomes the number 42.' },
+    { q: 'What is typeof (1 / 0)?', opts: ['"undefined"', '"NaN"', '"number"', '"Infinity"'], answer: 2, explanation: '1 / 0 evaluates to Infinity, and typeof Infinity is "number". Infinity is a numeric value in JS.' }
   ],
   operator_assignative: [
-    { q: 'What does x += 5 do?', opts: ['Compares x to 5', 'Assigns 5 to x', 'Adds 5 to x and reassigns', 'Returns x + 5'], answer: 2 },
-    { q: 'What is the result of let x = 10; x ??= 20?', opts: ['20', '10', 'null', 'undefined'], answer: 1 }
+    { q: 'What does x += 5 do?', opts: ['Compares x to 5', 'Assigns 5 to x', 'Adds 5 to x and reassigns', 'Returns x + 5'], answer: 2, explanation: 'x += 5 is shorthand for x = x + 5. It adds 5 to x and stores the result back in x.' },
+    { q: 'What is the result of let x = 10; x ??= 20?', opts: ['20', '10', 'null', 'undefined'], answer: 1, explanation: '??= only assigns if the left side is null or undefined. Since x is 10 (not nullish), it stays 10.' },
+    { q: 'What does x &&= y do?', opts: ['Always assigns y to x', 'Assigns y to x only if x is truthy', 'Assigns y to x only if x is falsy', 'Logical AND of x and y'], answer: 1, explanation: '&&= is the logical AND assignment. It only assigns the right side if the left side is truthy.' },
+    { q: 'What does let a = 8; a >>= 2 produce?', opts: ['4', '2', '32', '16'], answer: 1, explanation: '>>= is the right shift assignment. 8 >> 2 shifts binary 1000 right by 2 positions = 10 (decimal 2).' }
   ],
   operator_conditional: [
-    { q: 'What does the ternary operator ?: return?', opts: ['Always true', 'One of two values based on a condition', 'A boolean', 'undefined'], answer: 1 },
-    { q: 'What does x ?? y return?', opts: ['x if x is falsy', 'y if x is null or undefined', 'y always', 'x always'], answer: 1 }
+    { q: 'What does the ternary operator ?: return?', opts: ['Always true', 'One of two values based on a condition', 'A boolean', 'undefined'], answer: 1, explanation: 'The ternary operator evaluates condition ? valueIfTrue : valueIfFalse, returning one of two expressions.' },
+    { q: 'What does x ?? y return?', opts: ['x if x is falsy', 'y if x is null or undefined', 'y always', 'x always'], answer: 1, explanation: 'The nullish coalescing operator (??) returns y only when x is null or undefined, not for other falsy values like 0 or "".' },
+    { q: 'What does 0 ?? "default" return?', opts: ['"default"', '0', 'null', 'false'], answer: 1, explanation: '?? only triggers on null/undefined. Since 0 is not nullish (just falsy), it returns 0.' },
+    { q: 'What does a?.b?.c do if a is null?', opts: ['Throws TypeError', 'Returns undefined', 'Returns null', 'Returns ""'], answer: 1, explanation: 'Optional chaining (?.) short-circuits and returns undefined if a is null or undefined, instead of throwing.' }
   ],
   operator_logical: [
-    { q: 'What does false || "hello" return?', opts: ['false', 'true', '"hello"', 'undefined'], answer: 2 },
-    { q: 'What does true && 0 return?', opts: ['true', 'false', '0', '1'], answer: 2 }
+    { q: 'What does false || "hello" return?', opts: ['false', 'true', '"hello"', 'undefined'], answer: 2, explanation: 'The OR operator returns the first truthy value. false is falsy, so it returns "hello".' },
+    { q: 'What does true && 0 return?', opts: ['true', 'false', '0', '1'], answer: 2, explanation: 'The AND operator returns the first falsy value or the last value. true is truthy, so it evaluates and returns 0.' },
+    { q: 'What does !!"" evaluate to?', opts: ['true', 'false', '""', 'undefined'], answer: 1, explanation: '"" is falsy, so !"" is true, and !!"" is false. Double negation converts to boolean.' },
+    { q: 'What does null || 0 || "" || "hi" return?', opts: ['null', '0', '""', '"hi"'], answer: 3, explanation: 'OR returns the first truthy value. null, 0, and "" are all falsy, so it returns "hi".' }
   ],
   control_flow: [
-    { q: 'Which loop always executes at least once?', opts: ['for', 'while', 'do...while', 'for...of'], answer: 2 },
-    { q: 'What does "break" do inside a loop?', opts: ['Skips iteration', 'Exits loop', 'Returns value', 'Pauses execution'], answer: 1 }
+    { q: 'Which loop always executes at least once?', opts: ['for', 'while', 'do...while', 'for...of'], answer: 2, explanation: 'do...while checks the condition after executing the body, so it always runs at least once.' },
+    { q: 'What does "break" do inside a loop?', opts: ['Skips iteration', 'Exits loop', 'Returns value', 'Pauses execution'], answer: 1, explanation: 'break immediately terminates the innermost enclosing loop. Use "continue" to skip to the next iteration.' },
+    { q: 'for...of iterates over:', opts: ['Object keys', 'Iterable values', 'Array indices', 'Prototype chain'], answer: 1, explanation: 'for...of iterates over iterable values (arrays, strings, Maps, Sets). Use for...in for object keys.' },
+    { q: 'What happens if no case matches in a switch without default?', opts: ['Error', 'Returns undefined', 'Nothing executes', 'First case runs'], answer: 2, explanation: 'Without a matching case or default clause, the switch statement simply does nothing and execution continues after it.' }
   ],
   closures_and_scope: [
     { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1, explanation: 'A closure is created when an inner function retains access to variables from its outer (enclosing) function even after the outer function has returned.' },
     { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' }
   ],
   functions: [
-    { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2 },
-    { q: 'What is an IIFE?', opts: ['An async function', 'A function that invokes itself immediately', 'A generator', 'A method'], answer: 1 }
+    { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2, explanation: 'Arrow functions inherit "this" from their enclosing lexical scope. They also lack arguments object and cannot be used as constructors.' },
+    { q: 'What is an IIFE?', opts: ['An async function', 'A function that invokes itself immediately', 'A generator', 'A method'], answer: 1, explanation: 'IIFE (Immediately Invoked Function Expression) is a function defined and called in one step: (function(){})().' },
+    { q: 'What are default parameters?', opts: ['Parameters that are always required', 'Values used when argument is undefined', 'Global variables', 'Rest parameters'], answer: 1, explanation: 'Default parameters provide fallback values when arguments are not passed or are undefined: function f(x = 10) {}.' },
+    { q: 'What does arguments refer to inside a regular function?', opts: ['An array of parameters', 'An array-like object of passed arguments', 'The function name', 'undefined'], answer: 1, explanation: 'arguments is an array-like object containing all passed arguments. Arrow functions do not have their own arguments.' }
   ],
   strings: [
-    { q: 'What does "hello".slice(1, 3) return?', opts: ['"hel"', '"el"', '"ell"', '"llo"'], answer: 1 },
-    { q: 'Which method checks if a string starts with a value?', opts: ['includes()', 'startsWith()', 'indexOf()', 'match()'], answer: 1 }
+    { q: 'What does "hello".slice(1, 3) return?', opts: ['"hel"', '"el"', '"ell"', '"llo"'], answer: 1, explanation: 'slice(1, 3) extracts characters from index 1 up to (not including) index 3: "e" and "l" = "el".' },
+    { q: 'Which method checks if a string starts with a value?', opts: ['includes()', 'startsWith()', 'indexOf()', 'match()'], answer: 1, explanation: 'startsWith() returns true if the string begins with the specified characters. endsWith() checks the end.' },
+    { q: 'What does "abc".repeat(3) return?', opts: ['"abc3"', '"abcabcabc"', '["abc","abc","abc"]', '"aaa"'], answer: 1, explanation: 'repeat(n) returns a new string with n copies of the original string concatenated together.' },
+    { q: 'Template literals use which character?', opts: ['Single quotes', 'Double quotes', 'Backticks', 'Parentheses'], answer: 2, explanation: 'Template literals use backticks (`) and support string interpolation with ${expression} and multi-line strings.' }
   ],
   regex: [
-    { q: 'What flag makes a regex case-insensitive?', opts: ['g', 'i', 'm', 's'], answer: 1 },
-    { q: 'What does \\d match?', opts: ['Any digit', 'Any letter', 'Any whitespace', 'Any character'], answer: 0 }
+    { q: 'What flag makes a regex case-insensitive?', opts: ['g', 'i', 'm', 's'], answer: 1, explanation: 'The "i" flag enables case-insensitive matching. "g" is global, "m" is multiline, "s" makes . match newlines.' },
+    { q: 'What does \\d match?', opts: ['Any digit', 'Any letter', 'Any whitespace', 'Any character'], answer: 0, explanation: '\\d matches any digit (0-9). \\w matches word chars, \\s matches whitespace, . matches any character except newline.' },
+    { q: 'What does /^hello$/ match?', opts: ['Any string containing hello', 'Only the exact string "hello"', 'Strings starting with hello', 'Strings ending with hello'], answer: 1, explanation: '^ asserts start of string, $ asserts end. Together they ensure the entire string is exactly "hello".' },
+    { q: 'What does str.match(/a/g) return if str = "banana"?', opts: ['["a"]', '["a","a","a"]', '"a"', '3'], answer: 1, explanation: 'With the global flag (g), match() returns an array of ALL matches. "banana" has 3 "a" characters.' }
   ],
   data_collections_arrays: [
-    { q: 'Which method returns a new array without modifying the original?', opts: ['push()', 'splice()', 'map()', 'sort()'], answer: 2 },
-    { q: 'What does [1,2,3].reduce((a,b) => a+b, 0) return?', opts: ['[1,2,3]', '6', '0', '3'], answer: 1 }
+    { q: 'Which method returns a new array without modifying the original?', opts: ['push()', 'splice()', 'map()', 'sort()'], answer: 2, explanation: 'map() creates a new array with the results of calling a function on every element. push/splice/sort mutate the original.' },
+    { q: 'What does [1,2,3].reduce((a,b) => a+b, 0) return?', opts: ['[1,2,3]', '6', '0', '3'], answer: 1, explanation: 'reduce() accumulates values: 0+1=1, 1+2=3, 3+3=6. The second argument (0) is the initial accumulator value.' },
+    { q: 'What does [1,2,3].find(x => x > 1) return?', opts: ['[2,3]', '2', 'true', '1'], answer: 1, explanation: 'find() returns the FIRST element that satisfies the condition. Use filter() to get all matching elements.' },
+    { q: 'What does Array.isArray("hello") return?', opts: ['true', 'false', 'undefined', 'Error'], answer: 1, explanation: 'Array.isArray() checks if the value is an array. Strings are not arrays, so it returns false.' }
   ],
   data_collections_objects: [
-    { q: 'Which method returns an array of an object\'s keys?', opts: ['Object.values()', 'Object.keys()', 'Object.entries()', 'Object.assign()'], answer: 1 },
-    { q: 'What does Object.freeze() do?', opts: ['Deletes properties', 'Prevents adding/modifying properties', 'Deep clones', 'Seals the object'], answer: 1 }
+    { q: 'Which method returns an array of an object\'s keys?', opts: ['Object.values()', 'Object.keys()', 'Object.entries()', 'Object.assign()'], answer: 1, explanation: 'Object.keys() returns an array of own enumerable property names. values() returns values, entries() returns [key, value] pairs.' },
+    { q: 'What does Object.freeze() do?', opts: ['Deletes properties', 'Prevents adding/modifying properties', 'Deep clones', 'Seals the object'], answer: 1, explanation: 'Object.freeze() makes an object immutable — no adding, removing, or modifying properties. It is shallow (nested objects are not frozen).' },
+    { q: 'What does {...a, ...b} do?', opts: ['Deep merges a and b', 'Shallow merges, b overwrites a', 'Creates an array', 'Clones only a'], answer: 1, explanation: 'The spread operator creates a shallow copy. Properties from b overwrite same-named properties from a.' },
+    { q: 'What does Object.entries({x:1, y:2}) return?', opts: ['["x","y"]', '[[\"x\",1],[\"y\",2]]', '[1,2]', '{x:1,y:2}'], answer: 1, explanation: 'Object.entries() returns an array of [key, value] pairs: [["x",1],["y",2]].' }
   ],
   promises_and_async: [
     { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1, explanation: 'async/await is syntactic sugar over Promises, letting you write asynchronous code that reads like synchronous code.' },
     { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' }
   ],
   error_handling: [
-    { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2 },
-    { q: 'How do you create a custom error?', opts: ['new Error()', 'throw "error"', 'class MyError extends Error', 'All of the above'], answer: 3 }
+    { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2, explanation: 'finally always runs after try/catch, whether an error occurred or not — useful for cleanup tasks.' },
+    { q: 'How do you create a custom error?', opts: ['new Error()', 'throw "error"', 'class MyError extends Error', 'All of the above'], answer: 3, explanation: 'All three work: new Error() creates a standard error, throw can throw anything, and extending Error creates custom types.' },
+    { q: 'What property gives the error description?', opts: ['.text', '.message', '.description', '.info'], answer: 1, explanation: 'Error objects have .message (description), .name (error type), and .stack (call trace).' },
+    { q: 'What does throw do?', opts: ['Catches an error', 'Creates an error silently', 'Stops execution and signals an error', 'Logs to console'], answer: 2, explanation: 'throw immediately stops the current execution and transfers control to the nearest catch block.' }
   ],
   fetch_api: [
-    { q: 'fetch() returns a:', opts: ['String', 'JSON object', 'Promise', 'Response'], answer: 2 },
-    { q: 'How do you cancel a fetch request?', opts: ['fetch.cancel()', 'AbortController', 'clearTimeout()', 'Promise.reject()'], answer: 1 }
+    { q: 'fetch() returns a:', opts: ['String', 'JSON object', 'Promise', 'Response'], answer: 2, explanation: 'fetch() is Promise-based. It resolves to a Response object; you then call .json() or .text() to parse the body.' },
+    { q: 'How do you cancel a fetch request?', opts: ['fetch.cancel()', 'AbortController', 'clearTimeout()', 'Promise.reject()'], answer: 1, explanation: 'AbortController creates a signal that can be passed to fetch. Calling controller.abort() cancels the request.' },
+    { q: 'Does fetch reject on HTTP 404/500 errors?', opts: ['Yes always', 'No, only on network failure', 'Only on 500', 'Depends on browser'], answer: 1, explanation: 'fetch() only rejects on network failures. For HTTP errors, check response.ok or response.status manually.' },
+    { q: 'How do you send a POST request with fetch?', opts: ['fetch(url, "POST")', 'fetch(url, {method:"POST"})', 'fetch.post(url)', 'fetch(url).post()'], answer: 1, explanation: 'Pass an options object as the second argument with method, headers, and body properties.' }
   ],
   dom_manipulation: [
-    { q: 'Which method selects the first matching element?', opts: ['getElementById()', 'querySelector()', 'querySelectorAll()', 'getElementsByClassName()'], answer: 1 },
-    { q: 'What does element.remove() do?', opts: ['Hides element', 'Removes from DOM', 'Clears innerHTML', 'Removes attributes'], answer: 1 }
+    { q: 'Which method selects the first matching element?', opts: ['getElementById()', 'querySelector()', 'querySelectorAll()', 'getElementsByClassName()'], answer: 1, explanation: 'querySelector() returns the first element matching a CSS selector. getElementById() matches by ID only.' },
+    { q: 'What does element.remove() do?', opts: ['Hides element', 'Removes from DOM', 'Clears innerHTML', 'Removes attributes'], answer: 1, explanation: 'remove() detaches the element from the DOM entirely. The JS reference still exists but the element is no longer visible.' },
+    { q: 'What is a DocumentFragment?', opts: ['A string of HTML', 'A lightweight container for DOM nodes', 'A CSS selector', 'An event type'], answer: 1, explanation: 'DocumentFragment is a minimal DOM node that has no parent. Used to batch DOM operations before inserting, improving performance.' },
+    { q: 'dataset.myValue accesses which HTML attribute?', opts: ['my-value', 'data-my-value', 'myValue', 'value'], answer: 1, explanation: 'The dataset property provides access to data-* attributes. data-my-value becomes element.dataset.myValue (camelCase).' }
   ],
   dom_events: [
-    { q: 'Which method attaches an event handler?', opts: ['onclick()', 'addEventListener()', 'attachEvent()', 'bindEvent()'], answer: 1 },
-    { q: 'Event delegation uses which propagation phase?', opts: ['Capture', 'Bubble', 'Target', 'None'], answer: 1 }
+    { q: 'Which method attaches an event handler?', opts: ['onclick()', 'addEventListener()', 'attachEvent()', 'bindEvent()'], answer: 1, explanation: 'addEventListener() is the modern standard. It supports multiple handlers per event and options like capture/once.' },
+    { q: 'Event delegation uses which propagation phase?', opts: ['Capture', 'Bubble', 'Target', 'None'], answer: 1, explanation: 'Event delegation attaches a single listener to a parent, leveraging event bubbling to handle events from child elements.' },
+    { q: 'e.stopPropagation() prevents:', opts: ['Default action', 'Event from reaching other listeners on the same element', 'Event from reaching parent elements', 'All of the above'], answer: 2, explanation: 'stopPropagation() stops the event from bubbling to parent elements. Use preventDefault() to stop the default action.' },
+    { q: 'What does {once: true} do in addEventListener?', opts: ['Fires handler once then auto-removes', 'Ensures only one handler exists', 'Delays execution', 'Prevents bubbling'], answer: 0, explanation: 'The once option automatically removes the listener after the first invocation, equivalent to manually calling removeEventListener.' }
   ],
   event_loop: [
-    { q: 'Microtasks (Promise.then) execute before:', opts: ['Synchronous code', 'Macrotasks (setTimeout)', 'The call stack', 'Nothing'], answer: 1 },
-    { q: 'setTimeout(fn, 0) runs:', opts: ['Immediately', 'After current call stack clears', 'Never', 'Before promises'], answer: 1 }
+    { q: 'Microtasks (Promise.then) execute before:', opts: ['Synchronous code', 'Macrotasks (setTimeout)', 'The call stack', 'Nothing'], answer: 1, explanation: 'After the call stack empties, all microtasks (Promises) run before the next macrotask (setTimeout, setInterval).' },
+    { q: 'setTimeout(fn, 0) runs:', opts: ['Immediately', 'After current call stack clears', 'Never', 'Before promises'], answer: 1, explanation: 'setTimeout(fn, 0) queues a macrotask. It runs after the stack clears AND after all pending microtasks.' },
+    { q: 'queueMicrotask() schedules a:', opts: ['Macrotask', 'Microtask', 'Animation frame', 'Web Worker'], answer: 1, explanation: 'queueMicrotask() adds a callback to the microtask queue, similar to Promise.resolve().then(fn).' },
+    { q: 'requestAnimationFrame runs before:', opts: ['Microtasks', 'The next repaint', 'setTimeout(fn,0)', 'Synchronous code'], answer: 1, explanation: 'requestAnimationFrame callbacks run right before the browser\'s next repaint cycle, typically at 60fps.' }
   ],
   classes_and_oop: [
-    { q: 'What keyword creates a subclass?', opts: ['implements', 'extends', 'inherits', 'uses'], answer: 1 },
-    { q: 'Private fields in JS classes start with:', opts: ['_', '#', '@', '$'], answer: 1 }
+    { q: 'What keyword creates a subclass?', opts: ['implements', 'extends', 'inherits', 'uses'], answer: 1, explanation: 'extends creates a class that inherits from another. The child class gets all parent methods and can override them.' },
+    { q: 'Private fields in JS classes start with:', opts: ['_', '#', '@', '$'], answer: 1, explanation: '#privateField is truly private in JS classes — not accessible outside the class body. _ is only a naming convention.' },
+    { q: 'super() must be called:', opts: ['In any method', 'Before using "this" in a subclass constructor', 'After return', 'Only in static methods'], answer: 1, explanation: 'In a subclass constructor, super() must be called before accessing "this", as it initializes the parent class.' },
+    { q: 'Static methods belong to:', opts: ['Each instance', 'The class itself', 'The prototype', 'The global scope'], answer: 1, explanation: 'Static methods are called on the class (e.g., Array.isArray()), not on instances. Defined with the static keyword.' }
   ],
   iterators_generators: [
-    { q: 'A generator function is declared with:', opts: ['function*', 'async function', 'gen function', 'yield function'], answer: 0 },
-    { q: 'What does yield do?', opts: ['Returns and exits', 'Pauses and produces a value', 'Throws an error', 'Loops'], answer: 1 }
+    { q: 'A generator function is declared with:', opts: ['function*', 'async function', 'gen function', 'yield function'], answer: 0, explanation: 'The asterisk after function (function*) marks it as a generator that can yield multiple values.' },
+    { q: 'What does yield do?', opts: ['Returns and exits', 'Pauses and produces a value', 'Throws an error', 'Loops'], answer: 1, explanation: 'yield pauses the generator and sends a value out. Calling next() resumes execution from where it paused.' },
+    { q: 'What method advances a generator?', opts: ['.resume()', '.next()', '.continue()', '.step()'], answer: 1, explanation: 'Calling gen.next() resumes the generator until the next yield, returning {value, done}.' },
+    { q: 'An object is iterable if it has:', opts: ['a .length property', 'a Symbol.iterator method', 'a .forEach method', 'a .next method'], answer: 1, explanation: 'The iterable protocol requires a [Symbol.iterator]() method that returns an iterator with a .next() method.' }
   ],
   proxy_and_reflect: [
-    { q: 'A Proxy wraps an object to intercept:', opts: ['Events', 'Operations like get/set', 'Network requests', 'CSS styles'], answer: 1 },
-    { q: 'Reflect.ownKeys() returns:', opts: ['Only string keys', 'Only symbol keys', 'All own keys including symbols', 'Inherited keys'], answer: 2 }
+    { q: 'A Proxy wraps an object to intercept:', opts: ['Events', 'Operations like get/set', 'Network requests', 'CSS styles'], answer: 1, explanation: 'Proxy intercepts fundamental operations (get, set, delete, etc.) through handler trap functions.' },
+    { q: 'Reflect.ownKeys() returns:', opts: ['Only string keys', 'Only symbol keys', 'All own keys including symbols', 'Inherited keys'], answer: 2, explanation: 'Reflect.ownKeys() returns all own property keys — strings AND symbols, unlike Object.keys() which skips symbols.' },
+    { q: 'What is a Proxy "trap"?', opts: ['An error handler', 'A handler method that intercepts an operation', 'A debugging tool', 'A loop prevention'], answer: 1, explanation: 'Traps are functions in the handler object (get, set, has, etc.) that intercept corresponding operations on the target.' },
+    { q: 'Proxy can make an object:', opts: ['Faster', 'Reactive/observable', 'Immutable only', 'Async'], answer: 1, explanation: 'By intercepting set/get operations, Proxies enable reactive patterns where changes automatically trigger updates.' }
   ],
   memory_and_performance: [
-    { q: 'What helps prevent excessive function calls on scroll?', opts: ['Memoize', 'Debounce/Throttle', 'WeakRef', 'Proxy'], answer: 1 },
-    { q: 'WeakMap keys are:', opts: ['Strings only', 'Numbers only', 'Objects (weakly held)', 'Any value'], answer: 2 }
+    { q: 'What helps prevent excessive function calls on scroll?', opts: ['Memoize', 'Debounce/Throttle', 'WeakRef', 'Proxy'], answer: 1, explanation: 'Debounce delays until quiet period; throttle limits to once per interval. Both reduce excessive event handler calls.' },
+    { q: 'WeakMap keys are:', opts: ['Strings only', 'Numbers only', 'Objects (weakly held)', 'Any value'], answer: 2, explanation: 'WeakMap keys must be objects and are weakly referenced — if no other reference exists, they can be garbage collected.' },
+    { q: 'What causes a memory leak?', opts: ['Using const', 'Forgotten references preventing GC', 'Using strict mode', 'Small arrays'], answer: 1, explanation: 'Memory leaks occur when objects that are no longer needed still have references (e.g., event listeners, closures, detached DOM).' },
+    { q: 'requestIdleCallback runs when:', opts: ['Immediately', 'During browser idle time', 'Before every repaint', 'Every second'], answer: 1, explanation: 'requestIdleCallback schedules low-priority work to run when the browser has free time between frames.' }
   ],
   modules: [
-    { q: 'Which keyword imports a module in ESM?', opts: ['require()', 'import', 'include', 'load'], answer: 1 },
-    { q: 'A file can have how many default exports?', opts: ['Unlimited', 'One', 'Two', 'Zero'], answer: 1 }
+    { q: 'Which keyword imports a module in ESM?', opts: ['require()', 'import', 'include', 'load'], answer: 1, explanation: 'ESM uses import/export syntax. require() is CommonJS (Node.js). ESM is the official JS module standard.' },
+    { q: 'A file can have how many default exports?', opts: ['Unlimited', 'One', 'Two', 'Zero'], answer: 1, explanation: 'Each module can have at most one default export but unlimited named exports.' },
+    { q: 'import() (dynamic) returns:', opts: ['The module directly', 'A Promise', 'undefined', 'A string'], answer: 1, explanation: 'Dynamic import() returns a Promise that resolves to the module, enabling lazy loading and code splitting.' },
+    { q: 'Named exports are imported with:', opts: ['import x from', 'import {x} from', 'import * from', 'require(x)'], answer: 1, explanation: 'Named exports use destructuring syntax: import {x, y} from "module". Default exports use import x from "module".' }
   ],
   web_storage: [
-    { q: 'localStorage data persists until:', opts: ['Tab closes', 'Browser closes', 'Manually cleared', 'Page refreshes'], answer: 2 },
-    { q: 'sessionStorage data persists until:', opts: ['Tab/window closes', 'Browser closes', 'Manually cleared', 'Forever'], answer: 0 }
+    { q: 'localStorage data persists until:', opts: ['Tab closes', 'Browser closes', 'Manually cleared', 'Page refreshes'], answer: 2, explanation: 'localStorage has no expiration — data persists until explicitly removed via removeItem() or clear().' },
+    { q: 'sessionStorage data persists until:', opts: ['Tab/window closes', 'Browser closes', 'Manually cleared', 'Forever'], answer: 0, explanation: 'sessionStorage is scoped to the tab/window. Data is cleared when the tab is closed.' },
+    { q: 'localStorage stores data as:', opts: ['JSON', 'Binary', 'Strings only', 'Any JS type'], answer: 2, explanation: 'localStorage only stores strings. Use JSON.stringify() to store objects and JSON.parse() to retrieve them.' },
+    { q: 'The "storage" event fires:', opts: ['On the same tab', 'On other tabs of same origin', 'On all browsers', 'Never automatically'], answer: 1, explanation: 'The storage event fires on OTHER tabs/windows of the same origin when localStorage changes, enabling cross-tab sync.' }
   ],
   web_apis: [
-    { q: 'Which API accesses the clipboard?', opts: ['Clipboard API', 'Storage API', 'History API', 'URL API'], answer: 0 },
-    { q: 'Geolocation.getCurrentPosition() is:', opts: ['Synchronous', 'Asynchronous (callback)', 'A Promise', 'Blocking'], answer: 1 }
+    { q: 'Which API accesses the clipboard?', opts: ['Clipboard API', 'Storage API', 'History API', 'URL API'], answer: 0, explanation: 'The Clipboard API (navigator.clipboard) provides read/write access to the system clipboard asynchronously.' },
+    { q: 'Geolocation.getCurrentPosition() is:', opts: ['Synchronous', 'Asynchronous (callback)', 'A Promise', 'Blocking'], answer: 1, explanation: 'Geolocation uses callbacks (success, error). It\'s async but predates Promises. Requires user permission.' },
+    { q: 'IntersectionObserver detects:', opts: ['Click events', 'Element visibility in viewport', 'Network status', 'Screen size'], answer: 1, explanation: 'IntersectionObserver watches when elements enter/exit the viewport or an ancestor, useful for lazy loading and infinite scroll.' },
+    { q: 'Which API enables background scripts for offline?', opts: ['Web Workers', 'Service Workers', 'WebSockets', 'IndexedDB'], answer: 1, explanation: 'Service Workers act as a network proxy, enabling offline support, caching, and push notifications.' }
   ],
   destructuring_and_spread: [
-    { q: 'What does ...arr do when used in a function parameter?', opts: ['Spread', 'Rest (collects args)', 'Destructure', 'Clone'], answer: 1 },
-    { q: 'const {a: x} = {a: 1} — what is x?', opts: ['undefined', '{a:1}', '1', '"a"'], answer: 2 }
+    { q: 'What does ...arr do when used in a function parameter?', opts: ['Spread', 'Rest (collects args)', 'Destructure', 'Clone'], answer: 1, explanation: 'In function parameters, ... is the rest operator — it collects remaining arguments into an array.' },
+    { q: 'const {a: x} = {a: 1} — what is x?', opts: ['undefined', '{a:1}', '1', '"a"'], answer: 2, explanation: '{a: x} renames "a" to "x" during destructuring. x gets the value of a, which is 1.' },
+    { q: 'What does [a, , b] = [1, 2, 3] assign to b?', opts: ['2', '3', 'undefined', 'Error'], answer: 1, explanation: 'The empty slot (,,) skips index 1. So a=1, index 1 is skipped, and b=3.' },
+    { q: 'const [first, ...rest] = [1,2,3] — what is rest?', opts: ['[2,3]', '[1,2,3]', '3', '2'], answer: 0, explanation: 'Rest in array destructuring collects remaining elements. first=1, rest=[2,3].' }
   ],
   json_and_dates: [
-    { q: 'JSON.stringify() converts:', opts: ['String to object', 'Object to JSON string', 'JSON to array', 'Number to string'], answer: 1 },
-    { q: 'new Date().getMonth() returns January as:', opts: ['1', '0', '"January"', '"Jan"'], answer: 1 }
+    { q: 'JSON.stringify() converts:', opts: ['String to object', 'Object to JSON string', 'JSON to array', 'Number to string'], answer: 1, explanation: 'JSON.stringify() serializes a JS value to a JSON string. JSON.parse() does the reverse.' },
+    { q: 'new Date().getMonth() returns January as:', opts: ['1', '0', '"January"', '"Jan"'], answer: 1, explanation: 'Months are 0-indexed in JS Date: January=0, February=1, ... December=11. A common gotcha!' },
+    { q: 'Which values does JSON.stringify() skip?', opts: ['Numbers', 'Strings', 'Functions and undefined', 'Arrays'], answer: 2, explanation: 'JSON.stringify() omits functions, undefined, and Symbol values. null and NaN are preserved.' },
+    { q: 'Date.now() returns:', opts: ['A Date object', 'A formatted string', 'Milliseconds since epoch', 'Seconds since epoch'], answer: 2, explanation: 'Date.now() returns the number of milliseconds since January 1, 1970 (Unix epoch) as a number.' }
   ],
   web_components: [
-    { q: 'Custom element names must contain:', opts: ['Underscore', 'Hyphen', 'Number', 'Uppercase letter'], answer: 1 },
-    { q: 'Shadow DOM provides:', opts: ['Server rendering', 'Style encapsulation', 'Faster loading', 'Database access'], answer: 1 }
+    { q: 'Custom element names must contain:', opts: ['Underscore', 'Hyphen', 'Number', 'Uppercase letter'], answer: 1, explanation: 'Custom elements require a hyphen (e.g., my-component) to avoid conflicts with current/future HTML elements.' },
+    { q: 'Shadow DOM provides:', opts: ['Server rendering', 'Style encapsulation', 'Faster loading', 'Database access'], answer: 1, explanation: 'Shadow DOM creates an encapsulated DOM subtree with isolated styles that don\'t leak in or out.' },
+    { q: 'Which lifecycle callback fires when element is added to DOM?', opts: ['constructor()', 'connectedCallback()', 'adoptedCallback()', 'attributeChangedCallback()'], answer: 1, explanation: 'connectedCallback() fires each time the element is inserted into the DOM. constructor() runs at creation time.' },
+    { q: 'HTML templates render:', opts: ['Immediately on parse', 'Only when cloned and inserted', 'On page load', 'After DOMContentLoaded'], answer: 1, explanation: '<template> content is parsed but not rendered. You must clone it (cloneNode) and insert it into the DOM.' }
   ],
   testing_basics: [
-    { q: 'In TDD, what do you write first?', opts: ['Implementation', 'Documentation', 'Failing test', 'Database schema'], answer: 2 },
-    { q: 'AAA pattern stands for:', opts: ['Act-Assert-Arrange', 'Arrange-Act-Assert', 'Assert-Act-Arrange', 'Arrange-Assert-Act'], answer: 1 }
+    { q: 'In TDD, what do you write first?', opts: ['Implementation', 'Documentation', 'Failing test', 'Database schema'], answer: 2, explanation: 'Test-Driven Development: write a failing test first, then implement just enough code to pass it, then refactor.' },
+    { q: 'AAA pattern stands for:', opts: ['Act-Assert-Arrange', 'Arrange-Act-Assert', 'Assert-Act-Arrange', 'Arrange-Assert-Act'], answer: 1, explanation: 'Arrange (setup), Act (execute), Assert (verify). This pattern keeps tests organized and readable.' },
+    { q: 'A "mock" is:', opts: ['A real database', 'A fake implementation for testing', 'A test runner', 'A code formatter'], answer: 1, explanation: 'Mocks simulate dependencies (APIs, databases) so you can test units in isolation without side effects.' },
+    { q: 'What does code coverage measure?', opts: ['Performance', 'How much code is executed by tests', 'Number of tests', 'File size'], answer: 1, explanation: 'Code coverage reports the percentage of lines, branches, and functions exercised by your test suite.' }
   ],
   logic_gates: [
     { q: 'What does the XOR gate return?', opts: ['true if both true', 'true if inputs differ', 'true if both false', 'always true'], answer: 1 },
