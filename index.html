@@ -258,6 +258,15 @@
 
   </main>
 
+  <!-- Quiz slide panel (slides in from left, 50% width) -->
+  <aside class="quiz-slide" id="quizSlide">
+    <div class="quiz-slide-header">
+      <h3 class="quiz-slide-title" id="quizSlideTitle">Quick Quiz</h3>
+      <button class="quiz-slide-close" id="quizSlideClose"><i class="material-icons">close</i></button>
+    </div>
+    <div class="quiz-slide-body" id="quizSlideBody"></div>
+  </aside>
+
   <!-- Drawer panel (slides in from right) -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer">
@@ -266,12 +275,7 @@
       <button class="drawer-close" id="drawerClose"><i class="material-icons">close</i></button>
     </div>
     <div class="drawer-body" id="drawerBody">
-      <div class="drawer-columns">
-        <div class="drawer-col-quiz" id="drawerQuiz"></div>
-        <div class="drawer-col-code">
-          <div class="section-topic-content" id="drawerContent"></div>
-        </div>
-      </div>
+      <div class="section-topic-content" id="drawerContent"></div>
     </div>
   </aside>
 

@@ -108,6 +108,8 @@ function updateProgressUI() {
       // Re-render drawer if open
       if (currentDrawerTopic) {
         var contentEl = document.getElementById('drawerContent');
+        var quizBody = document.getElementById('quizSlideBody');
+        if (quizBody) quizBody.innerHTML = '';
         var code = codeCache[currentDrawerTopic];
         if (contentEl && code) {
           renderCode(contentEl, code, currentDrawerTopic);
@@ -121,6 +123,20 @@ function updateProgressUI() {
 // DRAWER OPEN / CLOSE
 // ============================================================
 
+function openQuizSlide(topicName) {
+  var quizSlide = document.getElementById('quizSlide');
+  var quizBody = document.getElementById('quizSlideBody');
+  if (!quizSlide || !quizBody) return;
+  quizBody.innerHTML = '';
+  // Quiz content is rendered by renderCode — just open the panel
+  quizSlide.classList.add('open');
+}
+
+function closeQuizSlide() {
+  var quizSlide = document.getElementById('quizSlide');
+  if (quizSlide) quizSlide.classList.remove('open');
+}
+
 function openDrawer(topicName) {
   var drawer = document.getElementById('drawer');
   var overlay = document.getElementById('drawerOverlay');
@@ -132,14 +148,18 @@ function openDrawer(topicName) {
   var node = document.querySelector('.roadmap-node[data-topic="' + topicName + '"]');
   titleEl.textContent = node ? node.querySelector('.roadmap-label').textContent : topicName;
 
-  // Scroll drawer body to top and clear both panels
+  // Scroll drawer body to top and clear content
   var drawerBody = document.getElementById('drawerBody');
-  var quizPanel = document.getElementById('drawerQuiz');
   if (drawerBody) drawerBody.scrollTop = 0;
   contentEl.innerHTML = '';
   contentEl.removeAttribute('data-loaded');
   contentEl.style.fontSize = '';
-  if (quizPanel) quizPanel.innerHTML = '';
+
+  // Clear and close quiz slide (will reopen if topic has quiz)
+  closeQuizSlide();
+  var quizBody = document.getElementById('quizSlideBody');
+  if (quizBody) quizBody.innerHTML = '';
+
   loadTopicCode(topicName, contentEl);
 
   // Mark active node
@@ -163,6 +183,7 @@ function closeDrawer() {
 
   drawer.classList.remove('open');
   overlay.classList.remove('open');
+  closeQuizSlide();
   document.body.style.overflow = '';
 
   document.querySelectorAll('.roadmap-node.node-active').forEach(function (n) {
@@ -179,6 +200,10 @@ function closeDrawer() {
   var overlay = document.getElementById('drawerOverlay');
   if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
   if (overlay) overlay.addEventListener('click', closeDrawer);
+
+  // Quiz slide close button
+  var quizCloseBtn = document.getElementById('quizSlideClose');
+  if (quizCloseBtn) quizCloseBtn.addEventListener('click', closeQuizSlide);
 })();
 
 // Wire up roadmap node clicks
@@ -711,10 +736,10 @@ function renderCode(contentEl, code, topicName) {
     contentEl.appendChild(relatedDiv);
   }
 
-  // Add mini-quiz if available — render into sidebar panel
-  var quizPanel = document.getElementById('drawerQuiz');
+  // Add mini-quiz if available — render into quiz slide panel
+  var quizSlideBody = document.getElementById('quizSlideBody');
   const quizData = TOPIC_QUIZZES[topicName];
-  if (quizData && quizData.length > 0 && quizPanel) {
+  if (quizData && quizData.length > 0) {
     const quizDiv = document.createElement('div');
     quizDiv.className = 'topic-quiz';
     quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz</div>';
@@ -765,42 +790,13 @@ function renderCode(contentEl, code, topicName) {
       quizDiv.appendChild(qDiv);
     });
 
-    quizPanel.appendChild(quizDiv);
-  } else if (quizData && quizData.length > 0) {
-    // Fallback: no quiz panel found, append to contentEl
-    const quizDiv = document.createElement('div');
-    quizDiv.className = 'topic-quiz';
-    quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz</div>';
-    const savedScores = getQuizScores();
-    const topicScores = savedScores[topicName] || {};
-    quizData.forEach(function (item, qIdx) {
-      const qDiv = document.createElement('div');
-      qDiv.className = 'quiz-question';
-      qDiv.innerHTML = '<p class="quiz-question-text">' + (qIdx + 1) + '. ' + item.q + '</p>';
-      const optsDiv = document.createElement('div');
-      optsDiv.className = 'quiz-options';
-      item.opts.forEach(function (opt, oIdx) {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-option-btn';
-        btn.textContent = opt;
-        if (topicScores[qIdx] !== undefined) {
-          btn.disabled = true;
-          btn.classList.add('quiz-disabled');
-          if (oIdx === item.answer) btn.classList.add('quiz-correct');
-        }
-        btn.addEventListener('click', function () {
-          optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) { b.disabled = true; b.classList.add('quiz-disabled'); });
-          var isCorrect = oIdx === item.answer;
-          if (isCorrect) btn.classList.add('quiz-correct');
-          else { btn.classList.add('quiz-wrong'); optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct'); }
-          saveQuizAnswer(topicName, qIdx, isCorrect);
-        });
-        optsDiv.appendChild(btn);
-      });
-      qDiv.appendChild(optsDiv);
-      quizDiv.appendChild(qDiv);
-    });
-    contentEl.appendChild(quizDiv);
+    // Render into quiz slide and open it
+    if (quizSlideBody) {
+      quizSlideBody.appendChild(quizDiv);
+      openQuizSlide(topicName);
+    } else {
+      contentEl.appendChild(quizDiv);
+    }
   }
 
   contentEl.dataset.loaded = 'true';
@@ -1492,6 +1488,9 @@ document.addEventListener('keydown', function (event) {
     // Close shortcuts overlay first
     const shortcutsOverlay = document.getElementById('shortcuts-overlay');
     if (shortcutsOverlay) { shortcutsOverlay.remove(); return; }
+    // Close quiz slide if open
+    var quizSlide = document.getElementById('quizSlide');
+    if (quizSlide && quizSlide.classList.contains('open')) { closeQuizSlide(); return; }
     // Close console if open
     const consoleEl = document.getElementById('sjsb-console');
     if (consoleEl) { consoleEl.remove(); return; }

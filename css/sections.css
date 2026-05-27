@@ -258,6 +258,83 @@
 /* ============================================================
    DRAWER PANEL (slides in from right)
    ============================================================ */
+/* ============================================================
+   QUIZ SLIDE — panel from left, 50% width
+   ============================================================ */
+.quiz-slide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--black-second-color);
+  z-index: 160;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.quiz-slide.open {
+  transform: translateX(0);
+}
+
+.quiz-slide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 1.2em;
+  border-bottom: 3px solid var(--yellow-color);
+  flex-shrink: 0;
+}
+
+.quiz-slide-title {
+  font-family: monospace;
+  font-size: 1.1em;
+  color: var(--yellow-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.quiz-slide-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.2em;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.quiz-slide-close:hover {
+  color: #ff5555;
+}
+
+.quiz-slide-close .material-icons {
+  font-size: 24px;
+}
+
+.quiz-slide-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1em 1.5em;
+  scrollbar-color: var(--yellow-color) var(--black-second-color);
+  scrollbar-width: thin;
+}
+
+/* Quiz inside slide panel — no top border needed */
+.quiz-slide-body .topic-quiz {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+  white-space: normal;
+}
+
 .drawer-overlay {
   position: fixed;
   inset: 0;
@@ -277,8 +354,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 92%;
-  max-width: 1100px;
+  width: 50%;
   height: 100%;
   background: var(--black-second-color);
   z-index: 160;
@@ -337,37 +413,6 @@
   overflow-x: hidden;
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
-}
-
-/* Two-column drawer layout: quiz left, code right */
-.drawer-columns {
-  display: flex;
-  flex-direction: row;
-  min-height: 100%;
-}
-
-.drawer-col-quiz {
-  width: 35%;
-  flex-shrink: 0;
-  border-right: 1px solid #444;
-  padding: 1em;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.drawer-col-quiz:empty {
-  display: none;
-}
-
-/* When quiz column is hidden, code column takes full width */
-.drawer-col-quiz:empty + .drawer-col-code {
-  width: 100%;
-}
-
-.drawer-col-code {
-  width: 65%;
-  flex-grow: 1;
-  min-width: 0;
 }
 
 /* Code content area — inside drawer, always visible */
@@ -858,13 +903,6 @@
   opacity: 0.7;
 }
 
-/* Quiz inside sidebar panel — remove top border since it's in its own column */
-.drawer-col-quiz .topic-quiz {
-  border-top: none;
-  margin-top: 0;
-  padding-top: 0;
-}
-
 /* Footer */
 .site-footer {
   max-width: var(--max-width);
@@ -913,8 +951,13 @@
   border-top-color: #333;
 }
 
-[data-theme="dark"] .drawer-col-quiz {
-  border-right-color: #333;
+[data-theme="dark"] .quiz-slide {
+  background: #1a1a1a;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .quiz-slide-header {
+  border-bottom-color: var(--yellow-color);
 }
 
 /* ============================================================
@@ -931,7 +974,8 @@
   .theme-toggle,
   .site-footer,
   .drawer-overlay,
-  .drawer {
+  .drawer,
+  .quiz-slide {
     display: none !important;
   }
 
@@ -952,23 +996,14 @@
    RESPONSIVE
    ============================================================ */
 @media screen and (max-width: 860px) {
-  .drawer {
+  .drawer,
+  .quiz-slide {
     width: 100%;
-    max-width: none;
   }
 
-  .drawer-columns {
-    flex-direction: column;
-  }
-
-  .drawer-col-quiz {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #444;
-  }
-
-  .drawer-col-code {
-    width: 100%;
+  /* On small screens quiz overlays on top of drawer */
+  .quiz-slide {
+    z-index: 170;
   }
 }
 
