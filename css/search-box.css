@@ -11,7 +11,8 @@
 /* Sticky mode: hide search, compact padding */
 .cubes-sticky.search-box-form-container {
   padding: 0.25rem 0;
-  position: relative;
+  position: sticky;
+  top: 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   background-color: rgba(50, 51, 48, 0.95);
