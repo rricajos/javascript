@@ -162,6 +162,7 @@ const TOPIC_LEVELS = {
   regex: 'intermediate',
   json_and_dates: 'beginner',
   destructuring_and_spread: 'intermediate',
+  logic_gates: 'intermediate',
   dom_manipulation: 'intermediate',
   data_collections_arrays: 'intermediate',
   data_collections_objects: 'intermediate',
@@ -194,6 +195,7 @@ const RELATED_TOPICS = {
   regex: ['strings'],
   json_and_dates: ['web_storage', 'fetch_api'],
   destructuring_and_spread: ['data_collections_arrays', 'data_collections_objects', 'functions'],
+  logic_gates: ['operator_logical', 'memory_and_performance'],
   dom_manipulation: ['dom_events', 'web_apis'],
   data_collections_arrays: ['data_collections_objects', 'destructuring_and_spread'],
   data_collections_objects: ['data_collections_arrays', 'classes_and_oop'],
@@ -397,6 +399,11 @@ const TOPIC_QUIZZES = {
   testing_basics: [
     { q: 'In TDD, what do you write first?', opts: ['Implementation', 'Documentation', 'Failing test', 'Database schema'], answer: 2 },
     { q: 'AAA pattern stands for:', opts: ['Act-Assert-Arrange', 'Arrange-Act-Assert', 'Assert-Act-Arrange', 'Arrange-Assert-Act'], answer: 1 }
+  ],
+  logic_gates: [
+    { q: 'What does the XOR gate return?', opts: ['true if both true', 'true if inputs differ', 'true if both false', 'always true'], answer: 1 },
+    { q: 'What is 5 & 3 in JavaScript?', opts: ['7', '1', '8', '15'], answer: 1 },
+    { q: 'Which gate is called "universal" (can build all others)?', opts: ['AND', 'OR', 'NAND', 'XOR'], answer: 2 }
   ]
 };
 

@@ -41,7 +41,8 @@ const ASSETS = [
   './js/classes_and_oop.js',
   './js/proxy_and_reflect.js',
   './js/memory_and_performance.js',
-  './js/testing_basics.js'
+  './js/testing_basics.js',
+  './js/logic_gates.js'
 ];
 
 // Install: cache all assets
