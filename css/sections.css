@@ -334,7 +334,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1em 1.5em;
+  padding: 1em 3em 1em 1.5em;
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
 }
