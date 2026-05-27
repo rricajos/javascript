@@ -259,13 +259,13 @@
    DRAWER PANEL (slides in from right)
    ============================================================ */
 /* ============================================================
-   QUIZ SLIDE — paper sheet from right, behind the drawer
+   QUIZ SLIDE — paper sheet, slides from behind the drawer's left edge
    ============================================================ */
 .quiz-slide {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 50%;
+  right: 50%;
+  width: 46%;
   height: 100%;
   background: #3d3d3a;
   z-index: 155;
@@ -279,7 +279,7 @@
 }
 
 .quiz-slide.open {
-  transform: translateX(8%) rotate(-1.5deg);
+  transform: translateX(0) rotate(-1.5deg);
 }
 
 .quiz-slide-header {
@@ -1081,6 +1081,7 @@
 
   .quiz-slide {
     width: 100%;
+    right: 0;
     z-index: 170;
     border-left: none;
   }
