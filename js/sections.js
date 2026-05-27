@@ -1833,6 +1833,13 @@ document.addEventListener('keydown', function (event) {
     if (consoleEl) { consoleEl.remove(); return; }
     // Close both panels in sequence: quiz first, then drawer
     if (currentDrawerTopic) { closeAll(); return; }
+    // Close quiz slide if open standalone (e.g., review mode)
+    var quizSlide = document.getElementById('quizSlide');
+    if (quizSlide && quizSlide.classList.contains('open')) {
+      closeQuizSlide();
+      document.body.style.overflow = '';
+      return;
+    }
   }
 
   if ((event.ctrlKey && event.key === 'k') || (event.key === '/' && !isInput)) {

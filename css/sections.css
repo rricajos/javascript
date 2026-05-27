@@ -269,7 +269,7 @@
   height: 100%;
   background: #3d3d3a;
   z-index: 155;
-  transform: translateX(100%);
+  transform: translateX(calc(100% + 50vw));
   transition: transform 0.4s ease;
   display: flex;
   flex-direction: column;
@@ -1157,6 +1157,7 @@
     right: 0;
     z-index: 170;
     border-left: none;
+    transform: translateX(100%);
   }
 
   .quiz-slide.open {
