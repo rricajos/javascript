@@ -887,179 +887,194 @@ function renderCode(contentEl, code, topicName) {
 // RUN CODE & COPY
 // ============================================================
 
-function runCode(code) {
-  // Create output panel
-  let output = document.getElementById('sjsb-console');
+// Sandbox source shared between main-thread fallback and Worker
+var _sandboxSrc =
+  'var document = (function () {\n' +
+  '  var fakeEl = {\n' +
+  '    style: {}, classList: { add: function(){}, remove: function(){}, toggle: function(){}, contains: function(){ return false; } },\n' +
+  '    addEventListener: function(){}, removeEventListener: function(){},\n' +
+  '    setAttribute: function(){}, getAttribute: function(){ return ""; },\n' +
+  '    appendChild: function(c){ return c; }, removeChild: function(){},\n' +
+  '    insertBefore: function(c){ return c; }, remove: function(){},\n' +
+  '    querySelector: function(){ return fakeEl; }, querySelectorAll: function(){ return []; },\n' +
+  '    innerHTML: "", textContent: "", value: "", id: "", className: "",\n' +
+  '    children: [], childNodes: [], parentNode: null, parentElement: null,\n' +
+  '    getBoundingClientRect: function(){ return { top:0,left:0,right:0,bottom:0,width:0,height:0 }; },\n' +
+  '    cloneNode: function(){ return fakeEl; }, closest: function(){ return null; },\n' +
+  '    matches: function(){ return false; }, contains: function(){ return false; },\n' +
+  '    focus: function(){}, blur: function(){}, click: function(){},\n' +
+  '    dispatchEvent: function(){ return true; },\n' +
+  '    dataset: {}, offsetWidth: 0, offsetHeight: 0, scrollTop: 0, scrollLeft: 0\n' +
+  '  };\n' +
+  '  return {\n' +
+  '    getElementById: function(){ return fakeEl; },\n' +
+  '    querySelector: function(){ return fakeEl; },\n' +
+  '    querySelectorAll: function(){ return []; },\n' +
+  '    createElement: function(tag){ return Object.assign({}, fakeEl, { tagName: tag.toUpperCase() }); },\n' +
+  '    createTextNode: function(t){ return { textContent: t }; },\n' +
+  '    createDocumentFragment: function(){ return Object.assign({}, fakeEl); },\n' +
+  '    addEventListener: function(){}, removeEventListener: function(){},\n' +
+  '    body: fakeEl, head: fakeEl, documentElement: fakeEl,\n' +
+  '    cookie: "", title: "", readyState: "complete"\n' +
+  '  };\n' +
+  '})();\n' +
+  'var window = {\n' +
+  '  addEventListener: function(){}, removeEventListener: function(){},\n' +
+  '  setTimeout: setTimeout, clearTimeout: clearTimeout,\n' +
+  '  setInterval: setInterval, clearInterval: clearInterval,\n' +
+  '  innerWidth: 1024, innerHeight: 768, scrollY: 0, scrollX: 0,\n' +
+  '  location: { href: "", origin: "", pathname: "/", hash: "" },\n' +
+  '  navigator: { userAgent: "SJSB Sandbox" },\n' +
+  '  history: { pushState: function(){}, replaceState: function(){}, back: function(){}, forward: function(){} },\n' +
+  '  localStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },\n' +
+  '  sessionStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },\n' +
+  '  requestAnimationFrame: function(cb){ return setTimeout(cb, 16); },\n' +
+  '  cancelAnimationFrame: function(id){ clearTimeout(id); },\n' +
+  '  getComputedStyle: function(){ return {}; },\n' +
+  '  matchMedia: function(){ return { matches: false, addEventListener: function(){} }; },\n' +
+  '  alert: function(m){ console.log("[alert] " + m); },\n' +
+  '  confirm: function(){ return true; },\n' +
+  '  prompt: function(msg, def){ return def || ""; },\n' +
+  '  fetch: function(url) {\n' +
+  '    console.log("[fetch] " + url + " (sandbox mock)");\n' +
+  '    return Promise.resolve({ ok: true, status: 200, statusText: "OK", json: function(){ return Promise.resolve({}); }, text: function(){ return Promise.resolve(""); }, headers: { get: function(){ return ""; } } });\n' +
+  '  },\n' +
+  '  XMLHttpRequest: function(){},\n' +
+  '  WebSocket: function(){},\n' +
+  '  Worker: function(){},\n' +
+  '  IntersectionObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; },\n' +
+  '  MutationObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; },\n' +
+  '  ResizeObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; }\n' +
+  '};\n' +
+  'var fetch = window.fetch;\n' +
+  'var alert = window.alert;\n' +
+  'var confirm = window.confirm;\n' +
+  'var prompt = window.prompt;\n' +
+  'var localStorage = window.localStorage;\n' +
+  'var sessionStorage = window.sessionStorage;\n' +
+  'var navigator = window.navigator;\n' +
+  'var requestAnimationFrame = window.requestAnimationFrame;\n' +
+  'var HTMLElement = (function () {\n' +
+  '  function HTMLElement() {}\n' +
+  '  HTMLElement.prototype.attachShadow = function() {\n' +
+  '    var shadow = Object.assign({}, document.createElement("div"));\n' +
+  '    shadow.getElementById = function(){ return document.createElement("div"); };\n' +
+  '    shadow.innerHTML = "";\n' +
+  '    this.shadowRoot = shadow;\n' +
+  '    return shadow;\n' +
+  '  };\n' +
+  '  HTMLElement.prototype.getAttribute = function(){ return ""; };\n' +
+  '  HTMLElement.prototype.setAttribute = function(){};\n' +
+  '  HTMLElement.prototype.addEventListener = function(){};\n' +
+  '  HTMLElement.prototype.dispatchEvent = function(){ return true; };\n' +
+  '  HTMLElement.prototype.connectedCallback = function(){};\n' +
+  '  HTMLElement.prototype.disconnectedCallback = function(){};\n' +
+  '  HTMLElement.prototype.attributeChangedCallback = function(){};\n' +
+  '  HTMLElement.observedAttributes = [];\n' +
+  '  return HTMLElement;\n' +
+  '})();\n' +
+  'var HTMLButtonElement = HTMLElement;\n' +
+  'var customElements = {\n' +
+  '  _registry: {},\n' +
+  '  define: function(name, cls, opts) { this._registry[name] = cls; },\n' +
+  '  get: function(name) { return this._registry[name]; },\n' +
+  '  whenDefined: function() { return Promise.resolve(); }\n' +
+  '};\n' +
+  'var CustomEvent = function(type, opts) { this.type = type; this.detail = (opts && opts.detail) || null; this.bubbles = (opts && opts.bubbles) || false; this.composed = (opts && opts.composed) || false; };\n' +
+  'var Event = function(type, opts) { this.type = type; this.bubbles = (opts && opts.bubbles) || false; this.preventDefault = function(){}; this.stopPropagation = function(){}; };\n';
+
+var RUN_TIMEOUT_MS = 3000;
+
+function _prepareCode(code) {
+  return code
+    .split('\n')
+    .map(function (line) {
+      var trimmed = line.trim();
+      if (/^import\s/.test(trimmed) || /^export\s/.test(trimmed)) return '// [skipped] ' + line;
+      if (/^await\s/.test(trimmed)) return '// [skipped] ' + line;
+      return line;
+    })
+    .join('\n');
+}
+
+function _getConsolePanel() {
+  var output = document.getElementById('sjsb-console');
   if (!output) {
     output = document.createElement('div');
     output.id = 'sjsb-console';
     output.innerHTML = '<div class="console-header"><span>Console Output</span><button onclick="this.parentElement.parentElement.remove()" class="console-close">&times;</button></div><pre class="console-body"></pre>';
     document.body.appendChild(output);
   }
-
-  const body = output.querySelector('.console-body');
-  body.textContent = '';
   output.style.display = 'block';
+  return output;
+}
 
-  const logs = [];
-  const originalLog = console.log;
-  const originalError = console.error;
-  const originalWarn = console.warn;
+function runCode(code) {
+  var output = _getConsolePanel();
+  var body = output.querySelector('.console-body');
+  body.textContent = 'Running\u2026';
 
-  console.log = function () {
-    const args = Array.from(arguments).map(function (a) {
-      if (a === null) return 'null';
-      if (a === undefined) return 'undefined';
-      return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a);
-    });
-    logs.push(args.join(' '));
-    originalLog.apply(console, arguments);
-  };
-  console.error = function () {
-    logs.push('[ERROR] ' + Array.from(arguments).join(' '));
-    originalError.apply(console, arguments);
-  };
-  console.warn = function () {
-    logs.push('[WARN] ' + Array.from(arguments).join(' '));
-    originalWarn.apply(console, arguments);
-  };
+  var safeCode = _prepareCode(code);
 
-  // Pre-process code: strip lines with import/export, top-level await
-  let safeCode = code
-    .split('\n')
-    .map(function (line) {
-      const trimmed = line.trim();
-      if (/^import\s/.test(trimmed) || /^export\s/.test(trimmed)) return '// [skipped] ' + line;
-      if (/^await\s/.test(trimmed)) return '// [skipped] ' + line;
-      return line;
-    })
-    .join('\n');
+  // Build worker source with console capture
+  var workerSrc =
+    'var _logs = [];\n' +
+    'var console = {\n' +
+    '  log: function() { var a = Array.prototype.slice.call(arguments).map(function(v){ if(v===null)return"null"; if(v===undefined)return"undefined"; return typeof v==="object"?JSON.stringify(v,null,2):String(v); }); _logs.push(a.join(" ")); },\n' +
+    '  error: function() { _logs.push("[ERROR] " + Array.prototype.slice.call(arguments).join(" ")); },\n' +
+    '  warn: function() { _logs.push("[WARN] " + Array.prototype.slice.call(arguments).join(" ")); },\n' +
+    '  info: function() { _logs.push("[INFO] " + Array.prototype.slice.call(arguments).join(" ")); },\n' +
+    '  table: function(data) { _logs.push(typeof data==="object"?JSON.stringify(data,null,2):String(data)); },\n' +
+    '  dir: function(obj) { _logs.push(typeof obj==="object"?JSON.stringify(obj,null,2):String(obj)); }\n' +
+    '};\n' +
+    _sandboxSrc + '\n' +
+    'try {\n' + safeCode + '\n} catch(_e) { _logs.push("[ERROR] " + _e.name + ": " + _e.message); }\n' +
+    'postMessage(_logs);\n';
 
-  // Wrap in sandbox with DOM & API stubs
-  const sandbox = `
-    var document = (function () {
-      var fakeEl = {
-        style: {}, classList: { add: function(){}, remove: function(){}, toggle: function(){}, contains: function(){ return false; } },
-        addEventListener: function(){}, removeEventListener: function(){},
-        setAttribute: function(){}, getAttribute: function(){ return ''; },
-        appendChild: function(c){ return c; }, removeChild: function(){},
-        insertBefore: function(c){ return c; }, remove: function(){},
-        querySelector: function(){ return fakeEl; }, querySelectorAll: function(){ return []; },
-        innerHTML: '', textContent: '', value: '', id: '', className: '',
-        children: [], childNodes: [], parentNode: null, parentElement: null,
-        getBoundingClientRect: function(){ return { top:0,left:0,right:0,bottom:0,width:0,height:0 }; },
-        cloneNode: function(){ return fakeEl; }, closest: function(){ return null; },
-        matches: function(){ return false; }, contains: function(){ return false; },
-        focus: function(){}, blur: function(){}, click: function(){},
-        dispatchEvent: function(){ return true; },
-        dataset: {}, offsetWidth: 0, offsetHeight: 0, scrollTop: 0, scrollLeft: 0
-      };
-      return {
-        getElementById: function(){ return fakeEl; },
-        querySelector: function(){ return fakeEl; },
-        querySelectorAll: function(){ return []; },
-        createElement: function(tag){ return Object.assign({}, fakeEl, { tagName: tag.toUpperCase() }); },
-        createTextNode: function(t){ return { textContent: t }; },
-        createDocumentFragment: function(){ return Object.assign({}, fakeEl); },
-        addEventListener: function(){}, removeEventListener: function(){},
-        body: fakeEl, head: fakeEl, documentElement: fakeEl,
-        cookie: '', title: '', readyState: 'complete'
-      };
-    })();
-    var window = {
-      addEventListener: function(){}, removeEventListener: function(){},
-      setTimeout: setTimeout, clearTimeout: clearTimeout,
-      setInterval: setInterval, clearInterval: clearInterval,
-      innerWidth: 1024, innerHeight: 768, scrollY: 0, scrollX: 0,
-      location: { href: '', origin: '', pathname: '/', hash: '' },
-      navigator: { userAgent: 'SJSB Sandbox' },
-      history: { pushState: function(){}, replaceState: function(){}, back: function(){}, forward: function(){} },
-      localStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },
-      sessionStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },
-      requestAnimationFrame: function(cb){ return setTimeout(cb, 16); },
-      cancelAnimationFrame: function(id){ clearTimeout(id); },
-      getComputedStyle: function(){ return {}; },
-      matchMedia: function(){ return { matches: false, addEventListener: function(){} }; },
-      alert: function(m){ console.log('[alert] ' + m); },
-      confirm: function(){ return true; },
-      prompt: function(msg, def){ return def || ''; },
-      fetch: function(url) {
-        console.log('[fetch] ' + url + ' (sandbox mock)');
-        return Promise.resolve({
-          ok: true, status: 200, statusText: 'OK',
-          json: function(){ return Promise.resolve({}); },
-          text: function(){ return Promise.resolve(''); },
-          headers: { get: function(){ return ''; } }
-        });
-      },
-      XMLHttpRequest: function(){},
-      WebSocket: function(){},
-      Worker: function(){},
-      IntersectionObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; },
-      MutationObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; },
-      ResizeObserver: function(cb){ this.observe = function(){}; this.disconnect = function(){}; }
+  // Try Web Worker with timeout; fall back to main-thread if Workers unavailable
+  if (typeof Worker !== 'undefined' && typeof Blob !== 'undefined') {
+    var blob = new Blob([workerSrc], { type: 'application/javascript' });
+    var url = URL.createObjectURL(blob);
+    var worker = new Worker(url);
+    var done = false;
+
+    var timer = setTimeout(function () {
+      if (done) return;
+      done = true;
+      worker.terminate();
+      URL.revokeObjectURL(url);
+      body.textContent = '[TIMEOUT] Execution exceeded ' + (RUN_TIMEOUT_MS / 1000) + 's \u2014 possible infinite loop';
+    }, RUN_TIMEOUT_MS);
+
+    worker.onmessage = function (e) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      worker.terminate();
+      URL.revokeObjectURL(url);
+      var logs = e.data || [];
+      body.textContent = logs.length > 0 ? logs.join('\n') : '(no console output)';
     };
-    var fetch = window.fetch;
-    var alert = window.alert;
-    var confirm = window.confirm;
-    var prompt = window.prompt;
-    var localStorage = window.localStorage;
-    var sessionStorage = window.sessionStorage;
-    var navigator = window.navigator;
-    var requestAnimationFrame = window.requestAnimationFrame;
 
-    // Web Components stubs
-    var HTMLElement = (function () {
-      function HTMLElement() {}
-      HTMLElement.prototype.attachShadow = function() {
-        var shadow = Object.assign({}, document.createElement('div'));
-        shadow.getElementById = function(){ return document.createElement('div'); };
-        shadow.innerHTML = '';
-        this.shadowRoot = shadow;
-        return shadow;
-      };
-      HTMLElement.prototype.getAttribute = function(){ return ''; };
-      HTMLElement.prototype.setAttribute = function(){};
-      HTMLElement.prototype.addEventListener = function(){};
-      HTMLElement.prototype.dispatchEvent = function(){ return true; };
-      HTMLElement.prototype.connectedCallback = function(){};
-      HTMLElement.prototype.disconnectedCallback = function(){};
-      HTMLElement.prototype.attributeChangedCallback = function(){};
-      HTMLElement.observedAttributes = [];
-      return HTMLElement;
-    })();
-    var HTMLButtonElement = HTMLElement;
-    var customElements = {
-      _registry: {},
-      define: function(name, cls, opts) { this._registry[name] = cls; },
-      get: function(name) { return this._registry[name]; },
-      whenDefined: function() { return Promise.resolve(); }
+    worker.onerror = function (e) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      worker.terminate();
+      URL.revokeObjectURL(url);
+      body.textContent = '[ERROR] ' + (e.message || 'Unknown worker error');
     };
-    var CustomEvent = function(type, opts) {
-      this.type = type;
-      this.detail = (opts && opts.detail) || null;
-      this.bubbles = (opts && opts.bubbles) || false;
-      this.composed = (opts && opts.composed) || false;
-    };
-    var Event = function(type, opts) {
-      this.type = type;
-      this.bubbles = (opts && opts.bubbles) || false;
-      this.preventDefault = function(){};
-      this.stopPropagation = function(){};
-    };
-  `;
-
-  try {
-    new Function(sandbox + '\n' + safeCode)();
-  } catch (error) {
-    logs.push('[ERROR] ' + error.name + ': ' + error.message);
+  } else {
+    // Fallback: main-thread execution (no timeout protection)
+    var logs = [];
+    var origLog = console.log, origErr = console.error, origWarn = console.warn;
+    console.log = function () { var a = Array.from(arguments).map(function (v) { if (v === null) return 'null'; if (v === undefined) return 'undefined'; return typeof v === 'object' ? JSON.stringify(v, null, 2) : String(v); }); logs.push(a.join(' ')); origLog.apply(console, arguments); };
+    console.error = function () { logs.push('[ERROR] ' + Array.from(arguments).join(' ')); origErr.apply(console, arguments); };
+    console.warn = function () { logs.push('[WARN] ' + Array.from(arguments).join(' ')); origWarn.apply(console, arguments); };
+    try { new Function(_sandboxSrc + '\n' + safeCode)(); } catch (err) { logs.push('[ERROR] ' + err.name + ': ' + err.message); }
+    console.log = origLog; console.error = origErr; console.warn = origWarn;
+    body.textContent = logs.length > 0 ? logs.join('\n') : '(no console output)';
   }
-
-  console.log = originalLog;
-  console.error = originalError;
-  console.warn = originalWarn;
-
-  body.textContent = logs.length > 0 ? logs.join('\n') : '(no console output)';
 }
 
 function copyCode(code, btn) {
@@ -1076,8 +1091,13 @@ function copyCode(code, btn) {
 // SYNTAX HIGHLIGHTING
 // ============================================================
 
+var _highlightCache = {};
+
 function highlightLine(line) {
   if (!line.trim()) return '\n';
+
+  // Return cached result if available
+  if (_highlightCache[line] !== undefined) return _highlightCache[line];
 
   var KEYWORDS = /^(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|super|this|typeof|instanceof|in|of|async|await|yield|try|catch|finally|throw|import|export|default|from|true|false|null|undefined|NaN|Infinity|void|delete|static|get|set)$/;
 
@@ -1214,6 +1234,7 @@ function highlightLine(line) {
     }
   });
 
+  _highlightCache[line] = html;
   return html;
 }
 
