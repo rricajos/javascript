@@ -277,8 +277,8 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 90%;
-  max-width: 620px;
+  width: 92%;
+  max-width: 1100px;
   height: 100%;
   background: var(--black-second-color);
   z-index: 160;
@@ -337,6 +337,37 @@
   overflow-x: hidden;
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
+}
+
+/* Two-column drawer layout: quiz left, code right */
+.drawer-columns {
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+}
+
+.drawer-col-quiz {
+  width: 35%;
+  flex-shrink: 0;
+  border-right: 1px solid #444;
+  padding: 1em;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.drawer-col-quiz:empty {
+  display: none;
+}
+
+/* When quiz column is hidden, code column takes full width */
+.drawer-col-quiz:empty + .drawer-col-code {
+  width: 100%;
+}
+
+.drawer-col-code {
+  width: 65%;
+  flex-grow: 1;
+  min-width: 0;
 }
 
 /* Code content area — inside drawer, always visible */
@@ -827,6 +858,13 @@
   opacity: 0.7;
 }
 
+/* Quiz inside sidebar panel — remove top border since it's in its own column */
+.drawer-col-quiz .topic-quiz {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
 /* Footer */
 .site-footer {
   max-width: var(--max-width);
@@ -875,6 +913,10 @@
   border-top-color: #333;
 }
 
+[data-theme="dark"] .drawer-col-quiz {
+  border-right-color: #333;
+}
+
 /* ============================================================
    PRINT
    ============================================================ */
@@ -909,6 +951,27 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+@media screen and (max-width: 860px) {
+  .drawer {
+    width: 100%;
+    max-width: none;
+  }
+
+  .drawer-columns {
+    flex-direction: column;
+  }
+
+  .drawer-col-quiz {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #444;
+  }
+
+  .drawer-col-code {
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 600px) {
   .roadmap {
     padding: 0.5em;
@@ -934,11 +997,6 @@
     font-size: 0.75em;
     line-height: 1.5;
     padding: 0.8em 1em;
-  }
-
-  .drawer {
-    width: 100%;
-    max-width: none;
   }
 
   .back-to-top {
