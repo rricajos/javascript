@@ -1631,6 +1631,11 @@ function filterTopics(query) {
       }
     });
 
+    // Default to first section when above all sections
+    if (!currentSection && sections.length) {
+      currentSection = sections[0].id;
+    }
+
     cubes.forEach(function (cube) {
       if (cube.dataset.section === currentSection) {
         cube.classList.add('cube-active');

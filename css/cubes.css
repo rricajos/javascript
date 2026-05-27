@@ -52,12 +52,34 @@
   text-overflow: ellipsis;
 }
 
+/* Short description — visible on inactive cubes, hidden on active */
+.cube-info-desc {
+  margin: 0.2em 0 0 0;
+  font-size: clamp(8px, 1.4vw, 11px);
+  opacity: 0.5;
+  font-style: italic;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  max-height: 30px;
+  overflow: hidden;
+}
+
+.cube.cube-active .cube-info-desc {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Module list — visible only on active cube */
 .cube-info-list {
-  margin: 0;
+  margin: 0.3em 0 0 0;
   padding-inline-start: 15px;
-  max-height: 80px;
+  max-height: 0;
   overflow: hidden;
   transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.cube.cube-active .cube-info-list {
+  max-height: 80px;
   opacity: 1;
 }
 
@@ -160,6 +182,12 @@
   color: var(--yellow-color);
 }
 
+/* Hide description and list in sticky mode */
+.cubes-sticky .cube-info-desc {
+  max-height: 0;
+  opacity: 0;
+}
+
 .cubes-sticky .cube-info-list {
   max-height: 0;
   opacity: 0;
@@ -237,6 +265,10 @@
 
 [data-theme="dark"] .cube-info-title {
   color: var(--yellow-color);
+}
+
+[data-theme="dark"] .cube-info-desc {
+  color: #999;
 }
 
 [data-theme="dark"] .cube-side {
