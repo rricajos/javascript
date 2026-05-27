@@ -13,7 +13,8 @@
   width: 130px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: width 0.35s ease, margin 0.35s ease, opacity 0.3s ease;
+  transition: width 0.35s ease, margin 0.35s ease, opacity 0.35s ease,
+              transform 0.2s ease, filter 0.3s ease;
 }
 
 .cube-container {
@@ -65,7 +66,8 @@
   font-size: 16px;
   font-weight: bold;
   transition: transform 0.4s ease, height 0.35s ease, width 0.35s ease,
-              line-height 0.35s ease, font-size 0.35s ease, opacity 0.35s ease;
+              line-height 0.35s ease, font-size 0.35s ease, opacity 0.35s ease,
+              border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cube-top-side {
@@ -99,19 +101,50 @@
 }
 
 .cubes-sticky .cube {
-  width: 90px;
-  margin: 0 2px;
+  width: 80px;
+  margin: 0 6px;
+  opacity: 0.45;
+  position: relative;
+}
+
+.cubes-sticky .cube:hover {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+.cubes-sticky .cube.cube-active {
+  opacity: 1;
 }
 
 .cubes-sticky .cube-container {
-  height: 60px;
-  transform: scale(0.55);
+  height: 52px;
+  transform: scale(0.5);
 }
 
+/* Compact label under cube in sticky mode */
 .cubes-sticky .cube-info {
-  max-height: 0;
-  opacity: 0;
-  padding: 0 0.5em;
+  max-height: 18px;
+  opacity: 1;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cubes-sticky .cube-info-title {
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--white-second-color);
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.cubes-sticky .cube:hover .cube-info-title,
+.cubes-sticky .cube.cube-active .cube-info-title {
+  color: var(--yellow-color);
+}
+
+.cubes-sticky .cube-info-list {
+  display: none;
 }
 
 .cubes-sticky .cube-side {
@@ -126,7 +159,11 @@
   opacity: 0.7;
 }
 
-/* Sticky mode: active gets highlight border */
+/* Sticky mode: active gets yellow glow */
+.cubes-sticky .cube.cube-active {
+  filter: drop-shadow(0 0 8px rgba(255, 221, 0, 0.4));
+}
+
 .cubes-sticky .cube.cube-active .cube-left-side,
 .cubes-sticky .cube.cube-active .cube-right-side {
   border-color: var(--yellow-color);
@@ -136,6 +173,40 @@
 .cubes-sticky .cube.cube-active .cube-top-side {
   transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -130%);
   opacity: 0.5;
+}
+
+/* Sticky search icon button */
+.sticky-search-btn {
+  display: none;
+}
+
+.cubes-sticky .sticky-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid #555;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  color: var(--white-second-color);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  z-index: 2;
+}
+
+.cubes-sticky .sticky-search-btn:hover {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
+  background: rgba(255, 221, 0, 0.08);
+}
+
+.cubes-sticky .sticky-search-btn .material-icons {
+  font-size: 20px;
 }
 
 /* ============================================================
@@ -175,6 +246,15 @@
   background-color: #111;
 }
 
+[data-theme="dark"] .cubes-sticky .cube-info-title {
+  color: #888;
+}
+
+[data-theme="dark"] .cubes-sticky .cube:hover .cube-info-title,
+[data-theme="dark"] .cubes-sticky .cube.cube-active .cube-info-title {
+  color: var(--yellow-color);
+}
+
 /* ============================================================
    RESPONSIVE — small screens
    ============================================================ */
@@ -203,12 +283,31 @@
   }
 
   .cubes-sticky .cube {
-    width: 65px;
+    width: 60px;
+    margin: 0 3px;
   }
 
   .cubes-sticky .cube-container {
-    height: 45px;
-    transform: scale(0.5);
+    height: 42px;
+    transform: scale(0.45);
+  }
+
+  .cubes-sticky .cube-info {
+    max-height: 16px;
+  }
+
+  .cubes-sticky .cube-info-title {
+    font-size: 9px;
+  }
+
+  .cubes-sticky .sticky-search-btn {
+    width: 30px;
+    height: 30px;
+    left: 0.5em;
+  }
+
+  .cubes-sticky .sticky-search-btn .material-icons {
+    font-size: 17px;
   }
 }
 
@@ -236,11 +335,30 @@
   }
 
   .cubes-sticky .cube {
-    width: 58px;
+    width: 50px;
+    margin: 0 2px;
   }
 
   .cubes-sticky .cube-container {
-    height: 40px;
-    transform: scale(0.45);
+    height: 36px;
+    transform: scale(0.42);
+  }
+
+  .cubes-sticky .cube-info {
+    max-height: 14px;
+    opacity: 1;
+  }
+
+  .cubes-sticky .cube-info-title {
+    font-size: 8px;
+  }
+
+  .cubes-sticky .sticky-search-btn {
+    position: static;
+    transform: none;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    margin: auto 0.3em;
   }
 }

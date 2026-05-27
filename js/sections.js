@@ -1250,6 +1250,17 @@ function filterTopics(query) {
 
   updateSticky();
   updateActiveSection();
+
+  // Sticky search button: scroll up to reveal search bar and focus it
+  var stickySearchBtn = document.getElementById('stickySearchBtn');
+  if (stickySearchBtn) {
+    stickySearchBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(function () {
+        document.getElementById('query').focus();
+      }, 400);
+    });
+  }
 })();
 
 // ============================================================

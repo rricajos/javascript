@@ -11,6 +11,10 @@
 /* Sticky mode: hide search, compact padding */
 .cubes-sticky.search-box-form-container {
   padding: 0;
+  position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(50, 51, 48, 0.92);
 }
 
 .cubes-sticky .search-box-form {
@@ -85,6 +89,10 @@
 [data-theme="dark"] .search-box-form-container {
   background-color: #111;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .cubes-sticky.search-box-form-container {
+  background-color: rgba(17, 17, 17, 0.92);
 }
 
 [data-theme="dark"] .search-box-form-input {
