@@ -96,8 +96,6 @@
    ============================================================ */
 .cubes-sticky #super-cubes-container {
   padding: 0.4em 0;
-  background-color: var(--black-second-color);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 .cubes-sticky .cube {
@@ -242,9 +240,6 @@
   border-color: #555;
 }
 
-[data-theme="dark"] .cubes-sticky #super-cubes-container {
-  background-color: #111;
-}
 
 [data-theme="dark"] .cubes-sticky .cube-info-title {
   color: #888;

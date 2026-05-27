@@ -1229,15 +1229,15 @@ function filterTopics(query) {
 // ============================================================
 
 (function () {
-  const nav = document.querySelector('.search-box-form-container');
+  const nav = document.getElementById('cubesNav');
   const sentinel = document.getElementById('navSentinel');
   const cubes = document.querySelectorAll('.cube[data-section]');
   const sections = document.querySelectorAll('.section');
   if (!nav || !cubes.length) return;
 
   // Use IntersectionObserver on a sentinel element to avoid feedback loops.
-  // When the sentinel (placed right above the nav) leaves the viewport,
-  // the nav becomes sticky. Its position is immune to nav height changes.
+  // When the sentinel (placed right above the cubes nav) leaves the viewport,
+  // the nav becomes sticky compact. Position is immune to height changes.
   if (sentinel && 'IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting) {

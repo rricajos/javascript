@@ -2,30 +2,6 @@
   background-color: var(--black-color);
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.582);
   padding: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  transition: padding 0.3s ease;
-}
-
-/* Sticky mode: hide search, compact padding */
-.cubes-sticky.search-box-form-container {
-  padding: 0.25rem 0;
-  position: sticky;
-  top: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background-color: rgba(50, 51, 48, 0.95);
-  border-bottom: 2px solid var(--yellow-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-.cubes-sticky .search-box-form {
-  display: none;
-}
-
-.cubes-sticky .search-results-count {
-  display: none;
 }
 
 .search-box-form {
@@ -43,7 +19,6 @@
 .search-box-form-input {
   box-sizing: border-box;
   font-family: monospace;
-
   padding: 0 1rem;
   font-size: 1.5em;
   border-radius: 0.5em;
@@ -52,8 +27,6 @@
   height: 48px;
   background-color: var(--white-color);
   box-shadow: 0px 0px 3px black;
-
-
 }
 
 .search-box-form-submit {
@@ -77,15 +50,36 @@
 
 .search-box-form-submit-icon {
   color: var(--white-color);
-
 }
 
-.search-box-form-submit:hover  {
+.search-box-form-submit:hover {
   filter: brightness(120%);
 }
 
 .search-box-form-input:hover {
   filter: brightness(120%);
+}
+
+/* ============================================================
+   CUBES NAV — the sticky element
+   ============================================================ */
+.cubes-nav {
+  background-color: var(--black-color);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+/* Sticky mode: compact bar with border */
+.cubes-nav.cubes-sticky {
+  background-color: rgba(50, 51, 48, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--yellow-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  padding: 0;
 }
 
 /* Dark mode */
@@ -94,7 +88,11 @@
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
 }
 
-[data-theme="dark"] .cubes-sticky.search-box-form-container {
+[data-theme="dark"] .cubes-nav {
+  background-color: #111;
+}
+
+[data-theme="dark"] .cubes-nav.cubes-sticky {
   background-color: rgba(17, 17, 17, 0.95);
   border-bottom-color: var(--yellow-color);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
