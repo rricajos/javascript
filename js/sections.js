@@ -210,10 +210,7 @@ function updateProgressUI() {
 
 function openQuizSlide(topicName) {
   var quizSlide = document.getElementById('quizSlide');
-  var quizBody = document.getElementById('quizSlideBody');
-  if (!quizSlide || !quizBody) return;
-  quizBody.innerHTML = '';
-  // Quiz content is rendered by renderCode — just open the panel
+  if (!quizSlide) return;
   quizSlide.classList.add('open');
 }
 
@@ -921,6 +918,7 @@ function renderCode(contentEl, code, topicName) {
 
   // Add mini-quiz if available — render into quiz slide panel
   var quizSlideBody = document.getElementById('quizSlideBody');
+  if (quizSlideBody) quizSlideBody.innerHTML = '';
   const quizData = TOPIC_QUIZZES[topicName];
   if (quizData && quizData.length > 0) {
     const quizDiv = document.createElement('div');
