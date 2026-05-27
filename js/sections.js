@@ -740,12 +740,57 @@ function renderCode(contentEl, code, topicName) {
   // Track current code (may be edited by user)
   let currentCode = code;
 
+  const originalCode = code;
+
   const runBtn = document.createElement('button');
   runBtn.className = 'code-toolbar-btn';
   runBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">play_arrow</i> Run';
-  runBtn.title = 'Execute code in console';
+  runBtn.title = 'Execute code (Ctrl+Enter)';
   runBtn.addEventListener('click', function () {
     runCode(currentCode);
+  });
+
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'code-toolbar-btn';
+  resetBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">restart_alt</i> Reset';
+  resetBtn.title = 'Reset to original code';
+  resetBtn.style.display = 'none';
+  resetBtn.addEventListener('click', function () {
+    currentCode = originalCode;
+    // If editor is open, update its value
+    var editor = contentEl.querySelector('.code-editor');
+    if (editor) editor.value = originalCode;
+    // Re-render code block
+    var codeBlock = contentEl.querySelector('.code-block');
+    if (codeBlock) {
+      codeBlock.innerHTML = '';
+      var lines = originalCode.split('\n');
+      var frag = document.createDocumentFragment();
+      lines.forEach(function (line, index) {
+        var span = document.createElement('span');
+        span.className = 'code-line';
+        var lineNum = document.createElement('span');
+        lineNum.className = 'code-line-number';
+        lineNum.textContent = index + 1;
+        span.appendChild(lineNum);
+        var lineContent = document.createElement('span');
+        lineContent.style.flex = '1';
+        lineContent.style.minHeight = '1.2em';
+        if (/^\/\/\/{3,}/.test(line.trim())) {
+          lineContent.className = 'code-separator';
+          lineContent.textContent = line;
+        } else if (/^\s*\/\//.test(line)) {
+          lineContent.className = 'code-comment';
+          lineContent.textContent = line;
+        } else {
+          lineContent.innerHTML = highlightLine(line);
+        }
+        span.appendChild(lineContent);
+        frag.appendChild(span);
+      });
+      codeBlock.appendChild(frag);
+    }
+    resetBtn.style.display = 'none';
   });
 
   const copyBtn = document.createElement('button');
@@ -805,8 +850,9 @@ function renderCode(contentEl, code, topicName) {
       editor.spellcheck = false;
       editor.addEventListener('input', function () {
         currentCode = editor.value;
+        if (currentCode !== originalCode) resetBtn.style.display = '';
       });
-      // Handle Tab key for indentation
+      // Handle Tab key for indentation + Ctrl+Enter to run
       editor.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') {
           e.preventDefault();
@@ -815,6 +861,10 @@ function renderCode(contentEl, code, topicName) {
           editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
           editor.selectionStart = editor.selectionEnd = start + 2;
           currentCode = editor.value;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          runCode(currentCode);
         }
       });
       contentEl.insertBefore(editor, codeBlock.nextSibling);
@@ -850,6 +900,7 @@ function renderCode(contentEl, code, topicName) {
   toolbar.appendChild(runBtn);
   toolbar.appendChild(copyBtn);
   toolbar.appendChild(editBtn);
+  toolbar.appendChild(resetBtn);
   toolbar.appendChild(shareBtn);
   toolbar.appendChild(sep);
   toolbar.appendChild(sizeDown);
