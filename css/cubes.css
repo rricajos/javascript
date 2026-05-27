@@ -34,15 +34,15 @@
 }
 
 .cube-container {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  transform: scale(0.5);
-  margin: -6px -4px -6px -6px;
+  transform: scale(0.45);
+  margin: -4px -2px -4px -2px;
   transition: transform 0.35s ease;
 }
 
@@ -177,11 +177,11 @@
 }
 
 .cubes-sticky .cube-container {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  transform: scale(0.42);
-  margin: -4px -4px -4px -6px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  transform: scale(0.4);
+  margin: -3px 0 -3px -2px;
 }
 
 .cubes-sticky .cube-info {
