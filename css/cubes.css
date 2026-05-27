@@ -38,11 +38,16 @@
    ============================================================ */
 .cube-container {
   width: 36px;
-  height: 42px;
+  height: 36px;
   min-width: 36px;
   position: relative;
   margin-right: 6px;
   transition: height 0.3s ease;
+}
+
+/* Offset sides down so the 3D visual is vertically centered */
+.cube-container .cube-side {
+  top: 5px;
 }
 
 /* ============================================================
@@ -150,7 +155,7 @@
    STICKY NAV — compact single row, title only
    ============================================================ */
 .cubes-sticky #super-cubes-container {
-  padding: 0.25em 0;
+  padding: 0.5em 0;
   gap: 0;
 }
 

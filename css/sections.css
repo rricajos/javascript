@@ -1153,7 +1153,7 @@
 .site-footer {
   max-width: var(--max-width);
   margin: 2em auto 0;
-  padding: 1.2em 1em;
+  padding: 1.2em 1em 60vh;
   border-top: 1px solid var(--white-second-color);
   text-align: center;
   font-family: monospace;
