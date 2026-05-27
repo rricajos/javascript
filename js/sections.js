@@ -1204,7 +1204,9 @@ function _getConsolePanel() {
   if (!output) {
     output = document.createElement('div');
     output.id = 'sjsb-console';
-    output.innerHTML = '<div class="console-header"><span>Console Output</span><button onclick="this.parentElement.parentElement.remove()" class="console-close">&times;</button></div><pre class="console-body"></pre>';
+    output.setAttribute('role', 'log');
+    output.setAttribute('aria-label', 'Code execution console');
+    output.innerHTML = '<div class="console-header"><span>Console Output</span><button onclick="this.parentElement.parentElement.remove()" class="console-close" aria-label="Close console">&times;</button></div><pre class="console-body" aria-live="polite"></pre>';
     document.body.appendChild(output);
   }
   output.style.display = 'block';

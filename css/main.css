@@ -39,6 +39,23 @@ a {
   text-decoration: none;
 }
 
+/* Skip to content — only visible on focus for keyboard users */
+.skip-to-content {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background: var(--yellow-color);
+  color: var(--black-color);
+  padding: 0.5em 1em;
+  font-weight: bold;
+  z-index: 1000;
+  transition: top 0.15s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
 /* Global focus indicator for keyboard navigation */
 :focus-visible {
   outline: 2px solid var(--yellow-color);
