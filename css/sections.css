@@ -940,6 +940,28 @@
   margin: 0 0 0.4em 0;
 }
 
+/* Code snippet inside quiz questions (D2: code output type) */
+.quiz-code-snippet {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-left: 3px solid var(--yellow-color);
+  border-radius: 0.4em;
+  padding: 0.6em 0.8em;
+  margin: 0.3em 0 0.6em 0;
+  font-family: monospace;
+  font-size: 0.82em;
+  color: #c5c8c6;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+
+[data-theme="dark"] .quiz-code-snippet {
+  background: #0d0d0d;
+  border-color: #222;
+}
+
 .quiz-options {
   display: flex;
   flex-wrap: wrap;

@@ -230,6 +230,13 @@ function openReviewMode() {
     qDiv.className = 'quiz-question';
     qDiv.innerHTML = '<p class="quiz-question-text"><span class="review-topic-label">' + topicLabel + '</span>' + (idx + 1) + '. ' + item.q + '</p>';
 
+    if (item.code) {
+      var codeSnippet = document.createElement('pre');
+      codeSnippet.className = 'quiz-code-snippet';
+      codeSnippet.textContent = item.code;
+      qDiv.appendChild(codeSnippet);
+    }
+
     var optsDiv = document.createElement('div');
     optsDiv.className = 'quiz-options';
 
@@ -576,7 +583,9 @@ const TOPIC_QUIZZES = {
   variables_and_types: [
     { q: 'What keyword declares a block-scoped variable that can be reassigned?', opts: ['var', 'let', 'const', 'static'], answer: 1, explanation: 'let is block-scoped (unlike var which is function-scoped) and allows reassignment (unlike const).' },
     { q: 'What does typeof null return?', opts: ['"null"', '"undefined"', '"object"', '"boolean"'], answer: 2, explanation: 'This is a well-known JS bug from the first implementation. typeof null returns "object" due to how type tags were stored internally.' },
-    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' }
+    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' },
+    { q: 'What does this code print?', code: 'let a = "5";\nlet b = 2;\nconsole.log(a + b);\nconsole.log(a - b);', opts: ['"52" and 3', '7 and 3', '"52" and "52"', 'NaN and NaN'], answer: 0, explanation: 'The + operator concatenates when one operand is a string: "5"+2 = "52". But - always converts to numbers: "5"-2 = 3.' },
+    { q: 'What does this code print?', code: 'console.log(typeof undefined);\nconsole.log(typeof undeclaredVar);', opts: ['Error thrown', '"undefined" and "undefined"', '"undefined" and ReferenceError', '"undefined" and "null"'], answer: 1, explanation: 'typeof is special — it returns "undefined" for both undefined values AND undeclared variables without throwing.' }
   ],
   operator_aritmetical: [
     { q: 'What does 10 % 3 return?', opts: ['3', '1', '0', '3.33'], answer: 1, explanation: 'The modulo operator (%) returns the remainder of division. 10 / 3 = 3 remainder 1.' },
@@ -600,29 +609,35 @@ const TOPIC_QUIZZES = {
     { q: 'What does false || "hello" return?', opts: ['false', 'true', '"hello"', 'undefined'], answer: 2, explanation: 'The OR operator returns the first truthy value. false is falsy, so it returns "hello".' },
     { q: 'What does true && 0 return?', opts: ['true', 'false', '0', '1'], answer: 2, explanation: 'The AND operator returns the first falsy value or the last value. true is truthy, so it evaluates and returns 0.' },
     { q: 'What does !!"" evaluate to?', opts: ['true', 'false', '""', 'undefined'], answer: 1, explanation: '"" is falsy, so !"" is true, and !!"" is false. Double negation converts to boolean.' },
-    { q: 'What does null || 0 || "" || "hi" return?', opts: ['null', '0', '""', '"hi"'], answer: 3, explanation: 'OR returns the first truthy value. null, 0, and "" are all falsy, so it returns "hi".' }
+    { q: 'What does null || 0 || "" || "hi" return?', opts: ['null', '0', '""', '"hi"'], answer: 3, explanation: 'OR returns the first truthy value. null, 0, and "" are all falsy, so it returns "hi".' },
+    { q: 'What does this code print?', code: 'let a = 0;\nlet b = "";\nlet c = "JS";\nconsole.log(a || b || c);', opts: ['0', '""', '"JS"', 'false'], answer: 2, explanation: 'OR (||) skips falsy values (0, ""), returning the first truthy one: "JS".' }
   ],
   control_flow: [
     { q: 'Which loop always executes at least once?', opts: ['for', 'while', 'do...while', 'for...of'], answer: 2, explanation: 'do...while checks the condition after executing the body, so it always runs at least once.' },
     { q: 'What does "break" do inside a loop?', opts: ['Skips iteration', 'Exits loop', 'Returns value', 'Pauses execution'], answer: 1, explanation: 'break immediately terminates the innermost enclosing loop. Use "continue" to skip to the next iteration.' },
     { q: 'for...of iterates over:', opts: ['Object keys', 'Iterable values', 'Array indices', 'Prototype chain'], answer: 1, explanation: 'for...of iterates over iterable values (arrays, strings, Maps, Sets). Use for...in for object keys.' },
-    { q: 'What happens if no case matches in a switch without default?', opts: ['Error', 'Returns undefined', 'Nothing executes', 'First case runs'], answer: 2, explanation: 'Without a matching case or default clause, the switch statement simply does nothing and execution continues after it.' }
+    { q: 'What happens if no case matches in a switch without default?', opts: ['Error', 'Returns undefined', 'Nothing executes', 'First case runs'], answer: 2, explanation: 'Without a matching case or default clause, the switch statement simply does nothing and execution continues after it.' },
+    { q: 'What does this code print?', code: 'for (let i = 0; i < 5; i++) {\n  if (i === 3) continue;\n  if (i === 4) break;\n  console.log(i);\n}', opts: ['0, 1, 2, 3, 4', '0, 1, 2', '0, 1, 2, 4', '0, 1, 2, 3'], answer: 1, explanation: 'Prints 0, 1, 2. At i=3 continue skips the log. At i=4 break exits the loop entirely. So only 0, 1, 2 are printed.' }
   ],
   closures_and_scope: [
     { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1, explanation: 'A closure is created when an inner function retains access to variables from its outer (enclosing) function even after the outer function has returned.' },
-    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' }
+    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' },
+    { q: 'What does this code print?', code: 'for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n// After all timeouts fire:', opts: ['0, 1, 2', '3, 3, 3', '0, 0, 0', 'undefined x3'], answer: 1, explanation: 'Classic closure trap! var is function-scoped, so all 3 callbacks share the same i. By the time they run, the loop has finished and i = 3. Use let to fix.' },
+    { q: 'What does this code print?', code: 'function outer() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nconst fn = outer();\nconsole.log(fn(), fn(), fn());', opts: ['0 0 0', '1 1 1', '1 2 3', 'Error'], answer: 2, explanation: 'The inner function closes over count. Each call increments the same count variable: 1, 2, 3.' }
   ],
   functions: [
     { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2, explanation: 'Arrow functions inherit "this" from their enclosing lexical scope. They also lack arguments object and cannot be used as constructors.' },
     { q: 'What is an IIFE?', opts: ['An async function', 'A function that invokes itself immediately', 'A generator', 'A method'], answer: 1, explanation: 'IIFE (Immediately Invoked Function Expression) is a function defined and called in one step: (function(){})().' },
     { q: 'What are default parameters?', opts: ['Parameters that are always required', 'Values used when argument is undefined', 'Global variables', 'Rest parameters'], answer: 1, explanation: 'Default parameters provide fallback values when arguments are not passed or are undefined: function f(x = 10) {}.' },
-    { q: 'What does arguments refer to inside a regular function?', opts: ['An array of parameters', 'An array-like object of passed arguments', 'The function name', 'undefined'], answer: 1, explanation: 'arguments is an array-like object containing all passed arguments. Arrow functions do not have their own arguments.' }
+    { q: 'What does arguments refer to inside a regular function?', opts: ['An array of parameters', 'An array-like object of passed arguments', 'The function name', 'undefined'], answer: 1, explanation: 'arguments is an array-like object containing all passed arguments. Arrow functions do not have their own arguments.' },
+    { q: 'What does this code print?', code: 'console.log(greet());\nfunction greet() {\n  return "Hello!";\n}', opts: ['Error: greet is not defined', '"Hello!"', 'undefined', 'null'], answer: 1, explanation: 'Function declarations are hoisted — the entire function is available before its position in the code. Function expressions are NOT hoisted.' }
   ],
   strings: [
     { q: 'What does "hello".slice(1, 3) return?', opts: ['"hel"', '"el"', '"ell"', '"llo"'], answer: 1, explanation: 'slice(1, 3) extracts characters from index 1 up to (not including) index 3: "e" and "l" = "el".' },
     { q: 'Which method checks if a string starts with a value?', opts: ['includes()', 'startsWith()', 'indexOf()', 'match()'], answer: 1, explanation: 'startsWith() returns true if the string begins with the specified characters. endsWith() checks the end.' },
     { q: 'What does "abc".repeat(3) return?', opts: ['"abc3"', '"abcabcabc"', '["abc","abc","abc"]', '"aaa"'], answer: 1, explanation: 'repeat(n) returns a new string with n copies of the original string concatenated together.' },
-    { q: 'Template literals use which character?', opts: ['Single quotes', 'Double quotes', 'Backticks', 'Parentheses'], answer: 2, explanation: 'Template literals use backticks (`) and support string interpolation with ${expression} and multi-line strings.' }
+    { q: 'Template literals use which character?', opts: ['Single quotes', 'Double quotes', 'Backticks', 'Parentheses'], answer: 2, explanation: 'Template literals use backticks (`) and support string interpolation with ${expression} and multi-line strings.' },
+    { q: 'What does this code print?', code: 'const str = "JavaScript";\nconsole.log(str[0]);\nconsole.log(str.at(-1));\nconsole.log(str.length);', opts: ['"J", "t", 10', '"J", "t", 9', '"J", undefined, 10', '"j", "t", 10'], answer: 0, explanation: 'str[0] = "J" (first char). str.at(-1) = "t" (last char via negative index). "JavaScript" has 10 characters.' }
   ],
   regex: [
     { q: 'What flag makes a regex case-insensitive?', opts: ['g', 'i', 'm', 's'], answer: 1, explanation: 'The "i" flag enables case-insensitive matching. "g" is global, "m" is multiline, "s" makes . match newlines.' },
@@ -634,7 +649,8 @@ const TOPIC_QUIZZES = {
     { q: 'Which method returns a new array without modifying the original?', opts: ['push()', 'splice()', 'map()', 'sort()'], answer: 2, explanation: 'map() creates a new array with the results of calling a function on every element. push/splice/sort mutate the original.' },
     { q: 'What does [1,2,3].reduce((a,b) => a+b, 0) return?', opts: ['[1,2,3]', '6', '0', '3'], answer: 1, explanation: 'reduce() accumulates values: 0+1=1, 1+2=3, 3+3=6. The second argument (0) is the initial accumulator value.' },
     { q: 'What does [1,2,3].find(x => x > 1) return?', opts: ['[2,3]', '2', 'true', '1'], answer: 1, explanation: 'find() returns the FIRST element that satisfies the condition. Use filter() to get all matching elements.' },
-    { q: 'What does Array.isArray("hello") return?', opts: ['true', 'false', 'undefined', 'Error'], answer: 1, explanation: 'Array.isArray() checks if the value is an array. Strings are not arrays, so it returns false.' }
+    { q: 'What does Array.isArray("hello") return?', opts: ['true', 'false', 'undefined', 'Error'], answer: 1, explanation: 'Array.isArray() checks if the value is an array. Strings are not arrays, so it returns false.' },
+    { q: 'What does this code print?', code: 'const arr = [1, 2, 3, 4, 5];\nconst result = arr\n  .filter(x => x % 2 !== 0)\n  .map(x => x * 10);\nconsole.log(result);', opts: ['[10, 30, 50]', '[20, 40]', '[10, 20, 30, 40, 50]', '[1, 3, 5]'], answer: 0, explanation: 'filter keeps odd numbers [1,3,5], then map multiplies each by 10: [10, 30, 50]. Chaining is a common array pattern.' }
   ],
   data_collections_objects: [
     { q: 'Which method returns an array of an object\'s keys?', opts: ['Object.values()', 'Object.keys()', 'Object.entries()', 'Object.assign()'], answer: 1, explanation: 'Object.keys() returns an array of own enumerable property names. values() returns values, entries() returns [key, value] pairs.' },
@@ -644,13 +660,16 @@ const TOPIC_QUIZZES = {
   ],
   promises_and_async: [
     { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1, explanation: 'async/await is syntactic sugar over Promises, letting you write asynchronous code that reads like synchronous code.' },
-    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' }
+    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' },
+    { q: 'What does this code print?', code: 'async function getData() {\n  return 42;\n}\nconsole.log(typeof getData());', opts: ['"number"', '"object"', '"undefined"', '"function"'], answer: 1, explanation: 'async functions ALWAYS return a Promise, even if you return a plain value. typeof Promise is "object".' },
+    { q: 'In what order does this print?', code: 'console.log("A");\nPromise.resolve().then(() => console.log("B"));\nconsole.log("C");', opts: ['A, B, C', 'A, C, B', 'B, A, C', 'C, A, B'], answer: 1, explanation: 'Synchronous code runs first (A, C), then the microtask queue (Promise.then) runs B.' }
   ],
   error_handling: [
     { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2, explanation: 'finally always runs after try/catch, whether an error occurred or not — useful for cleanup tasks.' },
     { q: 'How do you create a custom error?', opts: ['new Error()', 'throw "error"', 'class MyError extends Error', 'All of the above'], answer: 3, explanation: 'All three work: new Error() creates a standard error, throw can throw anything, and extending Error creates custom types.' },
     { q: 'What property gives the error description?', opts: ['.text', '.message', '.description', '.info'], answer: 1, explanation: 'Error objects have .message (description), .name (error type), and .stack (call trace).' },
-    { q: 'What does throw do?', opts: ['Catches an error', 'Creates an error silently', 'Stops execution and signals an error', 'Logs to console'], answer: 2, explanation: 'throw immediately stops the current execution and transfers control to the nearest catch block.' }
+    { q: 'What does throw do?', opts: ['Catches an error', 'Creates an error silently', 'Stops execution and signals an error', 'Logs to console'], answer: 2, explanation: 'throw immediately stops the current execution and transfers control to the nearest catch block.' },
+    { q: 'What does this code print?', code: 'try {\n  throw new Error("oops");\n  console.log("A");\n} catch (e) {\n  console.log("B");\n} finally {\n  console.log("C");\n}', opts: ['A, B, C', 'B, C', 'A, C', 'C only'], answer: 1, explanation: 'throw jumps to catch (skipping "A"), printing "B". finally always runs, printing "C". Result: B, C.' }
   ],
   fetch_api: [
     { q: 'fetch() returns a:', opts: ['String', 'JSON object', 'Promise', 'Response'], answer: 2, explanation: 'fetch() is Promise-based. It resolves to a Response object; you then call .json() or .text() to parse the body.' },
@@ -674,19 +693,22 @@ const TOPIC_QUIZZES = {
     { q: 'Microtasks (Promise.then) execute before:', opts: ['Synchronous code', 'Macrotasks (setTimeout)', 'The call stack', 'Nothing'], answer: 1, explanation: 'After the call stack empties, all microtasks (Promises) run before the next macrotask (setTimeout, setInterval).' },
     { q: 'setTimeout(fn, 0) runs:', opts: ['Immediately', 'After current call stack clears', 'Never', 'Before promises'], answer: 1, explanation: 'setTimeout(fn, 0) queues a macrotask. It runs after the stack clears AND after all pending microtasks.' },
     { q: 'queueMicrotask() schedules a:', opts: ['Macrotask', 'Microtask', 'Animation frame', 'Web Worker'], answer: 1, explanation: 'queueMicrotask() adds a callback to the microtask queue, similar to Promise.resolve().then(fn).' },
-    { q: 'requestAnimationFrame runs before:', opts: ['Microtasks', 'The next repaint', 'setTimeout(fn,0)', 'Synchronous code'], answer: 1, explanation: 'requestAnimationFrame callbacks run right before the browser\'s next repaint cycle, typically at 60fps.' }
+    { q: 'requestAnimationFrame runs before:', opts: ['Microtasks', 'The next repaint', 'setTimeout(fn,0)', 'Synchronous code'], answer: 1, explanation: 'requestAnimationFrame callbacks run right before the browser\'s next repaint cycle, typically at 60fps.' },
+    { q: 'What order does this print?', code: 'console.log("1");\nsetTimeout(() => console.log("2"), 0);\nPromise.resolve().then(() => console.log("3"));\nconsole.log("4");', opts: ['1, 2, 3, 4', '1, 4, 3, 2', '1, 4, 2, 3', '1, 3, 4, 2'], answer: 1, explanation: 'Sync first: 1, 4. Then microtask (Promise): 3. Then macrotask (setTimeout): 2. Order: 1, 4, 3, 2.' }
   ],
   classes_and_oop: [
     { q: 'What keyword creates a subclass?', opts: ['implements', 'extends', 'inherits', 'uses'], answer: 1, explanation: 'extends creates a class that inherits from another. The child class gets all parent methods and can override them.' },
     { q: 'Private fields in JS classes start with:', opts: ['_', '#', '@', '$'], answer: 1, explanation: '#privateField is truly private in JS classes — not accessible outside the class body. _ is only a naming convention.' },
     { q: 'super() must be called:', opts: ['In any method', 'Before using "this" in a subclass constructor', 'After return', 'Only in static methods'], answer: 1, explanation: 'In a subclass constructor, super() must be called before accessing "this", as it initializes the parent class.' },
-    { q: 'Static methods belong to:', opts: ['Each instance', 'The class itself', 'The prototype', 'The global scope'], answer: 1, explanation: 'Static methods are called on the class (e.g., Array.isArray()), not on instances. Defined with the static keyword.' }
+    { q: 'Static methods belong to:', opts: ['Each instance', 'The class itself', 'The prototype', 'The global scope'], answer: 1, explanation: 'Static methods are called on the class (e.g., Array.isArray()), not on instances. Defined with the static keyword.' },
+    { q: 'What does this code print?', code: 'class Animal {\n  speak() { return "..."; }\n}\nclass Dog extends Animal {\n  speak() { return "Woof!"; }\n}\nconst d = new Dog();\nconsole.log(d.speak());\nconsole.log(d instanceof Animal);', opts: ['"Woof!" and true', '"..." and true', '"Woof!" and false', 'Error'], answer: 0, explanation: 'Dog overrides speak() so d.speak() = "Woof!". d is an instance of Dog AND Animal (via prototype chain), so instanceof returns true.' }
   ],
   iterators_generators: [
     { q: 'A generator function is declared with:', opts: ['function*', 'async function', 'gen function', 'yield function'], answer: 0, explanation: 'The asterisk after function (function*) marks it as a generator that can yield multiple values.' },
     { q: 'What does yield do?', opts: ['Returns and exits', 'Pauses and produces a value', 'Throws an error', 'Loops'], answer: 1, explanation: 'yield pauses the generator and sends a value out. Calling next() resumes execution from where it paused.' },
     { q: 'What method advances a generator?', opts: ['.resume()', '.next()', '.continue()', '.step()'], answer: 1, explanation: 'Calling gen.next() resumes the generator until the next yield, returning {value, done}.' },
-    { q: 'An object is iterable if it has:', opts: ['a .length property', 'a Symbol.iterator method', 'a .forEach method', 'a .next method'], answer: 1, explanation: 'The iterable protocol requires a [Symbol.iterator]() method that returns an iterator with a .next() method.' }
+    { q: 'An object is iterable if it has:', opts: ['a .length property', 'a Symbol.iterator method', 'a .forEach method', 'a .next method'], answer: 1, explanation: 'The iterable protocol requires a [Symbol.iterator]() method that returns an iterator with a .next() method.' },
+    { q: 'What does this code print?', code: 'function* counter() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\nconst gen = counter();\nconsole.log(gen.next().value);\nconsole.log(gen.next().value);\nconsole.log(gen.next().done);', opts: ['1, 2, true', '1, 2, false', '1, 2, 3', '1, 2, undefined'], answer: 1, explanation: 'First next() yields 1, second yields 2. Third next() yields 3 (not done yet — done is false). It would be true on the FOURTH call.' }
   ],
   proxy_and_reflect: [
     { q: 'A Proxy wraps an object to intercept:', opts: ['Events', 'Operations like get/set', 'Network requests', 'CSS styles'], answer: 1, explanation: 'Proxy intercepts fundamental operations (get, set, delete, etc.) through handler trap functions.' },
@@ -722,13 +744,15 @@ const TOPIC_QUIZZES = {
     { q: 'What does ...arr do when used in a function parameter?', opts: ['Spread', 'Rest (collects args)', 'Destructure', 'Clone'], answer: 1, explanation: 'In function parameters, ... is the rest operator — it collects remaining arguments into an array.' },
     { q: 'const {a: x} = {a: 1} — what is x?', opts: ['undefined', '{a:1}', '1', '"a"'], answer: 2, explanation: '{a: x} renames "a" to "x" during destructuring. x gets the value of a, which is 1.' },
     { q: 'What does [a, , b] = [1, 2, 3] assign to b?', opts: ['2', '3', 'undefined', 'Error'], answer: 1, explanation: 'The empty slot (,,) skips index 1. So a=1, index 1 is skipped, and b=3.' },
-    { q: 'const [first, ...rest] = [1,2,3] — what is rest?', opts: ['[2,3]', '[1,2,3]', '3', '2'], answer: 0, explanation: 'Rest in array destructuring collects remaining elements. first=1, rest=[2,3].' }
+    { q: 'const [first, ...rest] = [1,2,3] — what is rest?', opts: ['[2,3]', '[1,2,3]', '3', '2'], answer: 0, explanation: 'Rest in array destructuring collects remaining elements. first=1, rest=[2,3].' },
+    { q: 'What does this code print?', code: 'const user = { name: "Ana", age: 25 };\nconst clone = { ...user, age: 30 };\nconsole.log(user.age, clone.age);', opts: ['30, 30', '25, 30', '25, 25', 'Error'], answer: 1, explanation: 'Spread creates a shallow copy. The age: 30 after the spread overwrites clone.age. The original user is unchanged.' }
   ],
   json_and_dates: [
     { q: 'JSON.stringify() converts:', opts: ['String to object', 'Object to JSON string', 'JSON to array', 'Number to string'], answer: 1, explanation: 'JSON.stringify() serializes a JS value to a JSON string. JSON.parse() does the reverse.' },
     { q: 'new Date().getMonth() returns January as:', opts: ['1', '0', '"January"', '"Jan"'], answer: 1, explanation: 'Months are 0-indexed in JS Date: January=0, February=1, ... December=11. A common gotcha!' },
     { q: 'Which values does JSON.stringify() skip?', opts: ['Numbers', 'Strings', 'Functions and undefined', 'Arrays'], answer: 2, explanation: 'JSON.stringify() omits functions, undefined, and Symbol values. null and NaN are preserved.' },
-    { q: 'Date.now() returns:', opts: ['A Date object', 'A formatted string', 'Milliseconds since epoch', 'Seconds since epoch'], answer: 2, explanation: 'Date.now() returns the number of milliseconds since January 1, 1970 (Unix epoch) as a number.' }
+    { q: 'Date.now() returns:', opts: ['A Date object', 'A formatted string', 'Milliseconds since epoch', 'Seconds since epoch'], answer: 2, explanation: 'Date.now() returns the number of milliseconds since January 1, 1970 (Unix epoch) as a number.' },
+    { q: 'What does this code print?', code: 'const obj = { a: 1, b: undefined, c: function(){} };\nconsole.log(JSON.stringify(obj));', opts: ['{"a":1,"b":undefined,"c":"function(){}"}', '{"a":1}', '{"a":1,"b":null}', 'Error'], answer: 1, explanation: 'JSON.stringify() silently omits properties whose value is undefined or a function. Only {"a":1} remains.' }
   ],
   web_components: [
     { q: 'Custom element names must contain:', opts: ['Underscore', 'Hyphen', 'Number', 'Uppercase letter'], answer: 1, explanation: 'Custom elements require a hyphen (e.g., my-component) to avoid conflicts with current/future HTML elements.' },
@@ -743,9 +767,10 @@ const TOPIC_QUIZZES = {
     { q: 'What does code coverage measure?', opts: ['Performance', 'How much code is executed by tests', 'Number of tests', 'File size'], answer: 1, explanation: 'Code coverage reports the percentage of lines, branches, and functions exercised by your test suite.' }
   ],
   logic_gates: [
-    { q: 'What does the XOR gate return?', opts: ['true if both true', 'true if inputs differ', 'true if both false', 'always true'], answer: 1 },
-    { q: 'What is 5 & 3 in JavaScript?', opts: ['7', '1', '8', '15'], answer: 1 },
-    { q: 'Which gate is called "universal" (can build all others)?', opts: ['AND', 'OR', 'NAND', 'XOR'], answer: 2 }
+    { q: 'What does the XOR gate return?', opts: ['true if both true', 'true if inputs differ', 'true if both false', 'always true'], answer: 1, explanation: 'XOR (exclusive OR) returns true only when inputs are different. In JS: a ^ b.' },
+    { q: 'What is 5 & 3 in JavaScript?', opts: ['7', '1', '8', '15'], answer: 1, explanation: '5 is 101, 3 is 011 in binary. AND (101 & 011) = 001 = 1.' },
+    { q: 'Which gate is called "universal" (can build all others)?', opts: ['AND', 'OR', 'NAND', 'XOR'], answer: 2, explanation: 'NAND (and NOR) are universal gates — any other gate can be constructed using only NAND gates.' },
+    { q: 'What does this code print?', code: 'console.log(5 | 3);\nconsole.log(5 ^ 3);\nconsole.log(~5);', opts: ['7, 6, -6', '1, 6, -5', '7, 6, -5', '8, 6, -6'], answer: 0, explanation: '5|3: 101|011=111=7. 5^3: 101^011=110=6. ~5: bitwise NOT flips all bits, result is -(5+1)=-6.' }
   ]
 };
 
@@ -1000,6 +1025,14 @@ function renderCode(contentEl, code, topicName) {
       const qDiv = document.createElement('div');
       qDiv.className = 'quiz-question';
       qDiv.innerHTML = '<p class="quiz-question-text">' + (qIdx + 1) + '. ' + item.q + '</p>';
+
+      // Code output question: show code snippet
+      if (item.code) {
+        var codeSnippet = document.createElement('pre');
+        codeSnippet.className = 'quiz-code-snippet';
+        codeSnippet.textContent = item.code;
+        qDiv.appendChild(codeSnippet);
+      }
 
       const optsDiv = document.createElement('div');
       optsDiv.className = 'quiz-options';
