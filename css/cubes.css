@@ -104,22 +104,27 @@
 }
 
 /* ============================================================
-   STICKY NAV MODE — cubes shrink into compact nav bar
+   STICKY NAV MODE — compact horizontal: cube + label inline
    ============================================================ */
 .cubes-sticky #super-cubes-container {
-  padding: 0.4em 0;
-  gap: 4px;
+  padding: 0.3em 0;
+  gap: 2px;
 }
 
 .cubes-sticky .cube {
-  max-width: 80px;
-  opacity: 0.45;
+  max-width: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 2px;
+  padding-top: 0;
+  opacity: 0.5;
   position: relative;
 }
 
 .cubes-sticky .cube:hover {
   opacity: 1;
-  transform: scale(1.12);
+  transform: scale(1.08);
 }
 
 .cubes-sticky .cube.cube-active {
@@ -127,16 +132,17 @@
 }
 
 .cubes-sticky .cube-container {
-  height: 52px;
-  transform: scale(0.5);
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+  transform: scale(0.42);
 }
 
-/* Compact label under cube in sticky mode */
+/* Label to the right of cube in sticky mode */
 .cubes-sticky .cube-info {
-  max-height: 18px;
+  max-height: 20px;
   opacity: 1;
   padding: 0;
-  text-align: center;
   overflow: hidden;
 }
 
@@ -144,7 +150,8 @@
   font-size: 10px;
   font-family: monospace;
   color: var(--white-second-color);
-  text-align: center;
+  text-align: left;
+  white-space: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -160,7 +167,7 @@
 }
 
 .cubes-sticky .cube-side {
-  font-size: 11px;
+  font-size: 0;
 }
 
 /* ============================================================
@@ -183,7 +190,7 @@
 }
 
 .cubes-sticky .cube.cube-active .cube-top-side {
-  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -130%);
+  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -120%);
   opacity: 0.5;
 }
 
@@ -267,17 +274,11 @@
    RESPONSIVE — small screens
    ============================================================ */
 @media (max-width: 700px) {
-  .cubes-sticky .cube {
-    max-width: 60px;
-  }
-
   .cubes-sticky .cube-container {
-    height: 42px;
-    transform: scale(0.45);
-  }
-
-  .cubes-sticky .cube-info {
-    max-height: 16px;
+    height: 28px;
+    width: 28px;
+    min-width: 28px;
+    transform: scale(0.38);
   }
 
   .cubes-sticky .cube-info-title {
@@ -306,22 +307,17 @@
     padding: 0;
   }
 
-  .cubes-sticky .cube {
-    max-width: 50px;
+  /* In sticky at 480px: hide label, cubes only */
+  .cubes-sticky .cube-info {
+    max-height: 0;
+    opacity: 0;
   }
 
   .cubes-sticky .cube-container {
-    height: 36px;
-    transform: scale(0.42);
-  }
-
-  .cubes-sticky .cube-info {
-    max-height: 14px;
-    opacity: 1;
-  }
-
-  .cubes-sticky .cube-info-title {
-    font-size: 8px;
+    height: 28px;
+    width: 28px;
+    min-width: 28px;
+    transform: scale(0.38);
   }
 
   .cubes-sticky .sticky-search-btn {
