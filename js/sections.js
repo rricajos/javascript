@@ -504,6 +504,29 @@ const RELATED_TOPICS = {
   testing_basics: ['functions', 'error_handling', 'promises_and_async']
 };
 
+// ============================================================
+// PREREQUISITES — suggested reading before a topic
+// ============================================================
+const PREREQUISITES = {
+  closures_and_scope: ['variables_and_types', 'functions'],
+  functions: ['variables_and_types', 'control_flow'],
+  promises_and_async: ['functions', 'error_handling'],
+  error_handling: ['control_flow', 'functions'],
+  fetch_api: ['promises_and_async'],
+  event_loop: ['promises_and_async'],
+  classes_and_oop: ['functions', 'data_collections_objects'],
+  iterators_generators: ['data_collections_arrays', 'functions'],
+  proxy_and_reflect: ['classes_and_oop', 'data_collections_objects'],
+  modules: ['functions'],
+  destructuring_and_spread: ['data_collections_arrays', 'data_collections_objects'],
+  dom_events: ['dom_manipulation'],
+  web_components: ['dom_manipulation', 'classes_and_oop'],
+  web_apis: ['dom_manipulation'],
+  web_storage: ['json_and_dates'],
+  testing_basics: ['functions', 'error_handling'],
+  memory_and_performance: ['event_loop', 'closures_and_scope']
+};
+
 // Inject difficulty badges into roadmap nodes
 (function () {
   document.querySelectorAll('.section-topic').forEach(function (topic) {
@@ -604,6 +627,32 @@ function updateQuizDashboard() {
     if (reviewBtn) {
       reviewBtn.style.display = totalFailed > 0 ? 'inline-flex' : 'none';
       reviewBtn.title = 'Review ' + totalFailed + ' incorrect answer' + (totalFailed !== 1 ? 's' : '');
+    }
+
+    // Spaced repetition: suggest topics with score < 75%
+    var suggestEl = document.getElementById('reviewSuggestions');
+    if (suggestEl) {
+      var weak = [];
+      Object.keys(scores).forEach(function (topic) {
+        var quizLen = (TOPIC_QUIZZES[topic] || []).length;
+        if (!quizLen) return;
+        var correct = 0;
+        var answered = 0;
+        Object.keys(scores[topic]).forEach(function (qi) {
+          answered++;
+          if (scores[topic][qi]) correct++;
+        });
+        if (answered >= quizLen && (correct / quizLen) < 0.75) {
+          var node = document.querySelector('.roadmap-node[data-topic="' + topic + '"] .roadmap-label');
+          weak.push(node ? node.textContent : topic.replace(/_/g, ' '));
+        }
+      });
+      if (weak.length) {
+        suggestEl.textContent = 'Review: ' + weak.slice(0, 3).join(', ');
+        suggestEl.style.display = '';
+      } else {
+        suggestEl.style.display = 'none';
+      }
     }
   } else {
     el.classList.remove('visible');
@@ -863,6 +912,28 @@ function loadTopicCode(topicName, contentEl) {
 function renderCode(contentEl, code, topicName) {
   contentEl.classList.remove('loading');
   contentEl.innerHTML = '';
+
+  // Show prerequisite banner if topic has prerequisites not yet read
+  var prereqs = PREREQUISITES[topicName];
+  if (prereqs && prereqs.length) {
+    var progress = getProgress();
+    var unread = prereqs.filter(function (p) { return !progress[p]; });
+    if (unread.length) {
+      var prereqDiv = document.createElement('div');
+      prereqDiv.className = 'prereq-banner';
+      var labels = unread.map(function (p) {
+        var node = document.querySelector('.roadmap-node[data-topic="' + p + '"] .roadmap-label');
+        var label = node ? node.textContent : p.replace(/_/g, ' ');
+        return '<span class="prereq-link" data-topic="' + p + '">' + label + '</span>';
+      });
+      prereqDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)" aria-hidden="true">info</i> Suggested first: ' + labels.join(', ');
+      prereqDiv.addEventListener('click', function (e) {
+        var link = e.target.closest('.prereq-link');
+        if (link) openDrawer(link.dataset.topic);
+      });
+      contentEl.appendChild(prereqDiv);
+    }
+  }
 
   // Add toolbar
   const toolbar = document.createElement('div');
