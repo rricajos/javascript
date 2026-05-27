@@ -70,6 +70,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  overflow: visible;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
 }
 
