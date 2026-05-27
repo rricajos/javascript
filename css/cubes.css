@@ -50,6 +50,10 @@
 .cube-info-list {
   margin: 0;
   padding-inline-start: 15px;
+  max-height: 80px;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 1;
 }
 
 .cube-info-list-item {
@@ -142,7 +146,9 @@
 }
 
 .cubes-sticky .cube-info-list {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .cubes-sticky .cube-side {

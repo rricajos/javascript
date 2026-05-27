@@ -16,8 +16,33 @@
   <meta property="og:title" content="Super JavaScript Brain" />
   <meta property="og:description"
     content="A comprehensive vanilla JS handbook with 30 interactive topics, quizzes, code playground, and syntax-highlighted examples" />
-  <meta property="og:image" content="src/banner_main.png" />
-  <meta property="og:url" content="sjsb.dev" />
+  <meta property="og:image" content="https://rricajos.github.io/javascript/src/banner_main.png" />
+  <meta property="og:url" content="https://rricajos.github.io/javascript/" />
+
+  <!-- twitter card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Super JavaScript Brain" />
+  <meta name="twitter:description" content="A comprehensive vanilla JS handbook with 30 interactive topics, quizzes, and code playground" />
+  <meta name="twitter:image" content="https://rricajos.github.io/javascript/src/banner_main.png" />
+
+  <!-- structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Super JavaScript Brain",
+    "description": "A comprehensive vanilla JS handbook with 30 interactive topics, quizzes, code playground, and syntax-highlighted examples",
+    "url": "https://rricajos.github.io/javascript/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Ricard Penin Honrubia" }
+  }
+  </script>
+
+  <!-- preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- css-->
   <link rel="stylesheet" href="css/main.css">
@@ -32,12 +57,11 @@
   <link rel="manifest" href="manifest.json">
 
   <!-- icons -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="/icons/android-chrome-512x512.png" sizes="512x512" type="image/png">
-  <link rel="icon" href="/icons/android-chrome-192x192.png" sizes="192x192" type="image/png">
-  <link rel="icon" href="/icons/apple-touch-icon.png" sizes="180x180" type="image/png">
-  <link rel="icon" href="/icons/favicon-32x32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/icons/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="icon" href="icons/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="icons/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="icon" href="icons/android-chrome-512x512.png" sizes="512x512" type="image/png">
+  <link rel="icon" href="icons/android-chrome-192x192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <!-- prevent duplicated content = best index engine -->
@@ -56,7 +80,7 @@
   <div class="search-box-form-container">
     <form class="search-box-form">
       <input class="search-box-form-input" type="text" id="query" name="query" placeholder="JavaScript ToolBox"
-        autocomplete="off" oninput="search()">
+        autocomplete="off">
       <a class="btn-pushable" href="javascript:" style="position: absolute;">
         <div class="search-box-form-submit">
           <i class="search-box-form-submit-icon material-icons ">search</i>
@@ -77,7 +101,7 @@
 
     <div id="super-cubes-container">
 
-      <div class="cube" data-section="section-basics" data-label="Basics" onclick="scrollToSection('section-basics')">
+      <div class="cube" data-section="section-basics" data-label="Basics">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Basics</div>
           <div class="cube-side cube-left-side">Basics</div>
@@ -95,7 +119,7 @@
       </div>
 
 
-      <div class="cube" data-section="section-good" data-label="Good" onclick="scrollToSection('section-good')">
+      <div class="cube" data-section="section-good" data-label="Good">
         <div class="cube-container">
 
           <div class="cube-side cube-top-side">Good</div>
@@ -114,7 +138,7 @@
         </div>
       </div>
 
-      <div class="cube" data-section="section-pro" data-label="Pro" onclick="scrollToSection('section-pro')">
+      <div class="cube" data-section="section-pro" data-label="Pro">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Pro</div>
           <div class="cube-side cube-left-side">Pro</div>
@@ -130,7 +154,7 @@
         </div>
       </div>
 
-      <div class="cube" data-section="section-browser" data-label="Web" onclick="scrollToSection('section-browser')">
+      <div class="cube" data-section="section-browser" data-label="Web">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Web</div>
           <div class="cube-side cube-left-side">Web</div>
@@ -146,7 +170,7 @@
         </div>
       </div>
 
-      <div class="cube" data-section="section-geek" data-label="Geek" onclick="scrollToSection('section-geek')">
+      <div class="cube" data-section="section-geek" data-label="Geek">
         <div class="cube-container">
           <div class="cube-side cube-top-side">Geek</div>
           <div class="cube-side cube-left-side">Geek</div>
@@ -281,7 +305,7 @@
   </aside>
 
   <!-- Back to top button -->
-  <button class="back-to-top" id="backToTop" onclick="smoothScrollToTop()">
+  <button class="back-to-top" id="backToTop">
     <i class="material-icons">keyboard_arrow_up</i>
   </button>
 
@@ -298,8 +322,8 @@
     </div>
   </footer>
 
-  <script src="js/banner.js"></script>
-  <script src="js/sections.js"></script>
+  <script src="js/banner.js" defer></script>
+  <script src="js/sections.js" defer></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(function () {});

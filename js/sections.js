@@ -385,9 +385,9 @@ function updateQuizDashboard() {
 
 const TOPIC_QUIZZES = {
   variables_and_types: [
-    { q: 'What keyword declares a block-scoped variable that can be reassigned?', opts: ['var', 'let', 'const', 'static'], answer: 1 },
-    { q: 'What does typeof null return?', opts: ['"null"', '"undefined"', '"object"', '"boolean"'], answer: 2 },
-    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1 }
+    { q: 'What keyword declares a block-scoped variable that can be reassigned?', opts: ['var', 'let', 'const', 'static'], answer: 1, explanation: 'let is block-scoped (unlike var which is function-scoped) and allows reassignment (unlike const).' },
+    { q: 'What does typeof null return?', opts: ['"null"', '"undefined"', '"object"', '"boolean"'], answer: 2, explanation: 'This is a well-known JS bug from the first implementation. typeof null returns "object" due to how type tags were stored internally.' },
+    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' }
   ],
   operator_aritmetical: [
     { q: 'What does 10 % 3 return?', opts: ['3', '1', '0', '3.33'], answer: 1 },
@@ -410,8 +410,8 @@ const TOPIC_QUIZZES = {
     { q: 'What does "break" do inside a loop?', opts: ['Skips iteration', 'Exits loop', 'Returns value', 'Pauses execution'], answer: 1 }
   ],
   closures_and_scope: [
-    { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1 },
-    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1 }
+    { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1, explanation: 'A closure is created when an inner function retains access to variables from its outer (enclosing) function even after the outer function has returned.' },
+    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' }
   ],
   functions: [
     { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2 },
@@ -434,8 +434,8 @@ const TOPIC_QUIZZES = {
     { q: 'What does Object.freeze() do?', opts: ['Deletes properties', 'Prevents adding/modifying properties', 'Deep clones', 'Seals the object'], answer: 1 }
   ],
   promises_and_async: [
-    { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1 },
-    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1 }
+    { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1, explanation: 'async/await is syntactic sugar over Promises, letting you write asynchronous code that reads like synchronous code.' },
+    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' }
   ],
   error_handling: [
     { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2 },
@@ -527,7 +527,15 @@ function loadTopicCode(topicName, contentEl) {
   const src = `js/${topicName}.js`;
 
   contentEl.classList.add('loading');
-  contentEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
+  contentEl.innerHTML = '<div class="skeleton-loading">' +
+    '<div class="skeleton-line" style="width:60%"></div>' +
+    '<div class="skeleton-line" style="width:80%"></div>' +
+    '<div class="skeleton-line" style="width:45%"></div>' +
+    '<div class="skeleton-line" style="width:70%"></div>' +
+    '<div class="skeleton-line" style="width:55%"></div>' +
+    '<div class="skeleton-line" style="width:90%"></div>' +
+    '<div class="skeleton-line" style="width:35%"></div>' +
+    '</div>';
 
   if (codeCache[topicName]) {
     renderCode(contentEl, codeCache[topicName], topicName);
@@ -781,12 +789,28 @@ function renderCode(contentEl, code, topicName) {
             btn.classList.add('quiz-wrong');
             optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
           }
+          // Show explanation if available
+          if (item.explanation) {
+            var expDiv = document.createElement('div');
+            expDiv.className = 'quiz-explanation';
+            expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+            qDiv.appendChild(expDiv);
+          }
           saveQuizAnswer(topicName, qIdx, isCorrect);
         });
         optsDiv.appendChild(btn);
       });
 
       qDiv.appendChild(optsDiv);
+
+      // Show explanation for already-answered questions
+      if (topicScores[qIdx] !== undefined && item.explanation) {
+        var expDiv = document.createElement('div');
+        expDiv.className = 'quiz-explanation';
+        expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+        qDiv.appendChild(expDiv);
+      }
+
       quizDiv.appendChild(qDiv);
     });
 
@@ -1140,18 +1164,22 @@ function highlightLine(line) {
 // SEARCH FILTER
 // ============================================================
 
+var _searchTimer = null;
 function search() {
-  smoothScrollToTop();
-  const query = document.getElementById("query").value;
-  const banner = document.getElementById("banner");
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(function () {
+    smoothScrollToTop();
+    var query = document.getElementById("query").value;
+    var banner = document.getElementById("banner");
 
-  if (query !== "") {
-    banner.style.height = "0px";
-  } else {
-    banner.style.height = "222px";
-  }
+    if (query !== "") {
+      banner.style.height = "0px";
+    } else {
+      banner.style.height = "222px";
+    }
 
-  filterTopics(query);
+    filterTopics(query);
+  }, 200);
 }
 
 function filterTopics(query) {
@@ -1215,6 +1243,10 @@ function filterTopics(query) {
   const backToTop = document.getElementById('backToTop');
   if (!backToTop) return;
 
+  backToTop.addEventListener('click', function () {
+    smoothScrollToTop();
+  });
+
   window.addEventListener('scroll', function () {
     if (window.scrollY > 300) {
       backToTop.classList.add('visible');
@@ -1222,6 +1254,23 @@ function filterTopics(query) {
       backToTop.classList.remove('visible');
     }
   }, { passive: true });
+})();
+
+// Wire cube navigation clicks (no inline onclick)
+(function () {
+  document.querySelectorAll('.cube[data-section]').forEach(function (cube) {
+    cube.addEventListener('click', function () {
+      scrollToSection(cube.dataset.section);
+    });
+  });
+})();
+
+// Wire search input (no inline oninput)
+(function () {
+  var queryInput = document.getElementById('query');
+  if (queryInput) {
+    queryInput.addEventListener('input', search);
+  }
 })();
 
 // ============================================================

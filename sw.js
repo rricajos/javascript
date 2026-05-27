@@ -1,5 +1,5 @@
 // Service Worker for Super JavaScript Brain (SJSB)
-const CACHE_NAME = 'sjsb-v3';
+const CACHE_NAME = 'sjsb-v4';
 
 const ASSETS = [
   './',

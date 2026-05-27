@@ -4,7 +4,7 @@
   --yellow-color: #FFDD00;
   --yellow-second-color: #E5C600;
   --white-color: #eee;
-  --white-second-color: #bbb;
+  --white-second-color: #888;
   --bg-color: #eee;
   --text-color: #323330;
   --card-bg: #eee;
@@ -39,10 +39,26 @@ a {
   text-decoration: none;
 }
 
+/* Global focus indicator for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--yellow-color);
+  outline-offset: 2px;
+}
+
 .active {
   background-color: var(--yellow-color) !important;
   color: var(--black-second-color) !important;
 }
 
-
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
