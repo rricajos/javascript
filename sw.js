@@ -1,9 +1,10 @@
 // Service Worker for Super JavaScript Brain (SJSB)
-const CACHE_NAME = 'sjsb-v1';
+const CACHE_NAME = 'sjsb-v2';
 
 const ASSETS = [
   './',
   './index.html',
+  './manifest.json',
   './css/main.css',
   './css/btn.css',
   './css/banner.css',

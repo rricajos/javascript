@@ -290,6 +290,14 @@ const TOPIC_QUIZZES = {
     { q: 'What does 10 % 3 return?', opts: ['3', '1', '0', '3.33'], answer: 1 },
     { q: 'What is the result of 2 ** 3?', opts: ['6', '8', '9', '5'], answer: 1 }
   ],
+  operator_assignative: [
+    { q: 'What does x += 5 do?', opts: ['Compares x to 5', 'Assigns 5 to x', 'Adds 5 to x and reassigns', 'Returns x + 5'], answer: 2 },
+    { q: 'What is the result of let x = 10; x ??= 20?', opts: ['20', '10', 'null', 'undefined'], answer: 1 }
+  ],
+  operator_conditional: [
+    { q: 'What does the ternary operator ?: return?', opts: ['Always true', 'One of two values based on a condition', 'A boolean', 'undefined'], answer: 1 },
+    { q: 'What does x ?? y return?', opts: ['x if x is falsy', 'y if x is null or undefined', 'y always', 'x always'], answer: 1 }
+  ],
   operator_logical: [
     { q: 'What does false || "hello" return?', opts: ['false', 'true', '"hello"', 'undefined'], answer: 2 },
     { q: 'What does true && 0 return?', opts: ['true', 'false', '0', '1'], answer: 2 }
@@ -458,7 +466,7 @@ function loadTopicCode(topicName, contentEl) {
   const src = `js/${topicName}.js`;
 
   contentEl.classList.add('loading');
-  contentEl.textContent = 'Loading...';
+  contentEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
 
   if (codeCache[topicName]) {
     renderCode(contentEl, codeCache[topicName]);
