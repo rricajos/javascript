@@ -2,65 +2,81 @@
    CUBES CONTAINER
    ============================================================ */
 #super-cubes-container {
-  padding: 2em 0 1em 0;
+  padding: 1em 0 0.6em 0;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 8px;
+  gap: 4px;
   transition: padding 0.35s ease, background-color 0.35s ease, gap 0.35s ease;
 }
 
 /* ============================================================
-   CUBE — flexible width, scales with viewport
+   CUBE — compact inline: small 3D cube + title to the right
    ============================================================ */
 .cube {
-  padding-top: 0.5em;
   flex: 1 1 0;
-  max-width: 130px;
+  max-width: 160px;
   min-width: 0;
   cursor: pointer;
-  transition: opacity 0.35s ease, transform 0.2s ease, filter 0.3s ease;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 0;
+  padding: 0.3em 0.4em;
+  border-radius: 6px;
+  transition: opacity 0.35s ease, transform 0.2s ease,
+              filter 0.3s ease, background 0.3s ease;
+}
+
+.cube:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .cube-container {
-  width: 100%;
-  height: min(140px, 20vw);
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  transition: height 0.35s ease, transform 0.35s ease;
+  transform: scale(0.5);
+  margin: -6px -4px -6px -6px;
+  transition: transform 0.35s ease;
 }
 
 .cube-info {
-  padding: 0.3em 0.5em;
+  padding: 0 0 0 2px;
   color: white;
-  font-size: 20px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   box-sizing: border-box;
-  transition: max-height 0.35s ease, opacity 0.35s ease, padding 0.35s ease;
-  max-height: 150px;
   overflow: hidden;
 }
 
 .cube-info-title {
-  font-size: clamp(10px, 1.8vw, 14px);
+  font-size: clamp(10px, 1.6vw, 13px);
+  font-weight: 600;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
-/* Short description — visible on inactive cubes, hidden on active */
+/* Short description — shown on inactive cubes */
 .cube-info-desc {
-  margin: 0.2em 0 0 0;
-  font-size: clamp(8px, 1.4vw, 11px);
-  opacity: 0.5;
+  margin: 0;
+  font-size: clamp(8px, 1.2vw, 10px);
+  opacity: 0.4;
   font-style: italic;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
-  max-height: 30px;
+  line-height: 1.2;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 20px;
 }
 
 .cube.cube-active .cube-info-desc {
@@ -68,37 +84,40 @@
   opacity: 0;
 }
 
-/* Module list — visible only on active cube */
+/* Module list — expands below the cube row, only on active */
 .cube-info-list {
-  margin: 0.3em 0 0 0;
-  padding-inline-start: 15px;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 0 1.2em;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
   opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
 }
 
 .cube.cube-active .cube-info-list {
-  max-height: 80px;
-  opacity: 1;
+  max-height: 70px;
+  opacity: 0.7;
+  margin-top: 0.15em;
 }
 
 .cube-info-list-item {
-  font-size: clamp(9px, 1.6vw, 13px);
+  font-size: clamp(8px, 1.3vw, 11px);
+  line-height: 1.5;
 }
 
 /* ============================================================
-   CUBE SIDES — isometric 3D, fluid size
+   CUBE SIDES — isometric 3D, small
    ============================================================ */
 .cube-side {
-  --side: min(65px, 9vw);
+  --side: 40px;
   height: var(--side);
   width: var(--side);
   line-height: var(--side);
   position: absolute;
   text-align: center;
   color: white;
-  font-size: clamp(10px, 2vw, 16px);
+  font-size: 0;
   font-weight: bold;
   transition: transform 0.4s ease, opacity 0.35s ease,
               border-color 0.3s ease, box-shadow 0.3s ease;
@@ -126,7 +145,19 @@
 }
 
 /* ============================================================
-   STICKY NAV MODE — compact horizontal: cube + label inline
+   ACTIVE CUBE — top face opens (lifts up)
+   ============================================================ */
+.cube.cube-active .cube-top-side {
+  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -115%);
+  opacity: 0.7;
+}
+
+.cube.cube-active .cube-info-title {
+  color: var(--yellow-color);
+}
+
+/* ============================================================
+   STICKY NAV MODE — even more compact, no desc/list
    ============================================================ */
 .cubes-sticky #super-cubes-container {
   padding: 0.3em 0;
@@ -134,19 +165,16 @@
 }
 
 .cubes-sticky .cube {
-  max-width: none;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 2px;
-  padding-top: 0;
+  padding: 0 2px;
   opacity: 0.5;
-  position: relative;
+  border-radius: 0;
+  background: none;
 }
 
 .cubes-sticky .cube:hover {
   opacity: 1;
   transform: scale(1.08);
+  background: none;
 }
 
 .cubes-sticky .cube.cube-active {
@@ -154,18 +182,15 @@
 }
 
 .cubes-sticky .cube-container {
-  height: 32px;
   width: 32px;
+  height: 32px;
   min-width: 32px;
   transform: scale(0.42);
+  margin: -4px -4px -4px -6px;
 }
 
-/* Label to the right of cube in sticky mode */
 .cubes-sticky .cube-info {
-  max-height: 20px;
-  opacity: 1;
   padding: 0;
-  overflow: hidden;
 }
 
 .cubes-sticky .cube-info-title {
@@ -173,7 +198,6 @@
   font-family: monospace;
   color: var(--white-second-color);
   text-align: left;
-  white-space: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -182,31 +206,22 @@
   color: var(--yellow-color);
 }
 
-/* Hide description and list in sticky mode */
+/* Hide desc and list in sticky */
 .cubes-sticky .cube-info-desc {
   max-height: 0;
   opacity: 0;
 }
 
 .cubes-sticky .cube-info-list {
-  max-height: 0;
-  opacity: 0;
-  pointer-events: none;
+  max-height: 0 !important;
+  opacity: 0 !important;
 }
 
 .cubes-sticky .cube-side {
   font-size: 0;
 }
 
-/* ============================================================
-   ACTIVE CUBE — top face opens (lifts up)
-   ============================================================ */
-.cube.cube-active .cube-top-side {
-  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -110%);
-  opacity: 0.7;
-}
-
-/* Sticky mode: active gets yellow glow */
+/* Sticky: active gets yellow glow */
 .cubes-sticky .cube.cube-active {
   filter: drop-shadow(0 0 8px rgba(255, 221, 0, 0.4));
 }
@@ -264,11 +279,15 @@
 }
 
 [data-theme="dark"] .cube-info-title {
+  color: #ddd;
+}
+
+[data-theme="dark"] .cube.cube-active .cube-info-title {
   color: var(--yellow-color);
 }
 
 [data-theme="dark"] .cube-info-desc {
-  color: #999;
+  color: #888;
 }
 
 [data-theme="dark"] .cube-side {
@@ -306,6 +325,14 @@
    RESPONSIVE — small screens
    ============================================================ */
 @media (max-width: 700px) {
+  .cube-info-title {
+    font-size: 10px;
+  }
+
+  .cube-info-desc {
+    font-size: 8px;
+  }
+
   .cubes-sticky .cube-container {
     height: 28px;
     width: 28px;
@@ -330,16 +357,22 @@
 
 @media (max-width: 480px) {
   #super-cubes-container {
-    gap: 4px;
+    gap: 2px;
   }
 
-  .cube-info {
-    max-height: 0;
-    opacity: 0;
-    padding: 0;
+  .cube {
+    padding: 0.2em;
   }
 
-  /* In sticky at 480px: hide label, cubes only */
+  .cube-info-desc {
+    display: none;
+  }
+
+  .cube-info-title {
+    font-size: 9px;
+  }
+
+  /* In sticky at 480px: hide labels, cubes only */
   .cubes-sticky .cube-info {
     max-height: 0;
     opacity: 0;
