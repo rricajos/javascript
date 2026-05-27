@@ -288,7 +288,7 @@
 }
 
 .quiz-slide.open {
-  transform: translateX(0) rotate(-1.5deg);
+  transform: translateX(0);
 }
 
 .quiz-slide-header {

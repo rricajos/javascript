@@ -2,12 +2,12 @@
    CUBES CONTAINER
    ============================================================ */
 #super-cubes-container {
-  padding: 1em 0 0.5em 0;
+  padding: 1.2em 0.5em 0.8em 0.5em;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 2px;
+  gap: 4px;
   transition: padding 0.35s ease, background-color 0.35s ease, gap 0.35s ease;
 }
 
@@ -17,13 +17,13 @@
    ============================================================ */
 .cube {
   flex: 1 1 0;
-  max-width: 155px;
+  max-width: 180px;
   min-width: 0;
   cursor: pointer;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding: 0.35em 0.5em;
+  padding: 0.5em 0.6em;
   border-radius: 6px;
   transition: opacity 0.3s ease, transform 0.2s ease, background 0.3s ease;
 }
@@ -37,11 +37,11 @@
    --side: 15px → visual footprint ≈ 26 × 30 px. No scale needed.
    ============================================================ */
 .cube-container {
-  width: 26px;
-  height: 30px;
-  min-width: 26px;
+  width: 36px;
+  height: 42px;
+  min-width: 36px;
   position: relative;
-  margin-right: 4px;
+  margin-right: 6px;
   transition: height 0.3s ease;
 }
 
@@ -49,7 +49,7 @@
    CUBE SIDES — isometric 3D, natively small (no scale hack)
    ============================================================ */
 .cube-side {
-  --side: 15px;
+  --side: 22px;
   width: var(--side);
   height: var(--side);
   line-height: var(--side);
@@ -90,7 +90,7 @@
 }
 
 .cube-info-title {
-  font-size: clamp(10px, 1.5vw, 13px);
+  font-size: clamp(11px, 1.6vw, 14px);
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
@@ -101,8 +101,8 @@
 
 .cube-info-desc {
   margin: 0;
-  font-size: clamp(7px, 1.1vw, 10px);
-  opacity: 0.4;
+  font-size: clamp(8px, 1.2vw, 11px);
+  opacity: 0.5;
   font-style: italic;
   line-height: 1.2;
   white-space: nowrap;
@@ -116,7 +116,7 @@
 .cube-info-list {
   flex-basis: 100%;
   margin: 0;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 42px;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -124,13 +124,13 @@
 }
 
 .cube.cube-active .cube-info-list {
-  max-height: 65px;
+  max-height: 80px;
   opacity: 0.65;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .cube-info-list-item {
-  font-size: clamp(8px, 1.2vw, 11px);
+  font-size: clamp(9px, 1.3vw, 12px);
   line-height: 1.4;
 }
 
@@ -173,18 +173,18 @@
 
 /* Smaller cube in sticky */
 .cubes-sticky .cube-container {
-  width: 20px;
-  height: 22px;
-  min-width: 20px;
-  margin-right: 3px;
+  width: 24px;
+  height: 28px;
+  min-width: 24px;
+  margin-right: 4px;
 }
 
 .cubes-sticky .cube-side {
-  --side: 11px;
+  --side: 14px;
 }
 
 .cubes-sticky .cube-info-title {
-  font-size: 10px;
+  font-size: 11px;
   font-family: monospace;
   color: var(--white-second-color);
   transition: color 0.2s ease;
