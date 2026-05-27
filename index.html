@@ -80,14 +80,14 @@
   <div class="search-box-form-container">
     <form class="search-box-form">
       <input class="search-box-form-input" type="text" id="query" name="query" placeholder="JavaScript ToolBox"
-        autocomplete="off">
+        autocomplete="off" aria-label="Search topics">
       <a class="btn-pushable" href="javascript:" style="position: absolute;">
         <div class="search-box-form-submit">
           <i class="search-box-form-submit-icon material-icons ">search</i>
         </div>
       </a>
     </form>
-    <div class="search-results-count" id="searchResultsCount"></div>
+    <div class="search-results-count" id="searchResultsCount" aria-live="polite"></div>
   </div>
 
   <!-- Sentinel for sticky detection (invisible, height 0) -->
@@ -95,8 +95,8 @@
 
   <!-- Cubes navigation (becomes sticky) -->
   <nav aria-label="Topic navigation" id="cubesNav" class="cubes-nav">
-    <button class="sticky-search-btn" id="stickySearchBtn" title="Search topics">
-      <i class="material-icons">search</i>
+    <button class="sticky-search-btn" id="stickySearchBtn" title="Search topics" aria-label="Search topics">
+      <i class="material-icons" aria-hidden="true">search</i>
     </button>
 
     <div id="super-cubes-container">
@@ -196,9 +196,9 @@
       <span class="progress-dashboard-label">Progress</span>
       <span class="progress-dashboard-right">
         <span class="progress-dashboard-count" id="progressCount">0 / 29</span>
-        <button class="progress-dashboard-reset" id="exportData" title="Export progress &amp; quiz data"><i class="material-icons" style="font-size:14px;vertical-align:middle">download</i></button>
-        <button class="progress-dashboard-reset" id="importData" title="Import progress &amp; quiz data"><i class="material-icons" style="font-size:14px;vertical-align:middle">upload</i></button>
-        <button class="progress-dashboard-reset" id="progressReset" title="Reset progress"><i class="material-icons" style="font-size:14px;vertical-align:middle">restart_alt</i></button>
+        <button class="progress-dashboard-reset" id="exportData" title="Export progress &amp; quiz data" aria-label="Export data"><i class="material-icons" style="font-size:14px;vertical-align:middle" aria-hidden="true">download</i></button>
+        <button class="progress-dashboard-reset" id="importData" title="Import progress &amp; quiz data" aria-label="Import data"><i class="material-icons" style="font-size:14px;vertical-align:middle" aria-hidden="true">upload</i></button>
+        <button class="progress-dashboard-reset" id="progressReset" title="Reset progress" aria-label="Reset progress"><i class="material-icons" style="font-size:14px;vertical-align:middle" aria-hidden="true">restart_alt</i></button>
       </span>
     </div>
     <div class="progress-dashboard-bar">
@@ -213,7 +213,7 @@
       <span class="progress-dashboard-right">
         <span class="progress-dashboard-count" id="quizCount" style="color: #2196f3;">0 / 0 correct</span>
         <button class="progress-dashboard-btn review-btn" id="reviewMistakes" title="Review incorrect answers" style="display:none"><i class="material-icons" style="font-size:14px;vertical-align:middle">replay</i> Review</button>
-        <button class="progress-dashboard-reset" id="quizReset" title="Reset quiz scores"><i class="material-icons" style="font-size:14px;vertical-align:middle">restart_alt</i></button>
+        <button class="progress-dashboard-reset" id="quizReset" title="Reset quiz scores" aria-label="Reset quiz scores"><i class="material-icons" style="font-size:14px;vertical-align:middle" aria-hidden="true">restart_alt</i></button>
       </span>
     </div>
     <div class="progress-dashboard-bar">
@@ -287,20 +287,20 @@
   </main>
 
   <!-- Quiz slide panel (tilted paper, slides from right behind drawer) -->
-  <aside class="quiz-slide" id="quizSlide">
+  <aside class="quiz-slide" id="quizSlide" role="dialog" aria-label="Quiz panel">
     <div class="quiz-slide-header">
       <h3 class="quiz-slide-title" id="quizSlideTitle">Quick Quiz</h3>
-      <button class="quiz-slide-close" id="quizSlideClose"><i class="material-icons">close</i></button>
+      <button class="quiz-slide-close" id="quizSlideClose" aria-label="Close quiz"><i class="material-icons" aria-hidden="true">close</i></button>
     </div>
     <div class="quiz-slide-body" id="quizSlideBody"></div>
   </aside>
 
   <!-- Drawer panel (folder style, slides in from right) -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
-  <aside class="drawer" id="drawer">
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Topic content">
     <div class="drawer-header">
       <h3 class="drawer-title" id="drawerTitle">Topic</h3>
-      <button class="drawer-close" id="drawerClose"><i class="material-icons">close</i></button>
+      <button class="drawer-close" id="drawerClose" aria-label="Close drawer"><i class="material-icons" aria-hidden="true">close</i></button>
     </div>
     <div class="drawer-body" id="drawerBody">
       <div class="section-topic-content" id="drawerContent"></div>
@@ -308,13 +308,13 @@
   </aside>
 
   <!-- Back to top button -->
-  <button class="back-to-top" id="backToTop">
-    <i class="material-icons">keyboard_arrow_up</i>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <i class="material-icons" aria-hidden="true">keyboard_arrow_up</i>
   </button>
 
   <!-- Theme toggle -->
-  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light theme">
-    <i class="material-icons" id="themeIcon">dark_mode</i>
+  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light theme" aria-label="Toggle dark/light theme">
+    <i class="material-icons" aria-hidden="true" id="themeIcon">dark_mode</i>
   </button>
 
   <!-- Footer -->

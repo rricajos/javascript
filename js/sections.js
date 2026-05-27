@@ -6,6 +6,36 @@ const codeCache = {};
 var currentDrawerTopic = null;
 
 // ============================================================
+// FOCUS TRAP — keeps Tab cycling inside an open panel
+// ============================================================
+var _activeTrap = null;
+
+function trapFocus(container) {
+  _activeTrap = function (e) {
+    if (e.key !== 'Tab') return;
+    var focusable = container.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  };
+  document.addEventListener('keydown', _activeTrap);
+}
+
+function releaseFocus() {
+  if (_activeTrap) {
+    document.removeEventListener('keydown', _activeTrap);
+    _activeTrap = null;
+  }
+}
+
+// ============================================================
 // PROGRESS TRACKING (localStorage)
 // ============================================================
 
@@ -314,6 +344,12 @@ function openDrawer(topicName) {
   document.body.style.overflow = 'hidden';
   currentDrawerTopic = topicName;
   updateHash(topicName);
+
+  // Trap focus inside drawer and focus close button
+  releaseFocus();
+  trapFocus(drawer);
+  var closeBtn = document.getElementById('drawerClose');
+  if (closeBtn) closeBtn.focus();
 }
 
 function closeDrawer() {
@@ -321,6 +357,7 @@ function closeDrawer() {
   var overlay = document.getElementById('drawerOverlay');
   if (!drawer || !overlay) return;
 
+  releaseFocus();
   drawer.classList.remove('open');
   overlay.classList.remove('open');
   document.body.style.overflow = '';
