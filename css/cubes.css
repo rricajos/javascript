@@ -2,61 +2,95 @@
    CUBES CONTAINER
    ============================================================ */
 #super-cubes-container {
-  padding: 1em 0 0.6em 0;
+  padding: 1em 0 0.5em 0;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 4px;
+  gap: 2px;
   transition: padding 0.35s ease, background-color 0.35s ease, gap 0.35s ease;
 }
 
 /* ============================================================
-   CUBE — compact inline: small 3D cube + title to the right
+   CUBE — each nav item: [3D cube] [title + desc]
+   Uses flex row wrap so the module list drops to a new line
    ============================================================ */
 .cube {
   flex: 1 1 0;
-  max-width: 160px;
+  max-width: 155px;
   min-width: 0;
   cursor: pointer;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  gap: 0;
-  padding: 0.3em 0.4em;
+  padding: 0.35em 0.5em;
   border-radius: 6px;
-  transition: opacity 0.35s ease, transform 0.2s ease,
-              filter 0.3s ease, background 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.2s ease, background 0.3s ease;
 }
 
 .cube:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
 }
 
+/* ============================================================
+   CUBE 3D CONTAINER — sized to fit the isometric cube exactly.
+   --side: 15px → visual footprint ≈ 26 × 30 px. No scale needed.
+   ============================================================ */
 .cube-container {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 26px;
+  height: 30px;
+  min-width: 26px;
   position: relative;
-  transform: scale(0.45);
-  margin: -4px -2px -4px -2px;
-  transition: transform 0.35s ease;
+  margin-right: 4px;
+  transition: height 0.3s ease;
 }
 
+/* ============================================================
+   CUBE SIDES — isometric 3D, natively small (no scale hack)
+   ============================================================ */
+.cube-side {
+  --side: 15px;
+  width: var(--side);
+  height: var(--side);
+  line-height: var(--side);
+  position: absolute;
+  text-align: center;
+  font-size: 0;
+  font-weight: bold;
+  transition: transform 0.4s ease, opacity 0.35s ease,
+              border-color 0.3s ease;
+}
+
+.cube-top-side {
+  border: 1px solid var(--black-second-color);
+  background-color: var(--yellow-color);
+  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -50%);
+}
+
+.cube-left-side {
+  border: 1px solid var(--black-second-color);
+  background-color: var(--yellow-second-color);
+  transform: rotate(15deg) skew(15deg, 15deg) translate(-50%, 50%);
+}
+
+.cube-right-side {
+  border: 1px solid var(--black-second-color);
+  background-color: var(--yellow-color);
+  transform: rotate(-15deg) skew(-15deg, -15deg) translate(50%, 50%);
+}
+
+/* ============================================================
+   CUBE INFO — title, description, module list
+   ============================================================ */
 .cube-info {
-  padding: 0 0 0 2px;
-  color: white;
   flex: 1;
   min-width: 0;
-  box-sizing: border-box;
   overflow: hidden;
+  color: white;
 }
 
 .cube-info-title {
-  font-size: clamp(10px, 1.6vw, 13px);
+  font-size: clamp(10px, 1.5vw, 13px);
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
@@ -65,10 +99,9 @@
   line-height: 1.3;
 }
 
-/* Short description — visible in normal mode, hidden in sticky */
 .cube-info-desc {
   margin: 0;
-  font-size: clamp(8px, 1.2vw, 10px);
+  font-size: clamp(7px, 1.1vw, 10px);
   opacity: 0.4;
   font-style: italic;
   line-height: 1.2;
@@ -76,14 +109,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: max-height 0.3s ease, opacity 0.3s ease;
-  max-height: 20px;
+  max-height: 18px;
 }
 
-/* Module list — expands below the cube row, only on active */
+/* Module list — full width row below cube+title, only on active */
 .cube-info-list {
-  width: 100%;
+  flex-basis: 100%;
   margin: 0;
-  padding: 0 0 0 1.2em;
+  padding: 0 0 0 30px;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -91,59 +124,21 @@
 }
 
 .cube.cube-active .cube-info-list {
-  max-height: 70px;
-  opacity: 0.7;
-  margin-top: 0.15em;
+  max-height: 65px;
+  opacity: 0.65;
+  margin-top: 2px;
 }
 
 .cube-info-list-item {
-  font-size: clamp(8px, 1.3vw, 11px);
-  line-height: 1.5;
+  font-size: clamp(8px, 1.2vw, 11px);
+  line-height: 1.4;
 }
 
 /* ============================================================
-   CUBE SIDES — isometric 3D, small
-   ============================================================ */
-.cube-side {
-  --side: 40px;
-  height: var(--side);
-  width: var(--side);
-  line-height: var(--side);
-  position: absolute;
-  text-align: center;
-  color: white;
-  font-size: 0;
-  font-weight: bold;
-  transition: transform 0.4s ease, opacity 0.35s ease,
-              border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cube-top-side {
-  border: 1px solid var(--black-second-color);
-  color: var(--black-second-color);
-  background-color: var(--yellow-color);
-  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -50%);
-}
-
-.cube-left-side {
-  border: 1px solid var(--black-second-color);
-  color: var(--black-second-color);
-  background-color: var(--yellow-second-color);
-  transform: rotate(15deg) skew(15deg, 15deg) translate(-50%, 50%);
-}
-
-.cube-right-side {
-  border: 1px solid var(--black-second-color);
-  color: var(--black-second-color);
-  background-color: var(--yellow-color);
-  transform: rotate(-15deg) skew(-15deg, -15deg) translate(50%, 50%);
-}
-
-/* ============================================================
-   ACTIVE CUBE — top face opens (lifts up)
+   ACTIVE CUBE — lid opens, title highlights
    ============================================================ */
 .cube.cube-active .cube-top-side {
-  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -115%);
+  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -120%);
   opacity: 0.7;
 }
 
@@ -152,23 +147,23 @@
 }
 
 /* ============================================================
-   STICKY NAV MODE — even more compact, no desc/list
+   STICKY NAV — compact single row, title only
    ============================================================ */
 .cubes-sticky #super-cubes-container {
-  padding: 0.3em 0;
-  gap: 2px;
+  padding: 0.25em 0;
+  gap: 0;
 }
 
 .cubes-sticky .cube {
-  padding: 0 2px;
+  padding: 0.2em 0.4em;
   opacity: 0.5;
   border-radius: 0;
   background: none;
+  flex-flow: row nowrap;
 }
 
 .cubes-sticky .cube:hover {
   opacity: 1;
-  transform: scale(1.08);
   background: none;
 }
 
@@ -176,23 +171,22 @@
   opacity: 1;
 }
 
+/* Smaller cube in sticky */
 .cubes-sticky .cube-container {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  transform: scale(0.4);
-  margin: -3px 0 -3px -2px;
+  width: 20px;
+  height: 22px;
+  min-width: 20px;
+  margin-right: 3px;
 }
 
-.cubes-sticky .cube-info {
-  padding: 0;
+.cubes-sticky .cube-side {
+  --side: 11px;
 }
 
 .cubes-sticky .cube-info-title {
   font-size: 10px;
   font-family: monospace;
   color: var(--white-second-color);
-  text-align: left;
   transition: color 0.2s ease;
 }
 
@@ -212,21 +206,17 @@
   opacity: 0 !important;
 }
 
-.cubes-sticky .cube-side {
-  font-size: 0;
-}
-
 .cubes-sticky .cube.cube-active .cube-left-side,
 .cubes-sticky .cube.cube-active .cube-right-side {
   border-color: var(--yellow-color);
 }
 
 .cubes-sticky .cube.cube-active .cube-top-side {
-  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -120%);
+  transform: rotate(-45deg) skew(15deg, 15deg) translate(50%, -130%);
   opacity: 0.5;
 }
 
-/* Sticky search icon button */
+/* Sticky search button */
 .sticky-search-btn {
   display: none;
 }
@@ -242,8 +232,8 @@
   background: none;
   border: 1px solid #555;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   color: var(--white-second-color);
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -257,7 +247,7 @@
 }
 
 .cubes-sticky .sticky-search-btn .material-icons {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 /* ============================================================
@@ -285,19 +275,16 @@
 
 [data-theme="dark"] .cube-top-side {
   background-color: var(--yellow-color);
-  color: #1a1a1a;
   border-color: #555;
 }
 
 [data-theme="dark"] .cube-left-side {
   background-color: var(--yellow-second-color);
-  color: #1a1a1a;
   border-color: #555;
 }
 
 [data-theme="dark"] .cube-right-side {
   background-color: var(--yellow-color);
-  color: #1a1a1a;
   border-color: #555;
 }
 
@@ -311,7 +298,7 @@
 }
 
 /* ============================================================
-   RESPONSIVE — small screens
+   RESPONSIVE
    ============================================================ */
 @media (max-width: 700px) {
   .cube-info-title {
@@ -322,35 +309,28 @@
     font-size: 8px;
   }
 
-  .cubes-sticky .cube-container {
-    height: 28px;
-    width: 28px;
-    min-width: 28px;
-    transform: scale(0.38);
-  }
-
   .cubes-sticky .cube-info-title {
     font-size: 9px;
   }
 
   .cubes-sticky .sticky-search-btn {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     left: 0.5em;
   }
 
   .cubes-sticky .sticky-search-btn .material-icons {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 480px) {
   #super-cubes-container {
-    gap: 2px;
+    gap: 0;
   }
 
   .cube {
-    padding: 0.2em;
+    padding: 0.2em 0.3em;
   }
 
   .cube-info-desc {
@@ -361,24 +341,17 @@
     font-size: 9px;
   }
 
-  /* In sticky at 480px: hide labels, cubes only */
   .cubes-sticky .cube-info {
     max-height: 0;
     opacity: 0;
-  }
-
-  .cubes-sticky .cube-container {
-    height: 28px;
-    width: 28px;
-    min-width: 28px;
-    transform: scale(0.38);
+    padding: 0;
   }
 
   .cubes-sticky .sticky-search-btn {
     position: static;
     transform: none;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     flex-shrink: 0;
     margin: auto 0.3em;
   }
