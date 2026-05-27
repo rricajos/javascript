@@ -117,6 +117,53 @@ function updateProgressUI() {
       }
     });
   }
+  // Export data
+  var exportBtn = document.getElementById('exportData');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function () {
+      var data = {
+        progress: getProgress(),
+        quizScores: getQuizScores(),
+        theme: localStorage.getItem('sjsb_theme') || 'light',
+        exported: new Date().toISOString()
+      };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sjsb-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+  }
+
+  // Import data
+  var importBtn = document.getElementById('importData');
+  if (importBtn) {
+    importBtn.addEventListener('click', function () {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.addEventListener('change', function () {
+        var file = input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var data = JSON.parse(reader.result);
+            if (data.progress) saveProgress(data.progress);
+            if (data.quizScores) localStorage.setItem(QUIZ_KEY, JSON.stringify(data.quizScores));
+            updateProgressUI();
+            updateQuizDashboard();
+            alert('Data imported successfully!');
+          } catch (e) {
+            alert('Invalid backup file.');
+          }
+        };
+        reader.readAsText(file);
+      });
+      input.click();
+    });
+  }
 })();
 
 // ============================================================
@@ -1284,6 +1331,31 @@ function filterTopics(query) {
 })();
 
 // ============================================================
+// LAZY PRELOAD — prefetch topic files when nodes come into view
+// ============================================================
+
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var preloadObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var topic = entry.target.dataset.topic;
+      if (!topic || codeCache[topic]) return;
+      fetch('js/' + topic + '.js').then(function (r) {
+        if (r.ok) return r.text();
+      }).then(function (code) {
+        if (code) codeCache[topic] = code;
+      }).catch(function () {});
+      preloadObserver.unobserve(entry.target);
+    });
+  }, { rootMargin: '200px' });
+
+  document.querySelectorAll('.roadmap-node[data-topic]').forEach(function (node) {
+    preloadObserver.observe(node);
+  });
+})();
+
+// ============================================================
 // CUBES STICKY NAV + ACTIVE SECTION TRACKING
 // ============================================================
 
@@ -1530,7 +1602,10 @@ function toggleShortcutsOverlay() {
         '<div class="shortcut-row"><kbd>/</kbd> or <kbd>Ctrl+K</kbd><span>Focus search</span></div>' +
         '<div class="shortcut-row"><kbd>Esc</kbd><span>Close drawer / console</span></div>' +
         '<div class="shortcut-row"><kbd>Arrow Up/Down</kbd><span>Navigate between topics</span></div>' +
+        '<div class="shortcut-row"><kbd>J</kbd> / <kbd>K</kbd><span>Navigate topics (vim-style)</span></div>' +
         '<div class="shortcut-row"><kbd>Enter</kbd> / <kbd>Space</kbd><span>Open topic in drawer</span></div>' +
+        '<div class="shortcut-row"><kbd>N</kbd> / <kbd>P</kbd><span>Next / Previous topic (drawer open)</span></div>' +
+        '<div class="shortcut-row"><kbd>R</kbd><span>Run code (drawer open)</span></div>' +
         '<div class="shortcut-row"><kbd>Home</kbd> / <kbd>End</kbd><span>Jump to first/last topic</span></div>' +
       '</div>' +
     '</div>';
@@ -1542,6 +1617,7 @@ function toggleShortcutsOverlay() {
 
 document.addEventListener('keydown', function (event) {
   const isInput = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA';
+  const isEditing = document.activeElement.contentEditable === 'true';
 
   if (event.key === 'Escape') {
     // Close shortcuts overlay first
@@ -1562,5 +1638,53 @@ document.addEventListener('keydown', function (event) {
   if (event.key === '?' && !isInput) {
     event.preventDefault();
     toggleShortcutsOverlay();
+  }
+
+  // Skip vim-style shortcuts when typing in inputs or editors
+  if (isInput || isEditing) return;
+
+  // J/K — navigate between roadmap nodes (vim-style)
+  if (event.key === 'j' || event.key === 'k') {
+    var nodes = Array.from(document.querySelectorAll('.roadmap-node:not(.filtered-out)'));
+    if (nodes.length === 0) return;
+    var activeNode = document.querySelector('.roadmap-node.node-active') || document.activeElement;
+    var idx = nodes.indexOf(activeNode);
+    if (event.key === 'j') {
+      var next = (idx === -1) ? 0 : Math.min(idx + 1, nodes.length - 1);
+      nodes[next].focus();
+      nodes[next].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    } else {
+      var prev = (idx === -1) ? 0 : Math.max(idx - 1, 0);
+      nodes[prev].focus();
+      nodes[prev].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    event.preventDefault();
+    return;
+  }
+
+  // N/P — next/previous topic while drawer is open
+  if ((event.key === 'n' || event.key === 'p') && currentDrawerTopic) {
+    var allNodes = Array.from(document.querySelectorAll('.roadmap-node:not(.filtered-out)'));
+    var curIdx = allNodes.findIndex(function (n) { return n.dataset.topic === currentDrawerTopic; });
+    if (curIdx === -1) return;
+    var targetIdx = event.key === 'n' ? curIdx + 1 : curIdx - 1;
+    if (targetIdx < 0 || targetIdx >= allNodes.length) return;
+    var targetTopic = allNodes[targetIdx].dataset.topic;
+    if (targetTopic) {
+      openDrawer(targetTopic);
+      allNodes[targetIdx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    event.preventDefault();
+    return;
+  }
+
+  // R — run code when drawer is open
+  if (event.key === 'r' && currentDrawerTopic) {
+    var topicCode = codeCache[currentDrawerTopic];
+    if (topicCode) {
+      runCode(topicCode);
+    }
+    event.preventDefault();
+    return;
   }
 });
