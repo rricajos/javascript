@@ -1179,6 +1179,71 @@ function filterTopics(query) {
 })();
 
 // ============================================================
+// CUBES STICKY NAV + ACTIVE SECTION TRACKING
+// ============================================================
+
+(function () {
+  const nav = document.querySelector('.search-box-form-container');
+  const cubesContainer = document.getElementById('super-cubes-container');
+  const cubes = document.querySelectorAll('.cube[data-section]');
+  const sections = document.querySelectorAll('.section');
+  if (!nav || !cubesContainer || !cubes.length) return;
+
+  // Threshold: when cubes container scrolls past the top, go sticky
+  var stickyTriggered = false;
+
+  function updateSticky() {
+    var navRect = nav.getBoundingClientRect();
+    // Trigger when the nav top reaches viewport top
+    if (navRect.top <= 0 && !stickyTriggered) {
+      nav.classList.add('cubes-sticky');
+      stickyTriggered = true;
+    } else if (navRect.top > 0 && stickyTriggered) {
+      nav.classList.remove('cubes-sticky');
+      stickyTriggered = false;
+    }
+  }
+
+  // Track which section is in view
+  function updateActiveSection() {
+    var currentSection = null;
+    var scrollY = window.scrollY + 150; // offset for sticky height
+
+    sections.forEach(function (section) {
+      var top = section.offsetTop;
+      var bottom = top + section.offsetHeight;
+      if (scrollY >= top && scrollY < bottom) {
+        currentSection = section.id;
+      }
+    });
+
+    cubes.forEach(function (cube) {
+      if (cube.dataset.section === currentSection) {
+        cube.classList.add('cube-active');
+      } else {
+        cube.classList.remove('cube-active');
+      }
+    });
+  }
+
+  var scrollTicking = false;
+  window.addEventListener('scroll', function () {
+    if (!scrollTicking) {
+      requestAnimationFrame(function () {
+        updateSticky();
+        updateActiveSection();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // Initial check
+  updateSticky();
+  updateActiveSection();
+})();
+
+// ============================================================
 // EXPAND ALL / COLLAPSE ALL
 // ============================================================
 
