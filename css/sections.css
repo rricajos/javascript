@@ -259,25 +259,27 @@
    DRAWER PANEL (slides in from right)
    ============================================================ */
 /* ============================================================
-   QUIZ SLIDE — panel from left, 50% width
+   QUIZ SLIDE — paper sheet from right, behind the drawer
    ============================================================ */
 .quiz-slide {
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   width: 50%;
   height: 100%;
-  background: var(--black-second-color);
-  z-index: 160;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
+  background: #3d3d3a;
+  z-index: 155;
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  box-shadow: -2px 4px 30px rgba(0, 0, 0, 0.5);
+  transform-origin: top right;
+  border-left: 1px solid #555;
 }
 
 .quiz-slide.open {
-  transform: translateX(0);
+  transform: translateX(8%) rotate(-1.5deg);
 }
 
 .quiz-slide-header {
@@ -352,10 +354,10 @@
 
 .drawer {
   position: fixed;
-  top: 0;
+  top: 24px;
   right: 0;
   width: 50%;
-  height: 100%;
+  height: calc(100% - 24px);
   background: var(--black-second-color);
   z-index: 160;
   transform: translateX(100%);
@@ -363,6 +365,32 @@
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+  border-radius: 4px 0 0 0;
+}
+
+/* Folder tab — trapezoid above the drawer */
+.drawer::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 20px;
+  width: 120px;
+  height: 24px;
+  background: var(--black-second-color);
+  clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+  border-radius: 6px 6px 0 0;
+}
+
+/* Folder corner fold — top-right dog-ear */
+.drawer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(225deg, var(--black-color) 50%, #4a4a47 50%);
+  z-index: 2;
 }
 
 .drawer.open {
@@ -952,12 +980,21 @@
 }
 
 [data-theme="dark"] .quiz-slide {
-  background: #1a1a1a;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+  background: #252525;
+  box-shadow: -2px 4px 30px rgba(0, 0, 0, 0.7);
+  border-left-color: #333;
 }
 
 [data-theme="dark"] .quiz-slide-header {
   border-bottom-color: var(--yellow-color);
+}
+
+[data-theme="dark"] .drawer::before {
+  background: #1a1a1a;
+}
+
+[data-theme="dark"] .drawer::after {
+  background: linear-gradient(225deg, #0a0a0a 50%, #2a2a2a 50%);
 }
 
 /* ============================================================
@@ -996,14 +1033,29 @@
    RESPONSIVE
    ============================================================ */
 @media screen and (max-width: 860px) {
-  .drawer,
-  .quiz-slide {
+  .drawer {
     width: 100%;
+    top: 0;
+    height: 100%;
+    border-radius: 0;
   }
 
-  /* On small screens quiz overlays on top of drawer */
+  .drawer::before {
+    display: none;
+  }
+
+  .drawer::after {
+    display: none;
+  }
+
   .quiz-slide {
+    width: 100%;
     z-index: 170;
+    border-left: none;
+  }
+
+  .quiz-slide.open {
+    transform: translateX(0) rotate(0deg);
   }
 }
 
