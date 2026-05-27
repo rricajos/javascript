@@ -40,6 +40,11 @@
   }
   </script>
 
+  <!-- theme: apply before first paint to prevent FOUC -->
+  <script>
+    (function(){var t=localStorage.getItem('sjsb_theme');if(!t&&matchMedia('(prefers-color-scheme:dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();
+  </script>
+
   <!-- preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1721,9 +1721,9 @@ function openTopicByName(topicName) {
 
 function updateHash(topicName) {
   if (topicName) {
-    history.replaceState(null, '', '#topic=' + topicName);
+    history.pushState({ topic: topicName }, '', '#topic=' + topicName);
   } else {
-    history.replaceState(null, '', window.location.pathname);
+    history.pushState(null, '', window.location.pathname);
   }
 }
 
@@ -1751,6 +1751,16 @@ function updateHash(topicName) {
     } else if (hash === '#search') {
       var input = document.getElementById('query');
       if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth' }); }
+    }
+  });
+
+  // Back/forward navigation
+  window.addEventListener('popstate', function (e) {
+    if (e.state && e.state.topic) {
+      openTopicByName(e.state.topic);
+    } else {
+      closeDrawer();
+      closeQuizSlide();
     }
   });
 })();
