@@ -6,6 +6,26 @@ const codeCache = {};
 var currentDrawerTopic = null;
 
 // ============================================================
+// TOAST — reusable notification
+// ============================================================
+var _toastTimer = null;
+function showToast(message, icon) {
+  var el = document.getElementById('sjsb-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sjsb-toast';
+    el.className = 'sjsb-toast';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = (icon ? '<i class="material-icons">' + icon + '</i> ' : '') + message;
+  clearTimeout(_toastTimer);
+  requestAnimationFrame(function () {
+    el.classList.add('visible');
+    _toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 2500);
+  });
+}
+
+// ============================================================
 // FOCUS TRAP — keeps Tab cycling inside an open panel
 // ============================================================
 var _activeTrap = null;
@@ -797,7 +817,7 @@ function renderCode(contentEl, code, topicName) {
   copyBtn.className = 'code-toolbar-btn';
   copyBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">content_copy</i> Copy';
   copyBtn.addEventListener('click', function () {
-    copyCode(currentCode, copyBtn);
+    copyCode(currentCode);
   });
 
   const editBtn = document.createElement('button');
@@ -1281,12 +1301,10 @@ function runCode(code) {
   }
 }
 
-function copyCode(code, btn) {
+function copyCode(code) {
   if (navigator.clipboard) {
     navigator.clipboard.writeText(code).then(function () {
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">check</i> Copied!';
-      setTimeout(function () { btn.innerHTML = orig; }, 1500);
+      showToast('Code copied!', 'content_copy');
     });
   }
 }
@@ -1829,9 +1847,7 @@ function createShareBtn(topicName) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(function () {
         updateHash(topicName);
-        const orig = shareBtn.innerHTML;
-        shareBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">check</i> Copied!';
-        setTimeout(function () { shareBtn.innerHTML = orig; }, 1500);
+        showToast('Link copied!', 'check');
       });
     }
   });
