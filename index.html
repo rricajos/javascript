@@ -9,13 +9,13 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="Ricard Penin Honrubia">
   <meta name="description"
-    content="Super JavaScript Brain - A comprehensive vanilla JS handbook with 29 interactive topics, quizzes, code playground, and syntax-highlighted examples">
+    content="Super JavaScript Brain - A comprehensive vanilla JS handbook with 30 interactive topics, quizzes, code playground, and syntax-highlighted examples">
 
   <!-- open graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Super JavaScript Brain" />
   <meta property="og:description"
-    content="A comprehensive vanilla JS handbook with 29 interactive topics, quizzes, code playground, and syntax-highlighted examples" />
+    content="A comprehensive vanilla JS handbook with 30 interactive topics, quizzes, code playground, and syntax-highlighted examples" />
   <meta property="og:image" content="src/banner_main.png" />
   <meta property="og:url" content="sjsb.dev" />
 
@@ -186,395 +186,82 @@
     </div>
   </div>
 
-  <!-- Content sections -->
-  <main class="sections-container">
+  <!-- Roadmap -->
+  <main class="roadmap" id="roadmap">
 
-    <!-- BASICS -->
-    <section class="section" id="section-basics" data-category="basics">
-      <h2 class="section-title">Common Basics</h2>
-
-      <div class="section-topic" data-topic="variables_and_types">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">code</i>
-            Variables & Types
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">var / let / const, primitive types, typeof, type coercion, template literals, equality</p>
-        <div class="section-topic-content" id="topic-variables_and_types"></div>
-      </div>
-
-      <div class="section-topic" data-topic="operator_aritmetical">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">calculate</i>
-            Arithmetic Operators
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">+, -, *, /, %, ++, -- , prefix and postfix</p>
-        <div class="section-topic-content" id="topic-operator_aritmetical"></div>
-      </div>
-
-      <div class="section-topic" data-topic="operator_assignative">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">assignment</i>
-            Assignment Operators
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">+=, -=, *=, /=, %=</p>
-        <div class="section-topic-content" id="topic-operator_assignative"></div>
-      </div>
-
-      <div class="section-topic" data-topic="operator_logical">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">rule</i>
-            Logical Operators
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">! (NOT), && (AND), || (OR)</p>
-        <div class="section-topic-content" id="topic-operator_logical"></div>
-      </div>
-
-      <div class="section-topic" data-topic="operator_conditional">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">help_outline</i>
-            Conditional Operators
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Ternary (? :), Nullish Coalescing (??)</p>
-        <div class="section-topic-content" id="topic-operator_conditional"></div>
-      </div>
-
-      <div class="section-topic" data-topic="control_flow">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">alt_route</i>
-            Control Flow
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">if/else, switch, for, while, do-while, for...in, for...of, break, continue</p>
-        <div class="section-topic-content" id="topic-control_flow"></div>
+    <section class="roadmap-section section" id="section-basics">
+      <h2 class="roadmap-section-title">Common Basics</h2>
+      <div class="roadmap-track">
+        <div class="section-topic roadmap-node" data-topic="variables_and_types"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">code</i><span class="roadmap-label">Variables & Types</span></div>
+        <div class="section-topic roadmap-node" data-topic="operator_aritmetical"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">calculate</i><span class="roadmap-label">Arithmetic Operators</span></div>
+        <div class="section-topic roadmap-node" data-topic="operator_assignative"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">assignment</i><span class="roadmap-label">Assignment Operators</span></div>
+        <div class="section-topic roadmap-node" data-topic="operator_logical"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">rule</i><span class="roadmap-label">Logical Operators</span></div>
+        <div class="section-topic roadmap-node" data-topic="operator_conditional"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">help_outline</i><span class="roadmap-label">Conditional Operators</span></div>
+        <div class="section-topic roadmap-node" data-topic="control_flow"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">alt_route</i><span class="roadmap-label">Control Flow</span></div>
       </div>
     </section>
 
-    <!-- GOOD SKILLS -->
-    <section class="section" id="section-good" data-category="good">
-      <h2 class="section-title">Good Skills</h2>
-
-      <div class="section-topic" data-topic="closures_and_scope">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">layers</i>
-            Closures & Scope
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Lexical scope, closures, data privacy, IIFE, hoisting, temporal dead zone, common pitfalls</p>
-        <div class="section-topic-content" id="topic-closures_and_scope"></div>
-      </div>
-
-      <div class="section-topic" data-topic="functions">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">functions</i>
-            Functions
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Declaration, expression, arrow, callbacks, closures, IIFE, generators, call/apply/bind</p>
-        <div class="section-topic-content" id="topic-functions"></div>
-      </div>
-
-      <div class="section-topic" data-topic="strings">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">text_fields</i>
-            Strings
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Methods, search, replace, split/join, regex, template literals, useful patterns</p>
-        <div class="section-topic-content" id="topic-strings"></div>
-      </div>
-
-      <div class="section-topic" data-topic="regex">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">manage_search</i>
-            Regular Expressions
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Patterns, flags, character classes, quantifiers, groups, lookahead/behind, common patterns</p>
-        <div class="section-topic-content" id="topic-regex"></div>
-      </div>
-
-      <div class="section-topic" data-topic="json_and_dates">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">schedule</i>
-            JSON & Dates
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">JSON.stringify/parse, Date creation, getters/setters, formatting, Intl, arithmetic</p>
-        <div class="section-topic-content" id="topic-json_and_dates"></div>
-      </div>
-
-      <div class="section-topic" data-topic="destructuring_and_spread">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">unfold_more</i>
-            Destructuring & Spread
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Array/object destructuring, spread operator, rest parameters, practical patterns</p>
-        <div class="section-topic-content" id="topic-destructuring_and_spread"></div>
-      </div>
-
-      <div class="section-topic" data-topic="logic_gates">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">device_hub</i>
-            Logic Gates
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Boolean gates, bitwise operators, truth tables, bitmask flags, bit manipulation tricks</p>
-        <div class="section-topic-content" id="topic-logic_gates"></div>
+    <section class="roadmap-section section" id="section-good">
+      <h2 class="roadmap-section-title">Good Skills</h2>
+      <div class="roadmap-track">
+        <div class="section-topic roadmap-node" data-topic="closures_and_scope"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">layers</i><span class="roadmap-label">Closures & Scope</span></div>
+        <div class="section-topic roadmap-node" data-topic="functions"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">functions</i><span class="roadmap-label">Functions</span></div>
+        <div class="section-topic roadmap-node" data-topic="strings"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">text_fields</i><span class="roadmap-label">Strings</span></div>
+        <div class="section-topic roadmap-node" data-topic="regex"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">manage_search</i><span class="roadmap-label">Regular Expressions</span></div>
+        <div class="section-topic roadmap-node" data-topic="json_and_dates"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">schedule</i><span class="roadmap-label">JSON & Dates</span></div>
+        <div class="section-topic roadmap-node" data-topic="destructuring_and_spread"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">unfold_more</i><span class="roadmap-label">Destructuring & Spread</span></div>
+        <div class="section-topic roadmap-node" data-topic="logic_gates"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">device_hub</i><span class="roadmap-label">Logic Gates</span></div>
       </div>
     </section>
 
-    <!-- PRO -->
-    <section class="section" id="section-pro" data-category="pro">
-      <h2 class="section-title">Like a Pro</h2>
-
-      <div class="section-topic" data-topic="dom_manipulation">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">web</i>
-            DOM Manipulation
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Selectors, traversal, create/insert/remove elements, attributes, classes, styles, events, observers</p>
-        <div class="section-topic-content" id="topic-dom_manipulation"></div>
-      </div>
-
-      <div class="section-topic" data-topic="data_collections_arrays">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">view_list</i>
-            Arrays
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Create, search, transform, sort, slice, map, filter, reduce, flat, useful patterns</p>
-        <div class="section-topic-content" id="topic-data_collections_arrays"></div>
-      </div>
-
-      <div class="section-topic" data-topic="data_collections_objects">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">data_object</i>
-            Objects, Map & Set
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Objects, Map, Set, WeakMap, WeakSet, freeze, seal, structuredClone</p>
-        <div class="section-topic-content" id="topic-data_collections_objects"></div>
-      </div>
-
-      <div class="section-topic" data-topic="error_handling">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">bug_report</i>
-            Error Handling
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">try/catch/finally, throw, custom errors, error types, best practices</p>
-        <div class="section-topic-content" id="topic-error_handling"></div>
-      </div>
-
-      <div class="section-topic" data-topic="promises_and_async">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">sync</i>
-            Promises & Async
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Promises, async/await, fetch API, Promise.all/race/any, practical patterns</p>
-        <div class="section-topic-content" id="topic-promises_and_async"></div>
-      </div>
-
-      <div class="section-topic" data-topic="fetch_api">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">cloud_download</i>
-            Fetch API & HTTP
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">GET/POST/PUT/DELETE, headers, auth, AbortController, error handling, retry, streaming</p>
-        <div class="section-topic-content" id="topic-fetch_api"></div>
-      </div>
-
-      <div class="section-topic" data-topic="modules">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">inventory_2</i>
-            Modules
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">import/export, named/default exports, dynamic import, barrel files, CommonJS vs ESM</p>
-        <div class="section-topic-content" id="topic-modules"></div>
+    <section class="roadmap-section section" id="section-pro">
+      <h2 class="roadmap-section-title">Like a Pro</h2>
+      <div class="roadmap-track">
+        <div class="section-topic roadmap-node" data-topic="dom_manipulation"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">web</i><span class="roadmap-label">DOM Manipulation</span></div>
+        <div class="section-topic roadmap-node" data-topic="data_collections_arrays"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">view_list</i><span class="roadmap-label">Arrays</span></div>
+        <div class="section-topic roadmap-node" data-topic="data_collections_objects"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">data_object</i><span class="roadmap-label">Objects, Map & Set</span></div>
+        <div class="section-topic roadmap-node" data-topic="error_handling"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">bug_report</i><span class="roadmap-label">Error Handling</span></div>
+        <div class="section-topic roadmap-node" data-topic="promises_and_async"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">sync</i><span class="roadmap-label">Promises & Async</span></div>
+        <div class="section-topic roadmap-node" data-topic="fetch_api"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">cloud_download</i><span class="roadmap-label">Fetch API & HTTP</span></div>
+        <div class="section-topic roadmap-node" data-topic="modules"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">inventory_2</i><span class="roadmap-label">Modules</span></div>
       </div>
     </section>
 
-    <!-- BROWSER & WEB -->
-    <section class="section" id="section-browser" data-category="browser">
-      <h2 class="section-title">Browser & Web</h2>
-
-      <div class="section-topic" data-topic="web_storage">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">storage</i>
-            Storage & Cookies
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">localStorage, sessionStorage, cookies, IndexedDB, JSON serialization</p>
-        <div class="section-topic-content" id="topic-web_storage"></div>
-      </div>
-
-      <div class="section-topic" data-topic="web_apis">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">public</i>
-            Web APIs
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">URL, FormData, History, Clipboard, Geolocation, Notifications, Timers, Navigator</p>
-        <div class="section-topic-content" id="topic-web_apis"></div>
-      </div>
-
-      <div class="section-topic" data-topic="dom_events">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">touch_app</i>
-            DOM Events
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Listeners, mouse, keyboard, form, propagation, delegation, drag & drop, custom events</p>
-        <div class="section-topic-content" id="topic-dom_events"></div>
-      </div>
-
-      <div class="section-topic" data-topic="web_components">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">widgets</i>
-            Web Components
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Custom Elements, Shadow DOM, templates, slots, lifecycle callbacks, practical examples</p>
-        <div class="section-topic-content" id="topic-web_components"></div>
+    <section class="roadmap-section section" id="section-browser">
+      <h2 class="roadmap-section-title">Browser & Web</h2>
+      <div class="roadmap-track">
+        <div class="section-topic roadmap-node" data-topic="web_storage"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">storage</i><span class="roadmap-label">Storage & Cookies</span></div>
+        <div class="section-topic roadmap-node" data-topic="web_apis"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">public</i><span class="roadmap-label">Web APIs</span></div>
+        <div class="section-topic roadmap-node" data-topic="dom_events"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">touch_app</i><span class="roadmap-label">DOM Events</span></div>
+        <div class="section-topic roadmap-node" data-topic="web_components"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">widgets</i><span class="roadmap-label">Web Components</span></div>
       </div>
     </section>
 
-    <!-- GEEK -->
-    <section class="section" id="section-geek" data-category="geek">
-      <h2 class="section-title">Geek for Geeks</h2>
-
-      <div class="section-topic" data-topic="event_loop">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">loop</i>
-            Event Loop & Call Stack
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Call stack, execution context, microtasks vs macrotasks, async/await flow, blocking pitfalls</p>
-        <div class="section-topic-content" id="topic-event_loop"></div>
-      </div>
-
-      <div class="section-topic" data-topic="iterators_generators">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">all_inclusive</i>
-            Iterators & Generators
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Iteration protocol, custom iterables, function*, yield, yield*, async generators, lazy evaluation</p>
-        <div class="section-topic-content" id="topic-iterators_generators"></div>
-      </div>
-
-      <div class="section-topic" data-topic="classes_and_oop">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">account_tree</i>
-            OOP & Classes
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Classes, inheritance, static, private fields, getters/setters, mixins, prototypes, iterables</p>
-        <div class="section-topic-content" id="topic-classes_and_oop"></div>
-      </div>
-
-      <div class="section-topic" data-topic="proxy_and_reflect">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">security</i>
-            Proxy & Reflect
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Proxy traps, Reflect API, validation, observable, logging, metaprogramming</p>
-        <div class="section-topic-content" id="topic-proxy_and_reflect"></div>
-      </div>
-
-      <div class="section-topic" data-topic="memory_and_performance">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">memory</i>
-            Memory & Performance
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Garbage collection, memory leaks, WeakRef, debounce, throttle, memoize, Web Workers</p>
-        <div class="section-topic-content" id="topic-memory_and_performance"></div>
-      </div>
-
-      <div class="section-topic" data-topic="testing_basics">
-        <div class="section-topic-header" onclick="toggleTopic(this)">
-          <h3 class="section-topic-title">
-            <i class="material-icons section-topic-icon">science</i>
-            Testing Basics
-          </h3>
-          <i class="material-icons section-topic-arrow">expand_more</i>
-        </div>
-        <p class="section-topic-desc">Assertions, test runners, mocking, TDD, AAA pattern, async testing, coverage, Jest/Vitest</p>
-        <div class="section-topic-content" id="topic-testing_basics"></div>
+    <section class="roadmap-section section" id="section-geek">
+      <h2 class="roadmap-section-title">Geek for Geeks</h2>
+      <div class="roadmap-track">
+        <div class="section-topic roadmap-node" data-topic="event_loop"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">loop</i><span class="roadmap-label">Event Loop & Call Stack</span></div>
+        <div class="section-topic roadmap-node" data-topic="iterators_generators"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">all_inclusive</i><span class="roadmap-label">Iterators & Generators</span></div>
+        <div class="section-topic roadmap-node" data-topic="classes_and_oop"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">account_tree</i><span class="roadmap-label">OOP & Classes</span></div>
+        <div class="section-topic roadmap-node" data-topic="proxy_and_reflect"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">security</i><span class="roadmap-label">Proxy & Reflect</span></div>
+        <div class="section-topic roadmap-node" data-topic="memory_and_performance"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">memory</i><span class="roadmap-label">Memory & Performance</span></div>
+        <div class="section-topic roadmap-node" data-topic="testing_basics"><span class="roadmap-dot"></span><i class="material-icons roadmap-icon">science</i><span class="roadmap-label">Testing Basics</span></div>
       </div>
     </section>
 
   </main>
+
+  <!-- Drawer panel (slides in from right) -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3 class="drawer-title" id="drawerTitle">Topic</h3>
+      <button class="drawer-close" id="drawerClose"><i class="material-icons">close</i></button>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <div class="section-topic-content" id="drawerContent"></div>
+    </div>
+  </aside>
 
   <!-- Back to top button -->
   <button class="back-to-top" id="backToTop" onclick="smoothScrollToTop()">

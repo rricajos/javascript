@@ -1,8 +1,9 @@
 // ============================================================
-// SECTIONS.JS - Topic navigation, code loading & search filter
+// SECTIONS.JS - Roadmap navigation, drawer panel, code loading
 // ============================================================
 
 const codeCache = {};
+var currentDrawerTopic = null;
 
 // ============================================================
 // PROGRESS TRACKING (localStorage)
@@ -49,6 +50,12 @@ function updateProgressUI() {
         check.classList.remove('checked');
         check.textContent = 'radio_button_unchecked';
       }
+    }
+    // Update roadmap dot .read state
+    if (progress[name]) {
+      topic.classList.add('read');
+    } else {
+      topic.classList.remove('read');
     }
   });
 
@@ -98,26 +105,94 @@ function updateProgressUI() {
       if (!confirm('Reset all quiz scores?')) return;
       localStorage.removeItem(QUIZ_KEY);
       updateQuizDashboard();
-      // Re-render any open quiz sections to clear answered state
-      document.querySelectorAll('.section-topic.open').forEach(function (topic) {
-        var contentEl = topic.querySelector('.section-topic-content');
-        if (contentEl && contentEl.dataset.loaded) {
-          var topicName = topic.dataset.topic;
-          var code = codeCache[topicName];
-          if (code) {
-            contentEl.dataset.loaded = '';
-            renderCode(contentEl, code);
-          }
+      // Re-render drawer if open
+      if (currentDrawerTopic) {
+        var contentEl = document.getElementById('drawerContent');
+        var code = codeCache[currentDrawerTopic];
+        if (contentEl && code) {
+          renderCode(contentEl, code, currentDrawerTopic);
         }
-      });
+      }
     });
   }
 })();
 
-// Inject checkboxes into all topic headers
+// ============================================================
+// DRAWER OPEN / CLOSE
+// ============================================================
+
+function openDrawer(topicName) {
+  var drawer = document.getElementById('drawer');
+  var overlay = document.getElementById('drawerOverlay');
+  var titleEl = document.getElementById('drawerTitle');
+  var contentEl = document.getElementById('drawerContent');
+  if (!drawer || !overlay) return;
+
+  // Set title from node label
+  var node = document.querySelector('.roadmap-node[data-topic="' + topicName + '"]');
+  titleEl.textContent = node ? node.querySelector('.roadmap-label').textContent : topicName;
+
+  // Scroll drawer body to top and load content
+  var drawerBody = document.getElementById('drawerBody');
+  if (drawerBody) drawerBody.scrollTop = 0;
+  contentEl.innerHTML = '';
+  contentEl.removeAttribute('data-loaded');
+  contentEl.style.fontSize = '';
+  loadTopicCode(topicName, contentEl);
+
+  // Mark active node
+  document.querySelectorAll('.roadmap-node.node-active').forEach(function (n) {
+    n.classList.remove('node-active');
+  });
+  if (node) node.classList.add('node-active');
+
+  // Open drawer
+  drawer.classList.add('open');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  currentDrawerTopic = topicName;
+  updateHash(topicName);
+}
+
+function closeDrawer() {
+  var drawer = document.getElementById('drawer');
+  var overlay = document.getElementById('drawerOverlay');
+  if (!drawer || !overlay) return;
+
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+
+  document.querySelectorAll('.roadmap-node.node-active').forEach(function (n) {
+    n.classList.remove('node-active');
+  });
+
+  currentDrawerTopic = null;
+  updateHash(null);
+}
+
+// Wire up drawer close button and overlay click
+(function () {
+  var closeBtn = document.getElementById('drawerClose');
+  var overlay = document.getElementById('drawerOverlay');
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  if (overlay) overlay.addEventListener('click', closeDrawer);
+})();
+
+// Wire up roadmap node clicks
+(function () {
+  document.querySelectorAll('.roadmap-node').forEach(function (node) {
+    node.addEventListener('click', function (e) {
+      // Don't open drawer if user clicked the check icon
+      if (e.target.classList.contains('section-topic-check')) return;
+      openDrawer(node.dataset.topic);
+    });
+  });
+})();
+
+// Inject checkboxes into roadmap nodes
 (function () {
   document.querySelectorAll('.section-topic').forEach(function (topic) {
-    const header = topic.querySelector('.section-topic-header');
     const check = document.createElement('i');
     check.className = 'material-icons section-topic-check';
     check.textContent = 'radio_button_unchecked';
@@ -126,12 +201,12 @@ function updateProgressUI() {
       e.stopPropagation();
       toggleTopicRead(topic.dataset.topic);
     });
-    header.insertBefore(check, header.firstChild);
+    topic.appendChild(check);
   });
 
   // Inject progress counters into section titles
   document.querySelectorAll('.section').forEach(function (section) {
-    const title = section.querySelector('.section-title');
+    const title = section.querySelector('.roadmap-section-title');
     if (title) {
       const counter = document.createElement('span');
       counter.className = 'section-progress';
@@ -215,6 +290,7 @@ const RELATED_TOPICS = {
   testing_basics: ['functions', 'error_handling', 'promises_and_async']
 };
 
+// Inject difficulty badges into roadmap nodes
 (function () {
   document.querySelectorAll('.section-topic').forEach(function (topic) {
     const level = TOPIC_LEVELS[topic.dataset.topic];
@@ -222,9 +298,7 @@ const RELATED_TOPICS = {
     const badge = document.createElement('span');
     badge.className = 'section-topic-level level-' + level;
     badge.textContent = level;
-    const header = topic.querySelector('.section-topic-header');
-    const arrow = header.querySelector('.section-topic-arrow');
-    header.insertBefore(badge, arrow);
+    topic.appendChild(badge);
   });
 })();
 
@@ -408,7 +482,7 @@ const TOPIC_QUIZZES = {
 };
 
 // ============================================================
-// NAVIGATION & TOPIC TOGGLE
+// NAVIGATION
 // ============================================================
 
 function scrollToSection(sectionId) {
@@ -417,53 +491,6 @@ function scrollToSection(sectionId) {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
-
-function toggleTopic(headerEl) {
-  const topicEl = headerEl.closest('.section-topic');
-  const contentEl = topicEl.querySelector('.section-topic-content');
-  const isOpen = topicEl.classList.contains('open');
-
-  if (isOpen) {
-    topicEl.classList.remove('open');
-  } else {
-    topicEl.classList.add('open');
-    if (!contentEl.dataset.loaded) {
-      loadTopicCode(topicEl.dataset.topic, contentEl);
-    }
-  }
-  saveOpenTopics();
-}
-
-// ============================================================
-// PERSIST OPEN TOPICS (sessionStorage)
-// ============================================================
-
-const OPEN_TOPICS_KEY = 'sjsb_open_topics';
-
-function saveOpenTopics() {
-  const openTopics = [];
-  document.querySelectorAll('.section-topic.open').forEach(function (topic) {
-    openTopics.push(topic.dataset.topic);
-  });
-  sessionStorage.setItem(OPEN_TOPICS_KEY, JSON.stringify(openTopics));
-}
-
-(function restoreOpenTopics() {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(OPEN_TOPICS_KEY));
-    if (!saved || !saved.length) return;
-    saved.forEach(function (topicName) {
-      const topic = document.querySelector('.section-topic[data-topic="' + topicName + '"]');
-      if (topic && !topic.classList.contains('open')) {
-        topic.classList.add('open');
-        const contentEl = topic.querySelector('.section-topic-content');
-        if (!contentEl.dataset.loaded) {
-          loadTopicCode(topicName, contentEl);
-        }
-      }
-    });
-  } catch (e) { /* ignore */ }
-})();
 
 // ============================================================
 // CODE LOADING & RENDERING
@@ -476,7 +503,7 @@ function loadTopicCode(topicName, contentEl) {
   contentEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div>';
 
   if (codeCache[topicName]) {
-    renderCode(contentEl, codeCache[topicName]);
+    renderCode(contentEl, codeCache[topicName], topicName);
     return;
   }
 
@@ -487,7 +514,7 @@ function loadTopicCode(topicName, contentEl) {
     })
     .then(function (code) {
       codeCache[topicName] = code;
-      renderCode(contentEl, code);
+      renderCode(contentEl, code, topicName);
     })
     .catch(function (error) {
       contentEl.classList.remove('loading');
@@ -495,7 +522,7 @@ function loadTopicCode(topicName, contentEl) {
     });
 }
 
-function renderCode(contentEl, code) {
+function renderCode(contentEl, code, topicName) {
   contentEl.classList.remove('loading');
   contentEl.innerHTML = '';
 
@@ -611,7 +638,6 @@ function renderCode(contentEl, code) {
     if (current < 24) contentEl.style.fontSize = (current + 1) + 'px';
   });
 
-  const topicName = contentEl.closest('.section-topic').dataset.topic;
   const shareBtn = createShareBtn(topicName);
 
   toolbar.appendChild(runBtn);
@@ -666,24 +692,18 @@ function renderCode(contentEl, code) {
     relatedDiv.className = 'code-related';
     relatedDiv.innerHTML = '<span class="code-related-label">See also:</span> ';
     related.forEach(function (rel, i) {
-      const topicEl = document.querySelector('.section-topic[data-topic="' + rel + '"]');
-      if (!topicEl) return;
-      const title = topicEl.querySelector('.section-topic-title').textContent.trim();
+      const relNode = document.querySelector('.roadmap-node[data-topic="' + rel + '"]');
+      if (!relNode) return;
+      const title = relNode.querySelector('.roadmap-label').textContent.trim();
       const link = document.createElement('a');
       link.href = '#';
       link.className = 'code-related-link';
       link.textContent = title;
       link.addEventListener('click', function (e) {
         e.preventDefault();
-        topicEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        if (!topicEl.classList.contains('open')) {
-          topicEl.classList.add('open');
-          const c = topicEl.querySelector('.section-topic-content');
-          if (!c.dataset.loaded) loadTopicCode(rel, c);
-          saveOpenTopics();
-        }
+        openDrawer(rel);
       });
-      if (i > 0) relatedDiv.appendChild(document.createTextNode(' · '));
+      if (i > 0) relatedDiv.appendChild(document.createTextNode(' \u00b7 '));
       relatedDiv.appendChild(link);
     });
     contentEl.appendChild(relatedDiv);
@@ -718,8 +738,6 @@ function renderCode(contentEl, code) {
           btn.classList.add('quiz-disabled');
           if (oIdx === item.answer) {
             btn.classList.add('quiz-correct');
-          } else if (!topicScores[qIdx] && oIdx !== item.answer) {
-            // We don't know which wrong answer was picked, just show correct
           }
         }
 
@@ -796,9 +814,7 @@ function runCode(code) {
     .split('\n')
     .map(function (line) {
       const trimmed = line.trim();
-      // Skip import/export statements
       if (/^import\s/.test(trimmed) || /^export\s/.test(trimmed)) return '// [skipped] ' + line;
-      // Skip top-level await (not in function)
       if (/^await\s/.test(trimmed)) return '// [skipped] ' + line;
       return line;
     })
@@ -991,11 +1007,9 @@ function highlightLine(line) {
           continue;
         }
         if (line[i] === '$' && i + 1 < len && line[i + 1] === '{') {
-          // Push accumulated string part
           tmplParts.push({ type: 'string-mid', value: buf + '${' });
           buf = '';
           i += 2;
-          // Read expression inside ${...}
           var depth = 1;
           var exprStart = i;
           while (i < len && depth > 0) {
@@ -1039,7 +1053,6 @@ function highlightLine(line) {
       if (KEYWORDS.test(word)) {
         tokens.push({ type: 'keyword', value: word });
       } else {
-        // Check if followed by ( → function call
         var j = i;
         while (j < len && line[j] === ' ') j++;
         if (j < len && line[j] === '(') {
@@ -1119,8 +1132,8 @@ function filterTopics(query) {
 
     topics.forEach(function (topic) {
       totalTopics++;
-      const title = topic.querySelector('.section-topic-title').textContent.toLowerCase();
-      const desc = topic.querySelector('.section-topic-desc').textContent.toLowerCase();
+      const label = topic.querySelector('.roadmap-label');
+      const labelText = label ? label.textContent.toLowerCase() : '';
       const topicName = topic.dataset.topic.toLowerCase().replace(/_/g, ' ');
 
       // Also search in loaded code content
@@ -1128,8 +1141,7 @@ function filterTopics(query) {
       const codeMatch = cachedCode ? cachedCode.toLowerCase().includes(normalizedQuery) : false;
 
       const matches = !normalizedQuery ||
-        title.includes(normalizedQuery) ||
-        desc.includes(normalizedQuery) ||
+        labelText.includes(normalizedQuery) ||
         topicName.includes(normalizedQuery) ||
         codeMatch;
 
@@ -1189,12 +1201,10 @@ function filterTopics(query) {
   const sections = document.querySelectorAll('.section');
   if (!nav || !cubesContainer || !cubes.length) return;
 
-  // Threshold: when cubes container scrolls past the top, go sticky
   var stickyTriggered = false;
 
   function updateSticky() {
     var navRect = nav.getBoundingClientRect();
-    // Trigger when the nav top reaches viewport top
     if (navRect.top <= 0 && !stickyTriggered) {
       nav.classList.add('cubes-sticky');
       stickyTriggered = true;
@@ -1204,10 +1214,9 @@ function filterTopics(query) {
     }
   }
 
-  // Track which section is in view
   function updateActiveSection() {
     var currentSection = null;
-    var scrollY = window.scrollY + 150; // offset for sticky height
+    var scrollY = window.scrollY + 150;
 
     sections.forEach(function (section) {
       var top = section.offsetTop;
@@ -1238,51 +1247,8 @@ function filterTopics(query) {
     }
   }, { passive: true });
 
-  // Initial check
   updateSticky();
   updateActiveSection();
-})();
-
-// ============================================================
-// EXPAND ALL / COLLAPSE ALL
-// ============================================================
-
-(function () {
-  document.querySelectorAll('.section').forEach(function (section) {
-    const title = section.querySelector('.section-title');
-    if (!title) return;
-
-    const controls = document.createElement('div');
-    controls.className = 'section-controls';
-
-    const expandBtn = document.createElement('button');
-    expandBtn.className = 'section-controls-btn';
-    expandBtn.innerHTML = '<i class="material-icons">unfold_more</i> Expand all';
-    expandBtn.addEventListener('click', function () {
-      section.querySelectorAll('.section-topic:not(.open)').forEach(function (topic) {
-        topic.classList.add('open');
-        const contentEl = topic.querySelector('.section-topic-content');
-        if (!contentEl.dataset.loaded) {
-          loadTopicCode(topic.dataset.topic, contentEl);
-        }
-      });
-      saveOpenTopics();
-    });
-
-    const collapseBtn = document.createElement('button');
-    collapseBtn.className = 'section-controls-btn';
-    collapseBtn.innerHTML = '<i class="material-icons">unfold_less</i> Collapse all';
-    collapseBtn.addEventListener('click', function () {
-      section.querySelectorAll('.section-topic.open').forEach(function (topic) {
-        topic.classList.remove('open');
-      });
-      saveOpenTopics();
-    });
-
-    controls.appendChild(expandBtn);
-    controls.appendChild(collapseBtn);
-    title.insertAdjacentElement('afterend', controls);
-  });
 })();
 
 // ============================================================
@@ -1292,11 +1258,11 @@ function filterTopics(query) {
 (function () {
   document.querySelectorAll('.section').forEach(function (section) {
     const count = section.querySelectorAll('.section-topic').length;
-    const title = section.querySelector('.section-title');
+    const title = section.querySelector('.roadmap-section-title');
     if (title && count > 0) {
       const badge = document.createElement('span');
       badge.className = 'section-title-count';
-      badge.textContent = `(${count} topics)`;
+      badge.textContent = `(${count})`;
       title.appendChild(badge);
     }
   });
@@ -1307,67 +1273,40 @@ function filterTopics(query) {
 // ============================================================
 
 (function () {
-  // Add ARIA attributes to topic headers for accordion pattern
-  document.querySelectorAll('.section-topic').forEach(function (topic) {
-    const header = topic.querySelector('.section-topic-header');
-    const content = topic.querySelector('.section-topic-content');
-    const topicId = topic.dataset.topic;
+  // Make roadmap nodes keyboard-accessible
+  document.querySelectorAll('.roadmap-node').forEach(function (node) {
+    node.setAttribute('role', 'button');
+    node.setAttribute('tabindex', '0');
 
-    header.setAttribute('role', 'button');
-    header.setAttribute('tabindex', '0');
-    header.setAttribute('aria-expanded', 'false');
-    header.setAttribute('aria-controls', 'topic-' + topicId);
-    content.setAttribute('role', 'region');
-    content.setAttribute('aria-labelledby', 'header-' + topicId);
-    header.id = 'header-' + topicId;
-
-    // Allow Enter/Space to toggle
-    header.addEventListener('keydown', function (e) {
+    node.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        toggleTopic(header);
+        openDrawer(node.dataset.topic);
       }
     });
   });
 
-  // Update aria-expanded when topics open/close
-  const observer = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
-      if (mutation.attributeName === 'class') {
-        const topic = mutation.target;
-        if (topic.classList.contains('section-topic')) {
-          const header = topic.querySelector('.section-topic-header');
-          header.setAttribute('aria-expanded', topic.classList.contains('open') ? 'true' : 'false');
-        }
-      }
-    });
-  });
-
-  document.querySelectorAll('.section-topic').forEach(function (topic) {
-    observer.observe(topic, { attributes: true });
-  });
-
-  // Arrow key navigation between topic headers
+  // Arrow key navigation between roadmap nodes
   document.addEventListener('keydown', function (e) {
     const active = document.activeElement;
-    if (!active || !active.classList.contains('section-topic-header')) return;
+    if (!active || !active.classList.contains('roadmap-node')) return;
 
-    const headers = Array.from(document.querySelectorAll('.section-topic:not(.filtered-out) .section-topic-header'));
-    const idx = headers.indexOf(active);
+    const nodes = Array.from(document.querySelectorAll('.roadmap-node:not(.filtered-out)'));
+    const idx = nodes.indexOf(active);
     if (idx === -1) return;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (idx < headers.length - 1) headers[idx + 1].focus();
+      if (idx < nodes.length - 1) nodes[idx + 1].focus();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (idx > 0) headers[idx - 1].focus();
+      if (idx > 0) nodes[idx - 1].focus();
     } else if (e.key === 'Home') {
       e.preventDefault();
-      headers[0].focus();
+      nodes[0].focus();
     } else if (e.key === 'End') {
       e.preventDefault();
-      headers[headers.length - 1].focus();
+      nodes[nodes.length - 1].focus();
     }
   });
 })();
@@ -1382,7 +1321,6 @@ function filterTopics(query) {
   const icon = document.getElementById('themeIcon');
   if (!toggle || !icon) return;
 
-  // Restore saved theme
   const saved = localStorage.getItem(THEME_KEY);
   if (saved === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
@@ -1408,26 +1346,14 @@ function filterTopics(query) {
 // ============================================================
 
 function openTopicByName(topicName) {
-  const topic = document.querySelector('.section-topic[data-topic="' + topicName + '"]');
-  if (!topic) return false;
+  const node = document.querySelector('.roadmap-node[data-topic="' + topicName + '"]');
+  if (!node) return false;
 
-  if (!topic.classList.contains('open')) {
-    topic.classList.add('open');
-    const contentEl = topic.querySelector('.section-topic-content');
-    if (!contentEl.dataset.loaded) {
-      loadTopicCode(topicName, contentEl);
-    }
-    saveOpenTopics();
-  }
-
+  // Scroll node into view, then open drawer
+  node.scrollIntoView({ behavior: 'smooth', block: 'center' });
   setTimeout(function () {
-    topic.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-
-  // Brief highlight effect
-  topic.style.transition = 'box-shadow 0.3s ease';
-  topic.style.boxShadow = '0 0 0 3px var(--yellow-color)';
-  setTimeout(function () { topic.style.boxShadow = ''; }, 1500);
+    openDrawer(topicName);
+  }, 200);
 
   return true;
 }
@@ -1445,11 +1371,9 @@ function updateHash(topicName) {
   const hash = window.location.hash;
   if (hash.startsWith('#topic=')) {
     const topicName = hash.substring(7);
-    // Wait for DOM to be fully set up
     setTimeout(function () { openTopicByName(topicName); }, 300);
   }
 
-  // Listen for hash changes (back/forward navigation)
   window.addEventListener('hashchange', function () {
     const hash = window.location.hash;
     if (hash.startsWith('#topic=')) {
@@ -1458,7 +1382,7 @@ function updateHash(topicName) {
   });
 })();
 
-// Add share button to code toolbar (injected in renderCode)
+// Add share button to code toolbar
 function createShareBtn(topicName) {
   const shareBtn = document.createElement('button');
   shareBtn.className = 'code-toolbar-btn';
@@ -1500,9 +1424,9 @@ function toggleShortcutsOverlay() {
       '<div class="shortcuts-modal-body">' +
         '<div class="shortcut-row"><kbd>?</kbd><span>Show this help</span></div>' +
         '<div class="shortcut-row"><kbd>/</kbd> or <kbd>Ctrl+K</kbd><span>Focus search</span></div>' +
-        '<div class="shortcut-row"><kbd>Esc</kbd><span>Close console / collapse all</span></div>' +
+        '<div class="shortcut-row"><kbd>Esc</kbd><span>Close drawer / console</span></div>' +
         '<div class="shortcut-row"><kbd>Arrow Up/Down</kbd><span>Navigate between topics</span></div>' +
-        '<div class="shortcut-row"><kbd>Enter</kbd> / <kbd>Space</kbd><span>Open/close focused topic</span></div>' +
+        '<div class="shortcut-row"><kbd>Enter</kbd> / <kbd>Space</kbd><span>Open topic in drawer</span></div>' +
         '<div class="shortcut-row"><kbd>Home</kbd> / <kbd>End</kbd><span>Jump to first/last topic</span></div>' +
       '</div>' +
     '</div>';
@@ -1513,7 +1437,6 @@ function toggleShortcutsOverlay() {
 }
 
 document.addEventListener('keydown', function (event) {
-  // Don't trigger shortcuts when typing in input
   const isInput = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA';
 
   if (event.key === 'Escape') {
@@ -1523,11 +1446,8 @@ document.addEventListener('keydown', function (event) {
     // Close console if open
     const consoleEl = document.getElementById('sjsb-console');
     if (consoleEl) { consoleEl.remove(); return; }
-    // Otherwise close all open topics
-    document.querySelectorAll('.section-topic.open').forEach(function (topic) {
-      topic.classList.remove('open');
-    });
-    saveOpenTopics();
+    // Close drawer if open
+    if (currentDrawerTopic) { closeDrawer(); return; }
   }
 
   if ((event.ctrlKey && event.key === 'k') || (event.key === '/' && !isInput)) {

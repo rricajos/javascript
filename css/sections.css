@@ -67,156 +67,290 @@
   transition: width 0.4s ease;
 }
 
-.sections-container {
+/* ============================================================
+   ROADMAP LAYOUT
+   ============================================================ */
+.roadmap {
   padding: 1em;
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
-.section {
+.roadmap-section {
   margin: 0 auto;
   max-width: var(--max-width);
   padding: 1em 0;
-  scroll-margin-top: 1em;
+  scroll-margin-top: 80px;
 }
 
-.section-title {
-  font-family: monospace;
-  font-size: 1.5em;
-  color: var(--black-color);
-  border-bottom: 3px solid var(--yellow-color);
-  padding-bottom: 0.3em;
-  margin-bottom: 0.5em;
-}
-
-/* Section controls (expand/collapse all) */
-.section-controls {
-  display: flex;
-  gap: 0.5em;
-  margin-bottom: 0.8em;
-}
-
-.section-controls-btn {
-  background: none;
-  border: 1px solid var(--white-second-color);
-  color: var(--white-second-color);
-  font-family: monospace;
-  font-size: 0.8em;
-  padding: 0.3em 0.8em;
-  border-radius: 0.5em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-
-.section-controls-btn:hover {
-  color: var(--yellow-color);
-  border-color: var(--yellow-color);
-}
-
-.section-controls-btn .material-icons {
-  font-size: 16px;
-}
-
-/* Topic card */
-.section-topic {
-  background-color: var(--white-color);
-  border: 2px solid var(--white-second-color);
-  border-radius: 0.8em;
-  margin-bottom: 0.8em;
-  overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.section-topic:hover {
-  border-color: var(--yellow-second-color);
-}
-
-.section-topic.open {
-  border-color: var(--yellow-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.section-topic-header {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8em 1em;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.15s ease;
-}
-
-.section-topic-header:hover,
-.section-topic-header:focus-visible {
-  background-color: rgba(255, 221, 0, 0.1);
-}
-
-.section-topic-header:focus-visible {
-  outline: 2px solid var(--yellow-color);
-  outline-offset: -2px;
-}
-
-.section-topic-title {
+.roadmap-section-title {
   font-family: monospace;
   font-size: 1.1em;
-  margin: 0;
+  color: var(--black-second-color);
+  background: var(--yellow-color);
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  border-radius: 2em;
+  margin-bottom: 0.8em;
+}
+
+.roadmap-track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 2em;
+  gap: 0;
+}
+
+/* Vertical connector line */
+.roadmap-track::before {
+  content: '';
+  position: absolute;
+  left: calc(2em + 5px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--white-second-color);
+}
+
+/* ============================================================
+   ROADMAP NODE (pill button)
+   ============================================================ */
+.roadmap-node {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  color: var(--black-color);
+  gap: 0.6em;
+  padding: 0.55em 1.2em 0.55em 0;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  transition: transform 0.15s ease;
 }
 
-.section-topic-icon {
-  color: var(--yellow-second-color);
-  font-size: 1.3em !important;
+.roadmap-node:hover {
+  transform: translateX(4px);
 }
 
-.section-topic.open .section-topic-icon {
-  color: var(--yellow-color);
+.roadmap-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--white-second-color);
+  border: 2px solid var(--bg-color);
+  flex-shrink: 0;
+  z-index: 1;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.section-topic-arrow {
+.roadmap-node:hover .roadmap-dot {
+  background: var(--yellow-color);
+  box-shadow: 0 0 6px rgba(255, 221, 0, 0.4);
+}
+
+/* Read / completed dot */
+.roadmap-node.read .roadmap-dot {
+  background: #4caf50;
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.3);
+}
+
+/* Active node (drawer open for this topic) */
+.roadmap-node.node-active .roadmap-dot {
+  background: var(--yellow-color);
+  box-shadow: 0 0 8px rgba(255, 221, 0, 0.5);
+}
+
+.roadmap-icon {
   color: var(--white-second-color);
-  transition: transform 0.3s ease, color 0.2s ease;
+  font-size: 20px !important;
+  transition: color 0.2s ease;
 }
 
-.section-topic.open .section-topic-arrow {
-  transform: rotate(180deg);
+.roadmap-node:hover .roadmap-icon {
   color: var(--yellow-color);
 }
 
-.section-topic-desc {
-  font-size: 0.85em;
-  color: #777;
-  margin: 0;
-  padding: 0 1em 0.5em 3.3em;
+.roadmap-node.node-active .roadmap-icon {
+  color: var(--yellow-color);
 }
 
-/* Code content area - animated with max-height */
+.roadmap-label {
+  font-family: monospace;
+  font-size: 0.95em;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+.roadmap-node:hover .roadmap-label {
+  color: var(--yellow-color);
+}
+
+.roadmap-node.node-active .roadmap-label {
+  color: var(--yellow-color);
+  font-weight: bold;
+}
+
+/* Difficulty badge (injected by JS) */
+.section-topic-level {
+  font-family: system-ui, sans-serif;
+  font-size: 0.65em;
+  font-weight: 600;
+  padding: 0.1em 0.6em;
+  border-radius: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.section-topic-level.level-beginner {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.section-topic-level.level-intermediate {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+}
+
+.section-topic-level.level-advanced {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+/* Topic count badge */
+.section-title-count {
+  font-family: system-ui, sans-serif;
+  font-size: 0.55em;
+  color: var(--white-second-color);
+  font-weight: normal;
+  margin-left: 0.5em;
+}
+
+/* Progress check icon (injected by JS into nodes) */
+.section-topic-check {
+  font-size: 18px !important;
+  color: var(--white-second-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.section-topic-check:hover {
+  color: var(--yellow-color);
+}
+
+.section-topic-check.checked {
+  color: #4caf50;
+}
+
+/* Section progress badge */
+.section-progress {
+  font-family: monospace;
+  font-size: 0.5em;
+  color: #4caf50;
+  font-weight: bold;
+  margin-left: 0.5em;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 0.1em 0.5em;
+  border-radius: 0.5em;
+}
+
+/* ============================================================
+   DRAWER PANEL (slides in from right)
+   ============================================================ */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 90%;
+  max-width: 620px;
+  height: 100%;
+  background: var(--black-second-color);
+  z-index: 160;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 1.2em;
+  border-bottom: 3px solid var(--yellow-color);
+  flex-shrink: 0;
+}
+
+.drawer-title {
+  font-family: monospace;
+  font-size: 1.1em;
+  color: var(--yellow-color);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.2em;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.drawer-close:hover {
+  color: #ff5555;
+}
+
+.drawer-close .material-icons {
+  font-size: 24px;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-color: var(--yellow-color) var(--black-second-color);
+  scrollbar-width: thin;
+}
+
+/* Code content area — inside drawer, always visible */
 .section-topic-content {
   background-color: var(--black-second-color);
   color: #ddd;
   font-family: monospace;
   font-size: 0.85em;
   line-height: 1.6;
-  padding: 0 1.5em;
-  overflow: hidden;
+  padding: 1em 1.5em;
   white-space: pre;
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
-}
-
-.section-topic.open .section-topic-content {
-  max-height: 80vh;
-  opacity: 1;
-  padding: 1em 1.5em;
   overflow-x: auto;
-  overflow-y: auto;
 }
 
 /* Code line numbers */
@@ -295,11 +429,9 @@
 
 /* Loading state */
 .section-topic-content.loading {
-  max-height: 100px;
-  opacity: 1;
-  padding: 2em 1.5em;
   text-align: center;
   color: var(--yellow-color);
+  padding: 2em 1.5em;
 }
 
 .loading-spinner {
@@ -352,27 +484,6 @@
   font-size: 22px;
 }
 
-[data-theme="dark"] .section-topic {
-  background-color: var(--card-bg);
-  border-color: var(--card-border);
-}
-
-[data-theme="dark"] .section-topic:hover {
-  border-color: var(--yellow-second-color);
-}
-
-[data-theme="dark"] .section-topic-desc {
-  color: #999;
-}
-
-[data-theme="dark"] .section-title {
-  color: var(--text-color);
-}
-
-[data-theme="dark"] .section-topic-title {
-  color: var(--text-color);
-}
-
 /* Cubes clickable */
 .cube {
   cursor: pointer;
@@ -397,8 +508,16 @@
   display: block;
 }
 
-/* Search filter - hidden topics */
+/* Search filter — hidden topics / sections */
+.roadmap-node.filtered-out {
+  display: none;
+}
+
 .section-topic.filtered-out {
+  display: none;
+}
+
+.roadmap-section.filtered-out {
   display: none;
 }
 
@@ -444,73 +563,7 @@
   font-size: 24px;
 }
 
-/* Difficulty badge */
-.section-topic-level {
-  font-family: system-ui, sans-serif;
-  font-size: 0.65em;
-  font-weight: 600;
-  padding: 0.1em 0.6em;
-  border-radius: 1em;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  flex-shrink: 0;
-}
-
-.section-topic-level.level-beginner {
-  background: rgba(76, 175, 80, 0.15);
-  color: #4caf50;
-}
-
-.section-topic-level.level-intermediate {
-  background: rgba(255, 152, 0, 0.15);
-  color: #ff9800;
-}
-
-.section-topic-level.level-advanced {
-  background: rgba(244, 67, 54, 0.15);
-  color: #f44336;
-}
-
-/* Topic count badge */
-.section-title-count {
-  font-family: system-ui, sans-serif;
-  font-size: 0.55em;
-  color: var(--white-second-color);
-  font-weight: normal;
-  margin-left: 0.5em;
-}
-
-/* Progress check icon */
-.section-topic-check {
-  font-size: 20px !important;
-  color: var(--white-second-color);
-  cursor: pointer;
-  transition: color 0.2s ease;
-  margin-right: 0.3em;
-  flex-shrink: 0;
-}
-
-.section-topic-check:hover {
-  color: var(--yellow-color);
-}
-
-.section-topic-check.checked {
-  color: #4caf50;
-}
-
-/* Section progress badge */
-.section-progress {
-  font-family: monospace;
-  font-size: 0.5em;
-  color: #4caf50;
-  font-weight: bold;
-  margin-left: 0.5em;
-  background: rgba(76, 175, 80, 0.1);
-  padding: 0.1em 0.5em;
-  border-radius: 0.5em;
-}
-
-/* Code toolbar (Run / Copy buttons) */
+/* Code toolbar (Run / Copy / Edit / Share / A-/A+) */
 .code-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -803,42 +856,45 @@
   color: var(--yellow-color);
 }
 
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+[data-theme="dark"] .roadmap-section-title {
+  color: var(--black-second-color);
+}
+
+[data-theme="dark"] .roadmap-track::before {
+  background: #444;
+}
+
+[data-theme="dark"] .roadmap-dot {
+  border-color: var(--bg-color);
+}
+
 [data-theme="dark"] .site-footer {
   border-top-color: #333;
 }
 
-/* Print styles */
+/* ============================================================
+   PRINT
+   ============================================================ */
 @media print {
   .back-to-top,
-  .section-controls,
   .code-toolbar,
   .search-results-count,
   .progress-dashboard,
   #sjsb-console,
   .section-topic-check,
-  .section-topic-arrow,
   .topic-quiz,
   .theme-toggle,
-  .site-footer {
+  .site-footer,
+  .drawer-overlay,
+  .drawer {
     display: none !important;
   }
 
-  .section-topic {
+  .roadmap-node {
     break-inside: avoid;
-    border: 1px solid #ccc;
-    box-shadow: none;
-  }
-
-  .section-topic-content {
-    max-height: none !important;
-    opacity: 1 !important;
-    padding: 0.5em 1em !important;
-    overflow: visible !important;
-    font-size: 0.75em;
-  }
-
-  .section-topic.open .section-topic-content {
-    max-height: none !important;
   }
 
   .section-topic-level {
@@ -850,32 +906,39 @@
   }
 }
 
-/* Responsive */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media screen and (max-width: 600px) {
-  .sections-container {
+  .roadmap {
     padding: 0.5em;
   }
 
-  .section-topic-header {
-    padding: 0.6em 0.8em;
+  .roadmap-track {
+    padding-left: 1em;
   }
 
-  .section-topic-title {
-    font-size: 0.95em;
+  .roadmap-track::before {
+    left: calc(1em + 5px);
   }
 
-  .section-topic-desc {
-    padding-left: 2.5em;
-    font-size: 0.8em;
+  .roadmap-label {
+    font-size: 0.85em;
+  }
+
+  .roadmap-icon {
+    font-size: 18px !important;
   }
 
   .section-topic-content {
     font-size: 0.75em;
     line-height: 1.5;
+    padding: 0.8em 1em;
   }
 
-  .section-topic.open .section-topic-content {
-    padding: 0.8em 1em;
+  .drawer {
+    width: 100%;
+    max-width: none;
   }
 
   .back-to-top {
