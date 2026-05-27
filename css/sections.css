@@ -92,6 +92,15 @@
   padding: 0.3em 1.2em;
   border-radius: 2em;
   margin-bottom: 0.8em;
+  opacity: 0.25;
+  transform: scale(0.9);
+  transform-origin: left center;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.section-active > .roadmap-section-title {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .roadmap-track {

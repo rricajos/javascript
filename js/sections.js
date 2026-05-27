@@ -1643,6 +1643,14 @@ function filterTopics(query) {
         cube.classList.remove('cube-active');
       }
     });
+
+    sections.forEach(function (section) {
+      if (section.id === currentSection) {
+        section.classList.add('section-active');
+      } else {
+        section.classList.remove('section-active');
+      }
+    });
   }
 
   var scrollTicking = false;
