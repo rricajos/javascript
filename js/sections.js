@@ -183,7 +183,6 @@ function closeDrawer() {
 
   drawer.classList.remove('open');
   overlay.classList.remove('open');
-  closeQuizSlide();
   document.body.style.overflow = '';
 
   document.querySelectorAll('.roadmap-node.node-active').forEach(function (n) {
@@ -194,12 +193,23 @@ function closeDrawer() {
   updateHash(null);
 }
 
+// Close everything in sequence: quiz slides away first, then drawer
+function closeAll() {
+  var quizSlide = document.getElementById('quizSlide');
+  if (quizSlide && quizSlide.classList.contains('open')) {
+    closeQuizSlide();
+    setTimeout(function () { closeDrawer(); }, 350);
+  } else {
+    closeDrawer();
+  }
+}
+
 // Wire up drawer close button and overlay click
 (function () {
   var closeBtn = document.getElementById('drawerClose');
   var overlay = document.getElementById('drawerOverlay');
-  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-  if (overlay) overlay.addEventListener('click', closeDrawer);
+  if (closeBtn) closeBtn.addEventListener('click', closeAll);
+  if (overlay) overlay.addEventListener('click', closeAll);
 
   // Quiz slide close button
   var quizCloseBtn = document.getElementById('quizSlideClose');
@@ -1537,14 +1547,11 @@ document.addEventListener('keydown', function (event) {
     // Close shortcuts overlay first
     const shortcutsOverlay = document.getElementById('shortcuts-overlay');
     if (shortcutsOverlay) { shortcutsOverlay.remove(); return; }
-    // Close quiz slide if open
-    var quizSlide = document.getElementById('quizSlide');
-    if (quizSlide && quizSlide.classList.contains('open')) { closeQuizSlide(); return; }
     // Close console if open
     const consoleEl = document.getElementById('sjsb-console');
     if (consoleEl) { consoleEl.remove(); return; }
-    // Close drawer if open
-    if (currentDrawerTopic) { closeDrawer(); return; }
+    // Close both panels in sequence: quiz first, then drawer
+    if (currentDrawerTopic) { closeAll(); return; }
   }
 
   if ((event.ctrlKey && event.key === 'k') || (event.key === '/' && !isInput)) {
