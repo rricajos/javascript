@@ -162,7 +162,10 @@
   <div class="progress-dashboard" id="progressDashboard">
     <div class="progress-dashboard-info">
       <span class="progress-dashboard-label">Progress</span>
-      <span class="progress-dashboard-count" id="progressCount">0 / 29</span>
+      <span class="progress-dashboard-right">
+        <span class="progress-dashboard-count" id="progressCount">0 / 29</span>
+        <button class="progress-dashboard-reset" id="progressReset" title="Reset progress"><i class="material-icons" style="font-size:14px;vertical-align:middle">restart_alt</i></button>
+      </span>
     </div>
     <div class="progress-dashboard-bar">
       <div class="progress-dashboard-fill" id="progressFill" style="width: 0%"></div>
@@ -173,7 +176,10 @@
   <div class="progress-dashboard" id="quizDashboard">
     <div class="progress-dashboard-info">
       <span class="progress-dashboard-label">Quiz Score</span>
-      <span class="progress-dashboard-count" id="quizCount" style="color: #2196f3;">0 / 0 correct</span>
+      <span class="progress-dashboard-right">
+        <span class="progress-dashboard-count" id="quizCount" style="color: #2196f3;">0 / 0 correct</span>
+        <button class="progress-dashboard-reset" id="quizReset" title="Reset quiz scores"><i class="material-icons" style="font-size:14px;vertical-align:middle">restart_alt</i></button>
+      </span>
     </div>
     <div class="progress-dashboard-bar">
       <div class="progress-dashboard-fill" id="quizFill" style="width: 0%; background: linear-gradient(90deg, #2196f3, #4caf50);"></div>
@@ -567,6 +573,14 @@
   <button class="theme-toggle" id="themeToggle" title="Toggle dark/light theme">
     <i class="material-icons" id="themeIcon">dark_mode</i>
   </button>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span class="site-footer-text">Super JavaScript Brain &mdash; 29 interactive topics</span>
+      <span class="site-footer-hint">Press <kbd>?</kbd> for keyboard shortcuts</span>
+    </div>
+  </footer>
 
   <script src="js/banner.js"></script>
   <script src="js/sections.js"></script>

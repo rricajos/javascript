@@ -23,11 +23,34 @@
   color: var(--white-second-color);
 }
 
+.progress-dashboard-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
 .progress-dashboard-count {
   font-family: monospace;
   font-size: 0.85em;
   color: #4caf50;
   font-weight: bold;
+}
+
+.progress-dashboard-reset {
+  background: none;
+  border: 1px solid #555;
+  border-radius: 0.4em;
+  color: #888;
+  cursor: pointer;
+  padding: 0.15em 0.4em;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.progress-dashboard-reset:hover {
+  color: #f44336;
+  border-color: #f44336;
 }
 
 .progress-dashboard-bar {
@@ -468,6 +491,7 @@
 /* Code toolbar (Run / Copy buttons) */
 .code-toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5em;
   padding: 0.5em 0;
   margin-bottom: 0.5em;
@@ -728,6 +752,39 @@
   opacity: 0.7;
 }
 
+/* Footer */
+.site-footer {
+  max-width: var(--max-width);
+  margin: 2em auto 0;
+  padding: 1.2em 1em;
+  border-top: 1px solid var(--white-second-color);
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.8em;
+  color: #888;
+}
+
+.site-footer-inner {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 0.5em 1.5em;
+}
+
+.site-footer-hint kbd {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 0.3em;
+  padding: 0.1em 0.4em;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: var(--yellow-color);
+}
+
+[data-theme="dark"] .site-footer {
+  border-top-color: #333;
+}
+
 /* Print styles */
 @media print {
   .back-to-top,
@@ -739,7 +796,8 @@
   .section-topic-check,
   .section-topic-arrow,
   .topic-quiz,
-  .theme-toggle {
+  .theme-toggle,
+  .site-footer {
     display: none !important;
   }
 
@@ -803,5 +861,18 @@
     right: 1em;
     width: 40px;
     height: 40px;
+  }
+
+  .code-toolbar-btn {
+    padding: 0.25em 0.5em;
+    font-size: 0.8em;
+  }
+
+  .code-toolbar-separator {
+    display: none;
+  }
+
+  .site-footer {
+    font-size: 0.75em;
   }
 }

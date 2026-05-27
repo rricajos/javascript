@@ -81,6 +81,39 @@ function updateProgressUI() {
   }
 }
 
+// Reset buttons
+(function () {
+  var progressResetBtn = document.getElementById('progressReset');
+  if (progressResetBtn) {
+    progressResetBtn.addEventListener('click', function () {
+      if (!confirm('Reset all reading progress?')) return;
+      localStorage.removeItem(PROGRESS_KEY);
+      updateProgressUI();
+    });
+  }
+
+  var quizResetBtn = document.getElementById('quizReset');
+  if (quizResetBtn) {
+    quizResetBtn.addEventListener('click', function () {
+      if (!confirm('Reset all quiz scores?')) return;
+      localStorage.removeItem(QUIZ_KEY);
+      updateQuizDashboard();
+      // Re-render any open quiz sections to clear answered state
+      document.querySelectorAll('.section-topic.open').forEach(function (topic) {
+        var contentEl = topic.querySelector('.section-topic-content');
+        if (contentEl && contentEl.dataset.loaded) {
+          var topicName = topic.dataset.topic;
+          var code = codeCache[topicName];
+          if (code) {
+            contentEl.dataset.loaded = '';
+            renderCode(contentEl, code);
+          }
+        }
+      });
+    });
+  }
+})();
+
 // Inject checkboxes into all topic headers
 (function () {
   document.querySelectorAll('.section-topic').forEach(function (topic) {
@@ -1039,29 +1072,6 @@ function highlightLine(line) {
   });
 
   return html;
-}
-
-function findCommentIndex(line) {
-  let inString = false;
-  let stringChar = '';
-
-  for (let i = 0; i < line.length - 1; i++) {
-    const char = line[i];
-    const next = line[i + 1];
-
-    if (inString) {
-      if (char === '\\') { i++; continue; }
-      if (char === stringChar) inString = false;
-    } else {
-      if (char === '"' || char === "'" || char === '`') {
-        inString = true;
-        stringChar = char;
-      } else if (char === '/' && next === '/') {
-        return i;
-      }
-    }
-  }
-  return -1;
 }
 
 // ============================================================
