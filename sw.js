@@ -1,5 +1,5 @@
 // Service Worker for Super JavaScript Brain (SJSB)
-const CACHE_NAME = 'sjsb-v5';
+const CACHE_NAME = 'sjsb-v6';
 
 // Shell assets only — topic .js files are cached on-demand via fetch handler
 const ASSETS = [
@@ -13,6 +13,7 @@ const ASSETS = [
   './css/cubes.css',
   './css/sections.css',
   './js/banner.js',
+  './js/quizzes.js',
   './js/sections.js'
 ];
 
