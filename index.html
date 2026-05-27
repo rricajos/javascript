@@ -326,12 +326,48 @@
     </div>
   </footer>
 
+  <!-- Offline indicator -->
+  <div class="offline-banner" id="offlineBanner" aria-live="polite">You are offline</div>
+
+  <!-- PWA install prompt -->
+  <button class="pwa-install-btn" id="pwaInstallBtn" aria-label="Install app">
+    <i class="material-icons" aria-hidden="true" style="font-size:16px;vertical-align:middle">download</i> Install
+  </button>
+
   <script src="js/banner.js" defer></script>
   <script src="js/sections.js" defer></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(function () {});
     }
+
+    // Offline indicator
+    function updateOnlineStatus() {
+      var el = document.getElementById('offlineBanner');
+      if (el) el.classList.toggle('visible', !navigator.onLine);
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    // PWA install prompt
+    var _deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      _deferredPrompt = e;
+      var btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.add('visible');
+    });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('#pwaInstallBtn') && _deferredPrompt) {
+        _deferredPrompt.prompt();
+        _deferredPrompt.userChoice.then(function () {
+          _deferredPrompt = null;
+          var btn = document.getElementById('pwaInstallBtn');
+          if (btn) btn.classList.remove('visible');
+        });
+      }
+    });
   </script>
 </body>
 

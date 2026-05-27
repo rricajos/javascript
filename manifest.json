@@ -31,5 +31,19 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Review Mistakes",
+      "short_name": "Review",
+      "url": "./#review",
+      "icons": [{ "src": "icons/favicon-32x32.png", "sizes": "32x32" }]
+    },
+    {
+      "name": "Search Topics",
+      "short_name": "Search",
+      "url": "./#search",
+      "icons": [{ "src": "icons/favicon-32x32.png", "sizes": "32x32" }]
+    }
   ]
 }

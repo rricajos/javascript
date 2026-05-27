@@ -1934,12 +1934,24 @@ function updateHash(topicName) {
   if (hash.startsWith('#topic=')) {
     const topicName = hash.substring(7);
     setTimeout(function () { openTopicByName(topicName); }, 300);
+  } else if (hash === '#review') {
+    setTimeout(function () { openReviewMode(); }, 400);
+  } else if (hash === '#search') {
+    setTimeout(function () {
+      var input = document.getElementById('query');
+      if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth' }); }
+    }, 300);
   }
 
   window.addEventListener('hashchange', function () {
     const hash = window.location.hash;
     if (hash.startsWith('#topic=')) {
       openTopicByName(hash.substring(7));
+    } else if (hash === '#review') {
+      openReviewMode();
+    } else if (hash === '#search') {
+      var input = document.getElementById('query');
+      if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth' }); }
     }
   });
 })();

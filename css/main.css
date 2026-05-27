@@ -50,6 +50,56 @@ a {
   color: var(--black-second-color) !important;
 }
 
+/* Offline indicator */
+.offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #e53935;
+  color: white;
+  text-align: center;
+  font-size: 0.8em;
+  font-family: monospace;
+  padding: 0.3em;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.offline-banner.visible {
+  transform: translateY(0);
+}
+
+/* PWA install button */
+.pwa-install-btn {
+  display: none;
+  position: fixed;
+  bottom: 5em;
+  right: 1em;
+  z-index: 200;
+  background: var(--yellow-color);
+  color: var(--black-second-color);
+  border: none;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  font-size: 0.8em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.pwa-install-btn.visible {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.pwa-install-btn:hover {
+  transform: scale(1.05);
+}
+
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
