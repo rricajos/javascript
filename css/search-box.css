@@ -10,11 +10,13 @@
 
 /* Sticky mode: hide search, compact padding */
 .cubes-sticky.search-box-form-container {
-  padding: 0;
+  padding: 0.25rem 0;
   position: relative;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background-color: rgba(50, 51, 48, 0.92);
+  background-color: rgba(50, 51, 48, 0.95);
+  border-bottom: 2px solid var(--yellow-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .cubes-sticky .search-box-form {
@@ -92,7 +94,9 @@
 }
 
 [data-theme="dark"] .cubes-sticky.search-box-form-container {
-  background-color: rgba(17, 17, 17, 0.92);
+  background-color: rgba(17, 17, 17, 0.95);
+  border-bottom-color: var(--yellow-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
 }
 
 [data-theme="dark"] .search-box-form-input {
