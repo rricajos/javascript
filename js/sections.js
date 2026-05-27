@@ -1196,25 +1196,26 @@ function filterTopics(query) {
 
 (function () {
   const nav = document.querySelector('.search-box-form-container');
-  const cubesContainer = document.getElementById('super-cubes-container');
+  const sentinel = document.getElementById('navSentinel');
   const cubes = document.querySelectorAll('.cube[data-section]');
   const sections = document.querySelectorAll('.section');
-  if (!nav || !cubesContainer || !cubes.length) return;
+  if (!nav || !cubes.length) return;
 
-  var stickyTriggered = false;
-  // Record original offset once — immune to sticky height changes
-  var navOriginalTop = nav.offsetTop;
-
-  function updateSticky() {
-    if (window.scrollY >= navOriginalTop && !stickyTriggered) {
-      nav.classList.add('cubes-sticky');
-      stickyTriggered = true;
-    } else if (window.scrollY < navOriginalTop && stickyTriggered) {
-      nav.classList.remove('cubes-sticky');
-      stickyTriggered = false;
-    }
+  // Use IntersectionObserver on a sentinel element to avoid feedback loops.
+  // When the sentinel (placed right above the nav) leaves the viewport,
+  // the nav becomes sticky. Its position is immune to nav height changes.
+  if (sentinel && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) {
+        nav.classList.add('cubes-sticky');
+      } else {
+        nav.classList.remove('cubes-sticky');
+      }
+    }, { threshold: 0 });
+    observer.observe(sentinel);
   }
 
+  // Track which section is in view (active cube highlighting)
   function updateActiveSection() {
     var currentSection = null;
     var scrollY = window.scrollY + 150;
@@ -1240,7 +1241,6 @@ function filterTopics(query) {
   window.addEventListener('scroll', function () {
     if (!scrollTicking) {
       requestAnimationFrame(function () {
-        updateSticky();
         updateActiveSection();
         scrollTicking = false;
       });
@@ -1248,7 +1248,6 @@ function filterTopics(query) {
     }
   }, { passive: true });
 
-  updateSticky();
   updateActiveSection();
 
   // Sticky search button: scroll up to reveal search bar and focus it
