@@ -618,9 +618,9 @@ function updateQuizDashboard() {
 
 const TOPIC_QUIZZES = {
   variables_and_types: [
-    { q: 'What keyword declares a block-scoped variable that can be reassigned?', opts: ['var', 'let', 'const', 'static'], answer: 1, explanation: 'let is block-scoped (unlike var which is function-scoped) and allows reassignment (unlike const).' },
-    { q: 'What does typeof null return?', opts: ['"null"', '"undefined"', '"object"', '"boolean"'], answer: 2, explanation: 'This is a well-known JS bug from the first implementation. typeof null returns "object" due to how type tags were stored internally.' },
-    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' },
+    { q: 'What keyword declares a block-scoped variable that can be reassigned?', opts: ['var', 'let', 'const', 'static'], answer: 1, hint: 'Think about which keyword is NOT function-scoped and allows re-assignment.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let', explanation: 'let is block-scoped (unlike var which is function-scoped) and allows reassignment (unlike const).' },
+    { q: 'What does typeof null return?', opts: ['"null"', '"undefined"', '"object"', '"boolean"'], answer: 2, hint: 'This is a famous historical bug in JavaScript.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof', explanation: 'This is a well-known JS bug from the first implementation. typeof null returns "object" due to how type tags were stored internally.' },
+    { q: 'Which comparison operator checks both value and type?', opts: ['==', '===', '!=', '>='], answer: 1, hint: 'One of these uses strict equality without type coercion.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality', explanation: '=== (strict equality) compares without type coercion, so 1 === "1" is false, while 1 == "1" is true.' },
     { q: 'What does this code print?', code: 'let a = "5";\nlet b = 2;\nconsole.log(a + b);\nconsole.log(a - b);', opts: ['"52" and 3', '7 and 3', '"52" and "52"', 'NaN and NaN'], answer: 0, explanation: 'The + operator concatenates when one operand is a string: "5"+2 = "52". But - always converts to numbers: "5"-2 = 3.' },
     { q: 'What does this code print?', code: 'console.log(typeof undefined);\nconsole.log(typeof undeclaredVar);', opts: ['Error thrown', '"undefined" and "undefined"', '"undefined" and ReferenceError', '"undefined" and "null"'], answer: 1, explanation: 'typeof is special — it returns "undefined" for both undefined values AND undeclared variables without throwing.' }
   ],
@@ -657,14 +657,14 @@ const TOPIC_QUIZZES = {
     { q: 'What does this code print?', code: 'for (let i = 0; i < 5; i++) {\n  if (i === 3) continue;\n  if (i === 4) break;\n  console.log(i);\n}', opts: ['0, 1, 2, 3, 4', '0, 1, 2', '0, 1, 2, 4', '0, 1, 2, 3'], answer: 1, explanation: 'Prints 0, 1, 2. At i=3 continue skips the log. At i=4 break exits the loop entirely. So only 0, 1, 2 are printed.' }
   ],
   closures_and_scope: [
-    { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1, explanation: 'A closure is created when an inner function retains access to variables from its outer (enclosing) function even after the outer function has returned.' },
-    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' },
+    { q: 'What is a closure?', opts: ['A function inside a class', 'A function that remembers its outer scope', 'An arrow function', 'A recursive function'], answer: 1, hint: 'Think about what happens when an inner function accesses variables from its parent.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures', explanation: 'A closure is created when an inner function retains access to variables from its outer (enclosing) function even after the outer function has returned.' },
+    { q: 'Variables declared with var are scoped to the nearest...', opts: ['Block', 'Function', 'Module', 'Loop'], answer: 1, hint: 'var ignores curly braces from if/for — it only respects one type of boundary.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var', explanation: 'var is function-scoped, meaning it ignores block boundaries like if/for. Use let/const for block scoping.' },
     { q: 'What does this code print?', code: 'for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n// After all timeouts fire:', opts: ['0, 1, 2', '3, 3, 3', '0, 0, 0', 'undefined x3'], answer: 1, explanation: 'Classic closure trap! var is function-scoped, so all 3 callbacks share the same i. By the time they run, the loop has finished and i = 3. Use let to fix.' },
     { q: 'What does this code print?', code: 'function outer() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nconst fn = outer();\nconsole.log(fn(), fn(), fn());', opts: ['0 0 0', '1 1 1', '1 2 3', 'Error'], answer: 2, explanation: 'The inner function closes over count. Each call increments the same count variable: 1, 2, 3.' }
   ],
   functions: [
-    { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2, explanation: 'Arrow functions inherit "this" from their enclosing lexical scope. They also lack arguments object and cannot be used as constructors.' },
-    { q: 'What is an IIFE?', opts: ['An async function', 'A function that invokes itself immediately', 'A generator', 'A method'], answer: 1, explanation: 'IIFE (Immediately Invoked Function Expression) is a function defined and called in one step: (function(){})().' },
+    { q: 'Arrow functions do NOT have their own:', opts: ['parameters', 'return value', 'this binding', 'variables'], answer: 2, hint: 'Arrow functions inherit something from their surrounding code.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions', explanation: 'Arrow functions inherit "this" from their enclosing lexical scope. They also lack arguments object and cannot be used as constructors.' },
+    { q: 'What is an IIFE?', opts: ['An async function', 'A function that invokes itself immediately', 'A generator', 'A method'], answer: 1, hint: 'The acronym stands for Immediately Invoked Function Expression.', mdn: 'https://developer.mozilla.org/en-US/docs/Glossary/IIFE', explanation: 'IIFE (Immediately Invoked Function Expression) is a function defined and called in one step: (function(){})().' },
     { q: 'What are default parameters?', opts: ['Parameters that are always required', 'Values used when argument is undefined', 'Global variables', 'Rest parameters'], answer: 1, explanation: 'Default parameters provide fallback values when arguments are not passed or are undefined: function f(x = 10) {}.' },
     { q: 'What does arguments refer to inside a regular function?', opts: ['An array of parameters', 'An array-like object of passed arguments', 'The function name', 'undefined'], answer: 1, explanation: 'arguments is an array-like object containing all passed arguments. Arrow functions do not have their own arguments.' },
     { q: 'What does this code print?', code: 'console.log(greet());\nfunction greet() {\n  return "Hello!";\n}', opts: ['Error: greet is not defined', '"Hello!"', 'undefined', 'null'], answer: 1, explanation: 'Function declarations are hoisted — the entire function is available before its position in the code. Function expressions are NOT hoisted.' }
@@ -683,7 +683,7 @@ const TOPIC_QUIZZES = {
     { q: 'What does str.match(/a/g) return if str = "banana"?', opts: ['["a"]', '["a","a","a"]', '"a"', '3'], answer: 1, explanation: 'With the global flag (g), match() returns an array of ALL matches. "banana" has 3 "a" characters.' }
   ],
   data_collections_arrays: [
-    { q: 'Which method returns a new array without modifying the original?', opts: ['push()', 'splice()', 'map()', 'sort()'], answer: 2, explanation: 'map() creates a new array with the results of calling a function on every element. push/splice/sort mutate the original.' },
+    { q: 'Which method returns a new array without modifying the original?', opts: ['push()', 'splice()', 'map()', 'sort()'], answer: 2, hint: 'Three of these mutate the original array. One creates a brand new one.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map', explanation: 'map() creates a new array with the results of calling a function on every element. push/splice/sort mutate the original.' },
     { q: 'What does [1,2,3].reduce((a,b) => a+b, 0) return?', opts: ['[1,2,3]', '6', '0', '3'], answer: 1, explanation: 'reduce() accumulates values: 0+1=1, 1+2=3, 3+3=6. The second argument (0) is the initial accumulator value.' },
     { q: 'What does [1,2,3].find(x => x > 1) return?', opts: ['[2,3]', '2', 'true', '1'], answer: 1, explanation: 'find() returns the FIRST element that satisfies the condition. Use filter() to get all matching elements.' },
     { q: 'What does Array.isArray("hello") return?', opts: ['true', 'false', 'undefined', 'Error'], answer: 1, explanation: 'Array.isArray() checks if the value is an array. Strings are not arrays, so it returns false.' },
@@ -696,20 +696,20 @@ const TOPIC_QUIZZES = {
     { q: 'What does Object.entries({x:1, y:2}) return?', opts: ['["x","y"]', '[[\"x\",1],[\"y\",2]]', '[1,2]', '{x:1,y:2}'], answer: 1, explanation: 'Object.entries() returns an array of [key, value] pairs: [["x",1],["y",2]].' }
   ],
   promises_and_async: [
-    { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1, explanation: 'async/await is syntactic sugar over Promises, letting you write asynchronous code that reads like synchronous code.' },
-    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' },
+    { q: 'What does async/await simplify?', opts: ['Loops', 'Promise chains', 'DOM manipulation', 'RegEx'], answer: 1, hint: 'async/await is syntactic sugar for a specific asynchronous pattern.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function', explanation: 'async/await is syntactic sugar over Promises, letting you write asynchronous code that reads like synchronous code.' },
+    { q: 'Promise.all() resolves when:', opts: ['Any promise resolves', 'All promises resolve', 'First promise settles', 'All promises reject'], answer: 1, hint: 'Think about the name: all. What does it wait for?', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all', explanation: 'Promise.all() waits for ALL promises to resolve. If any rejects, the whole thing rejects. Use Promise.allSettled() to wait for all regardless.' },
     { q: 'What does this code print?', code: 'async function getData() {\n  return 42;\n}\nconsole.log(typeof getData());', opts: ['"number"', '"object"', '"undefined"', '"function"'], answer: 1, explanation: 'async functions ALWAYS return a Promise, even if you return a plain value. typeof Promise is "object".' },
     { q: 'In what order does this print?', code: 'console.log("A");\nPromise.resolve().then(() => console.log("B"));\nconsole.log("C");', opts: ['A, B, C', 'A, C, B', 'B, A, C', 'C, A, B'], answer: 1, explanation: 'Synchronous code runs first (A, C), then the microtask queue (Promise.then) runs B.' }
   ],
   error_handling: [
-    { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2, explanation: 'finally always runs after try/catch, whether an error occurred or not — useful for cleanup tasks.' },
+    { q: 'Which block always executes whether error occurs or not?', opts: ['try', 'catch', 'finally', 'throw'], answer: 2, hint: 'One of these blocks is designed for cleanup that must always run.', mdn: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch', explanation: 'finally always runs after try/catch, whether an error occurred or not — useful for cleanup tasks.' },
     { q: 'How do you create a custom error?', opts: ['new Error()', 'throw "error"', 'class MyError extends Error', 'All of the above'], answer: 3, explanation: 'All three work: new Error() creates a standard error, throw can throw anything, and extending Error creates custom types.' },
     { q: 'What property gives the error description?', opts: ['.text', '.message', '.description', '.info'], answer: 1, explanation: 'Error objects have .message (description), .name (error type), and .stack (call trace).' },
     { q: 'What does throw do?', opts: ['Catches an error', 'Creates an error silently', 'Stops execution and signals an error', 'Logs to console'], answer: 2, explanation: 'throw immediately stops the current execution and transfers control to the nearest catch block.' },
     { q: 'What does this code print?', code: 'try {\n  throw new Error("oops");\n  console.log("A");\n} catch (e) {\n  console.log("B");\n} finally {\n  console.log("C");\n}', opts: ['A, B, C', 'B, C', 'A, C', 'C only'], answer: 1, explanation: 'throw jumps to catch (skipping "A"), printing "B". finally always runs, printing "C". Result: B, C.' }
   ],
   fetch_api: [
-    { q: 'fetch() returns a:', opts: ['String', 'JSON object', 'Promise', 'Response'], answer: 2, explanation: 'fetch() is Promise-based. It resolves to a Response object; you then call .json() or .text() to parse the body.' },
+    { q: 'fetch() returns a:', opts: ['String', 'JSON object', 'Promise', 'Response'], answer: 2, hint: 'fetch is asynchronous — what type of object represents async operations?', mdn: 'https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API', explanation: 'fetch() is Promise-based. It resolves to a Response object; you then call .json() or .text() to parse the body.' },
     { q: 'How do you cancel a fetch request?', opts: ['fetch.cancel()', 'AbortController', 'clearTimeout()', 'Promise.reject()'], answer: 1, explanation: 'AbortController creates a signal that can be passed to fetch. Calling controller.abort() cancels the request.' },
     { q: 'Does fetch reject on HTTP 404/500 errors?', opts: ['Yes always', 'No, only on network failure', 'Only on 500', 'Depends on browser'], answer: 1, explanation: 'fetch() only rejects on network failures. For HTTP errors, check response.ok or response.status manually.' },
     { q: 'How do you send a POST request with fetch?', opts: ['fetch(url, "POST")', 'fetch(url, {method:"POST"})', 'fetch.post(url)', 'fetch(url).post()'], answer: 1, explanation: 'Pass an options object as the second argument with method, headers, and body properties.' }
@@ -1071,6 +1071,21 @@ function renderCode(contentEl, code, topicName) {
         qDiv.appendChild(codeSnippet);
       }
 
+      // Hint button (before options, only if unanswered)
+      if (item.hint && topicScores[qIdx] === undefined) {
+        var hintBtn = document.createElement('button');
+        hintBtn.className = 'quiz-hint-btn';
+        hintBtn.innerHTML = '<i class="material-icons" style="font-size:13px;vertical-align:middle">help_outline</i> Hint';
+        hintBtn.addEventListener('click', function () {
+          hintBtn.style.display = 'none';
+          var hintDiv = document.createElement('div');
+          hintDiv.className = 'quiz-hint';
+          hintDiv.textContent = item.hint;
+          qDiv.insertBefore(hintDiv, optsDiv);
+        });
+        qDiv.appendChild(hintBtn);
+      }
+
       const optsDiv = document.createElement('div');
       optsDiv.className = 'quiz-options';
 
@@ -1093,6 +1108,10 @@ function renderCode(contentEl, code, topicName) {
             b.disabled = true;
             b.classList.add('quiz-disabled');
           });
+          // Hide hint button if still visible
+          var hBtn = qDiv.querySelector('.quiz-hint-btn');
+          if (hBtn) hBtn.style.display = 'none';
+
           const isCorrect = oIdx === item.answer;
           if (isCorrect) {
             btn.classList.add('quiz-correct');
@@ -1100,11 +1119,15 @@ function renderCode(contentEl, code, topicName) {
             btn.classList.add('quiz-wrong');
             optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
           }
-          // Show explanation if available
+          // Show explanation + MDN link if available
           if (item.explanation) {
+            var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+            if (item.mdn) {
+              expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
+            }
             var expDiv = document.createElement('div');
             expDiv.className = 'quiz-explanation';
-            expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+            expDiv.innerHTML = expHTML;
             qDiv.appendChild(expDiv);
           }
           saveQuizAnswer(topicName, qIdx, isCorrect);
@@ -1116,9 +1139,13 @@ function renderCode(contentEl, code, topicName) {
 
       // Show explanation for already-answered questions
       if (topicScores[qIdx] !== undefined && item.explanation) {
+        var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+        if (item.mdn) {
+          expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
+        }
         var expDiv = document.createElement('div');
         expDiv.className = 'quiz-explanation';
-        expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+        expDiv.innerHTML = expHTML;
         qDiv.appendChild(expDiv);
       }
 

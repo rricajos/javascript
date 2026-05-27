@@ -1023,6 +1023,49 @@
   font-family: monospace;
 }
 
+/* Hint button + hint text */
+.quiz-hint-btn {
+  background: none;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #aaa;
+  font-size: 0.78em;
+  padding: 0.2em 0.6em;
+  cursor: pointer;
+  margin-bottom: 0.4em;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.quiz-hint-btn:hover {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
+}
+
+.quiz-hint {
+  font-size: 0.82em;
+  color: #aaa;
+  font-style: italic;
+  padding: 0.3em 0.6em;
+  margin-bottom: 0.4em;
+  border-left: 2px solid #555;
+}
+
+/* MDN link in explanation */
+.quiz-mdn-link {
+  display: inline-block;
+  margin-left: 0.4em;
+  color: var(--yellow-color);
+  text-decoration: none;
+  font-size: 0.9em;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.quiz-mdn-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* Quiz medal badges on roadmap nodes */
 .quiz-medal {
   position: absolute;
