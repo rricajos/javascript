@@ -277,60 +277,99 @@ function openReviewMode() {
     return;
   }
 
-  var quizDiv = document.createElement('div');
-  quizDiv.className = 'topic-quiz';
-  quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:#f44336">replay</i> ' + failedItems.length + ' question' + (failedItems.length !== 1 ? 's' : '') + ' to review</div>';
+  var PAGE_SIZE = 5;
+  var currentPage = 0;
+  var totalPages = Math.ceil(failedItems.length / PAGE_SIZE);
 
-  failedItems.forEach(function (fi, idx) {
-    var item = fi.item;
-    var topicLabel = fi.topic.replace(/_/g, ' ');
-    var qDiv = document.createElement('div');
-    qDiv.className = 'quiz-question';
-    qDiv.innerHTML = '<p class="quiz-question-text"><span class="review-topic-label">' + topicLabel + '</span>' + (idx + 1) + '. ' + item.q + '</p>';
+  function renderReviewPage() {
+    quizBody.innerHTML = '';
+    var quizDiv = document.createElement('div');
+    quizDiv.className = 'topic-quiz';
 
-    if (item.code) {
-      var codeSnippet = document.createElement('pre');
-      codeSnippet.className = 'quiz-code-snippet';
-      codeSnippet.textContent = item.code;
-      qDiv.appendChild(codeSnippet);
+    var start = currentPage * PAGE_SIZE;
+    var end = Math.min(start + PAGE_SIZE, failedItems.length);
+    quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:#f44336">replay</i> ' + failedItems.length + ' to review <span class="quiz-progress-label">' + (start + 1) + '\u2013' + end + ' of ' + failedItems.length + '</span></div>' +
+      '<div class="quiz-progress-bar"><div class="quiz-progress-bar-fill" style="width:' + Math.round(((currentPage + 1) / totalPages) * 100) + '%"></div></div>';
+
+    for (var idx = start; idx < end; idx++) {
+      var fi = failedItems[idx];
+      var item = fi.item;
+      var topicLabel = fi.topic.replace(/_/g, ' ');
+      var qDiv = document.createElement('div');
+      qDiv.className = 'quiz-question';
+      qDiv.innerHTML = '<p class="quiz-question-text"><span class="review-topic-label">' + topicLabel + '</span>' + (idx + 1) + '. ' + item.q + '</p>';
+
+      if (item.code) {
+        var codeSnippet = document.createElement('pre');
+        codeSnippet.className = 'quiz-code-snippet';
+        codeSnippet.textContent = item.code;
+        qDiv.appendChild(codeSnippet);
+      }
+
+      var optsDiv = document.createElement('div');
+      optsDiv.className = 'quiz-options';
+
+      (function (fi, item, qDiv, optsDiv) {
+        item.opts.forEach(function (opt, oIdx) {
+          var btn = document.createElement('button');
+          btn.className = 'quiz-option-btn';
+          btn.textContent = opt;
+          btn.addEventListener('click', function () {
+            optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
+              b.disabled = true;
+              b.classList.add('quiz-disabled');
+            });
+            var isCorrect = oIdx === item.answer;
+            if (isCorrect) {
+              btn.classList.add('quiz-correct');
+            } else {
+              btn.classList.add('quiz-wrong');
+              optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
+            }
+            if (item.explanation) {
+              var expDiv = document.createElement('div');
+              expDiv.className = 'quiz-explanation';
+              expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+              qDiv.appendChild(expDiv);
+            }
+            saveQuizAnswer(fi.topic, fi.qIdx, isCorrect);
+          });
+          optsDiv.appendChild(btn);
+        });
+      })(fi, item, qDiv, optsDiv);
+
+      qDiv.appendChild(optsDiv);
+      quizDiv.appendChild(qDiv);
     }
 
-    var optsDiv = document.createElement('div');
-    optsDiv.className = 'quiz-options';
-
-    item.opts.forEach(function (opt, oIdx) {
-      var btn = document.createElement('button');
-      btn.className = 'quiz-option-btn';
-      btn.textContent = opt;
-
-      btn.addEventListener('click', function () {
-        optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
-          b.disabled = true;
-          b.classList.add('quiz-disabled');
-        });
-        var isCorrect = oIdx === item.answer;
-        if (isCorrect) {
-          btn.classList.add('quiz-correct');
-        } else {
-          btn.classList.add('quiz-wrong');
-          optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
-        }
-        if (item.explanation) {
-          var expDiv = document.createElement('div');
-          expDiv.className = 'quiz-explanation';
-          expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
-          qDiv.appendChild(expDiv);
-        }
-        saveQuizAnswer(fi.topic, fi.qIdx, isCorrect);
+    // Pagination controls
+    if (totalPages > 1) {
+      var navDiv = document.createElement('div');
+      navDiv.className = 'review-pagination';
+      var prevBtn = document.createElement('button');
+      prevBtn.className = 'quiz-option-btn';
+      prevBtn.textContent = '\u2190 Prev';
+      prevBtn.disabled = currentPage === 0;
+      prevBtn.addEventListener('click', function () {
+        if (currentPage > 0) { currentPage--; renderReviewPage(); }
       });
-      optsDiv.appendChild(btn);
-    });
+      var nextBtn = document.createElement('button');
+      nextBtn.className = 'quiz-option-btn';
+      nextBtn.textContent = 'Next \u2192';
+      nextBtn.disabled = currentPage >= totalPages - 1;
+      nextBtn.addEventListener('click', function () {
+        if (currentPage < totalPages - 1) { currentPage++; renderReviewPage(); }
+      });
+      navDiv.appendChild(prevBtn);
+      navDiv.appendChild(nextBtn);
+      quizDiv.appendChild(navDiv);
+    }
 
-    qDiv.appendChild(optsDiv);
-    quizDiv.appendChild(qDiv);
-  });
+    quizBody.appendChild(quizDiv);
+    quizBody.scrollTop = 0;
+  }
 
-  quizBody.appendChild(quizDiv);
+  renderReviewPage();
   quizSlide.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1027,7 +1066,11 @@ function renderCode(contentEl, code, topicName) {
   if (quizData && quizData.length > 0) {
     const quizDiv = document.createElement('div');
     quizDiv.className = 'topic-quiz';
-    quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz</div>';
+    var answeredCount = 0;
+    var scoresCheck = getQuizScores()[topicName] || {};
+    Object.keys(scoresCheck).forEach(function () { answeredCount++; });
+    quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz <span class="quiz-progress-label">' + answeredCount + ' / ' + quizData.length + '</span></div>' +
+      '<div class="quiz-progress-bar"><div class="quiz-progress-bar-fill" style="width:' + (quizData.length > 0 ? Math.round((answeredCount / quizData.length) * 100) : 0) + '%"></div></div>';
 
     const savedScores = getQuizScores();
     const topicScores = savedScores[topicName] || {};
@@ -1105,6 +1148,15 @@ function renderCode(contentEl, code, topicName) {
             qDiv.appendChild(expDiv);
           }
           saveQuizAnswer(topicName, qIdx, isCorrect);
+          // Update quiz progress bar
+          var pBar = quizDiv.querySelector('.quiz-progress-bar-fill');
+          var pLabel = quizDiv.querySelector('.quiz-progress-label');
+          if (pBar || pLabel) {
+            var sc = getQuizScores()[topicName] || {};
+            var cnt = Object.keys(sc).length;
+            if (pBar) pBar.style.width = (quizData.length > 0 ? Math.round((cnt / quizData.length) * 100) : 0) + '%';
+            if (pLabel) pLabel.textContent = cnt + ' / ' + quizData.length;
+          }
         });
         optsDiv.appendChild(btn);
       });
