@@ -250,6 +250,121 @@ function closeQuizSlide() {
   if (quizSlide) quizSlide.classList.remove('open');
 }
 
+// Switch drawer between code and quiz tabs
+function setDrawerTab(tab) {
+  var codeContent = document.getElementById('drawerContent');
+  var quizContent = document.getElementById('drawerQuizContent');
+  var tabs = document.querySelectorAll('.drawer-tab');
+
+  tabs.forEach(function (t) {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+
+  if (tab === 'quiz') {
+    if (codeContent) codeContent.style.display = 'none';
+    if (quizContent) quizContent.style.display = '';
+    // Close the side quiz slide since we're showing inline
+    closeQuizSlide();
+    // Render quiz into drawer if not already there
+    if (quizContent && !quizContent.hasChildNodes() && currentDrawerTopic) {
+      renderQuizInDrawer(currentDrawerTopic);
+    }
+  } else {
+    if (codeContent) codeContent.style.display = '';
+    if (quizContent) quizContent.style.display = 'none';
+  }
+}
+
+function renderQuizInDrawer(topicName) {
+  var quizContent = document.getElementById('drawerQuizContent');
+  if (!quizContent || !TOPIC_QUIZZES || !TOPIC_QUIZZES[topicName]) return;
+
+  var quizData = TOPIC_QUIZZES[topicName];
+  if (!quizData || !quizData.length) return;
+
+  // Reuse the same quiz rendering logic
+  var quizDiv = document.createElement('div');
+  quizDiv.className = 'topic-quiz';
+
+  var answeredCount = 0;
+  var scoresCheck = getQuizScores()[topicName] || {};
+  Object.keys(scoresCheck).forEach(function () { answeredCount++; });
+  var pct = quizData.length ? Math.round((answeredCount / quizData.length) * 100) : 0;
+
+  quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:4px">quiz</i> Quick Quiz' +
+    '<span class="quiz-progress-label">' + answeredCount + ' / ' + quizData.length + '</span></div>' +
+    '<div class="quiz-progress-bar"><div class="quiz-progress-bar-fill" style="width:' + pct + '%"></div></div>';
+
+  var scores = getQuizScores();
+  var topicScores = scores[topicName] || {};
+
+  quizData.forEach(function (q, qi) {
+    var qDiv = document.createElement('div');
+    qDiv.className = 'topic-quiz-question';
+    qDiv.innerHTML = '<p class="topic-quiz-q">' + (qi + 1) + '. ' + q.q + '</p>';
+
+    var savedAnswer = topicScores['q' + qi];
+
+    q.options.forEach(function (opt, oi) {
+      var btn = document.createElement('button');
+      btn.className = 'quiz-option-btn';
+      btn.textContent = opt;
+
+      if (savedAnswer !== undefined) {
+        btn.disabled = true;
+        if (oi === q.answer) btn.classList.add('correct');
+        if (savedAnswer === oi && oi !== q.answer) btn.classList.add('wrong');
+      }
+
+      btn.addEventListener('click', function () {
+        var btns = qDiv.querySelectorAll('.quiz-option-btn');
+        btns.forEach(function (b) { b.disabled = true; });
+        if (oi === q.answer) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('wrong');
+          btns[q.answer].classList.add('correct');
+        }
+        saveQuizScore(topicName, qi, oi);
+
+        // Update progress
+        var newScores = getQuizScores()[topicName] || {};
+        var newCount = Object.keys(newScores).length;
+        var newPct = Math.round((newCount / quizData.length) * 100);
+        var progLabel = quizContent.querySelector('.quiz-progress-label');
+        if (progLabel) progLabel.textContent = newCount + ' / ' + quizData.length;
+        var progFill = quizContent.querySelector('.quiz-progress-bar-fill');
+        if (progFill) progFill.style.width = newPct + '%';
+      });
+
+      qDiv.appendChild(btn);
+    });
+
+    if (q.explanation) {
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.style.display = savedAnswer !== undefined ? '' : 'none';
+      expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;margin-right:4px">lightbulb</i> ' + q.explanation;
+      qDiv.appendChild(expDiv);
+
+      if (savedAnswer === undefined) {
+        (function (ed, div) {
+          div.addEventListener('click', function handler(e) {
+            if (e.target.classList.contains('quiz-option-btn')) {
+              ed.style.display = '';
+              div.removeEventListener('click', handler);
+            }
+          });
+        })(expDiv, qDiv);
+      }
+    }
+
+    quizDiv.appendChild(qDiv);
+  });
+
+  quizContent.appendChild(quizDiv);
+}
+
 // D4: Review mode — open quiz slide with only incorrectly-answered questions
 function openReviewMode() {
   var scores = getQuizScores();
@@ -381,9 +496,15 @@ function openDrawer(topicName) {
   var contentEl = document.getElementById('drawerContent');
   if (!drawer || !overlay) return;
 
-  // Set title from node label
+  // Set title from node label (prefer data-original to handle search highlights)
   var node = document.querySelector('.roadmap-node[data-topic="' + topicName + '"]');
-  titleEl.textContent = node ? node.querySelector('.roadmap-label').textContent : topicName;
+  var label = node ? node.querySelector('.roadmap-label') : null;
+  var displayName = label ? (label.getAttribute('data-original') || label.textContent) : topicName;
+  titleEl.textContent = displayName;
+
+  // Update folder tab
+  var folderTab = document.getElementById('drawerFolderTab');
+  if (folderTab) folderTab.textContent = displayName;
 
   // Scroll drawer body to top and clear content
   var drawerBody = document.getElementById('drawerBody');
@@ -392,10 +513,22 @@ function openDrawer(topicName) {
   contentEl.removeAttribute('data-loaded');
   contentEl.style.fontSize = '';
 
+  // Clear quiz content area
+  var drawerQuiz = document.getElementById('drawerQuizContent');
+  if (drawerQuiz) { drawerQuiz.innerHTML = ''; drawerQuiz.style.display = 'none'; }
+
   // Clear and close quiz slide (will reopen if topic has quiz)
   closeQuizSlide();
   var quizBody = document.getElementById('quizSlideBody');
   if (quizBody) quizBody.innerHTML = '';
+
+  // Reset tabs to code view
+  setDrawerTab('code');
+
+  // Check if topic has a quiz and update quiz tab state
+  var hasQuiz = TOPIC_QUIZZES && TOPIC_QUIZZES[topicName] && TOPIC_QUIZZES[topicName].length > 0;
+  var quizTab = document.querySelector('.drawer-tab[data-tab="quiz"]');
+  if (quizTab) quizTab.setAttribute('data-has-quiz', hasQuiz ? 'true' : 'false');
 
   loadTopicCode(topicName, contentEl);
 
@@ -480,6 +613,13 @@ function closeAll() {
   var quizSlide = document.getElementById('quizSlide');
   if (drawer) addSwipeClose(drawer, closeAll, 80);
   if (quizSlide) addSwipeClose(quizSlide, closeQuizSlide, 60);
+
+  // Wire up drawer tabs
+  document.querySelectorAll('.drawer-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      setDrawerTab(tab.dataset.tab);
+    });
+  });
 })();
 
 // Wire up roadmap node clicks

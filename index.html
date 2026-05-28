@@ -310,12 +310,18 @@
   <!-- Drawer panel (folder style, slides in from right) -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer" role="dialog" aria-label="Topic content">
+    <div class="drawer-folder-tab" id="drawerFolderTab"></div>
     <div class="drawer-header">
       <h3 class="drawer-title" id="drawerTitle">Topic</h3>
+      <div class="drawer-tabs" id="drawerTabs">
+        <button class="drawer-tab active" data-tab="code"><i class="material-icons" aria-hidden="true">code</i> Code</button>
+        <button class="drawer-tab" data-tab="quiz"><i class="material-icons" aria-hidden="true">quiz</i> Quiz</button>
+      </div>
       <button class="drawer-close" id="drawerClose" aria-label="Close drawer"><i class="material-icons" aria-hidden="true">close</i></button>
     </div>
     <div class="drawer-body" id="drawerBody">
       <div class="section-topic-content" id="drawerContent"></div>
+      <div class="drawer-quiz-content" id="drawerQuizContent" style="display:none"></div>
     </div>
   </aside>
 

@@ -378,9 +378,8 @@
   border-radius: 4px 0 0 0;
 }
 
-/* Folder tab — trapezoid above the drawer */
-.drawer::before {
-  content: '';
+/* Folder tab — trapezoid above the drawer (real element) */
+.drawer-folder-tab {
   position: absolute;
   top: -24px;
   left: 20px;
@@ -389,6 +388,22 @@
   background: var(--black-second-color);
   clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
   border-radius: 6px 6px 0 0;
+  font-family: monospace;
+  font-size: 9px;
+  color: var(--yellow-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+/* Remove old pseudo-element folder tab */
+.drawer::before {
+  display: none;
 }
 
 /* Folder corner fold — top-right dog-ear */
@@ -410,10 +425,10 @@
 .drawer-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0.8em 1.2em;
   border-bottom: 3px solid var(--yellow-color);
   flex-shrink: 0;
+  gap: 0.6em;
 }
 
 .drawer-title {
@@ -424,6 +439,50 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Code / Quiz tabs */
+.drawer-tabs {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.drawer-tab {
+  background: none;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #888;
+  font-family: monospace;
+  font-size: 0.75em;
+  padding: 0.25em 0.6em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.drawer-tab .material-icons {
+  font-size: 14px;
+}
+
+.drawer-tab:hover {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
+}
+
+.drawer-tab.active {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
+  background: rgba(255, 221, 0, 0.08);
+}
+
+.drawer-tab[data-has-quiz="false"] {
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 .drawer-close {
@@ -452,6 +511,10 @@
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
   position: relative;
+}
+
+.drawer-quiz-content {
+  padding: 1em 1.2em;
 }
 
 /* Scroll fade hint at the bottom of the drawer */
@@ -1252,12 +1315,23 @@
   border-bottom-color: var(--yellow-color);
 }
 
-[data-theme="dark"] .drawer::before {
+[data-theme="dark"] .drawer-folder-tab {
   background: #1a1a1a;
 }
 
 [data-theme="dark"] .drawer::after {
   background: linear-gradient(225deg, #0a0a0a 50%, #2a2a2a 50%);
+}
+
+[data-theme="dark"] .drawer-tab {
+  border-color: #444;
+  color: #666;
+}
+
+[data-theme="dark"] .drawer-tab:hover,
+[data-theme="dark"] .drawer-tab.active {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
 }
 
 /* ============================================================
@@ -1301,6 +1375,10 @@
     top: 0;
     height: 100%;
     border-radius: 0;
+  }
+
+  .drawer-folder-tab {
+    display: none;
   }
 
   .drawer::before {
