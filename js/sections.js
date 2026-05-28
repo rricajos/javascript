@@ -937,6 +937,12 @@ function scrollToSection(sectionId) {
 function loadTopicCode(topicName, contentEl) {
   const src = `js/${topicName}.js`;
 
+  // Cached → render immediately, no skeleton flash
+  if (codeCache[topicName]) {
+    renderCode(contentEl, codeCache[topicName], topicName);
+    return;
+  }
+
   contentEl.classList.add('loading');
   contentEl.innerHTML = '<div class="skeleton-loading">' +
     '<div class="skeleton-line" style="width:60%"></div>' +
@@ -947,11 +953,6 @@ function loadTopicCode(topicName, contentEl) {
     '<div class="skeleton-line" style="width:90%"></div>' +
     '<div class="skeleton-line" style="width:35%"></div>' +
     '</div>';
-
-  if (codeCache[topicName]) {
-    renderCode(contentEl, codeCache[topicName], topicName);
-    return;
-  }
 
   fetch(src)
     .then(function (response) {
@@ -983,8 +984,13 @@ function loadTopicCode(topicName, contentEl) {
 }
 
 function renderCode(contentEl, code, topicName) {
+  var wasLoading = contentEl.classList.contains('loading');
   contentEl.classList.remove('loading');
+  contentEl.classList.remove('content-ready');
   contentEl.innerHTML = '';
+  if (wasLoading) {
+    contentEl.classList.add('content-ready');
+  }
 
   // Show prerequisite banner if topic has prerequisites not yet read
   var prereqs = PREREQUISITES[topicName];
