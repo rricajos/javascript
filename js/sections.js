@@ -1915,15 +1915,21 @@ function filterTopics(query) {
   const sections = document.querySelectorAll('.section');
   if (!nav || !cubes.length) return;
 
-  // Use IntersectionObserver on a sentinel element to avoid feedback loops.
-  // When the sentinel (placed right above the cubes nav) leaves the viewport,
-  // the nav becomes sticky compact. Position is immune to height changes.
+  // Use IntersectionObserver on a sentinel element for sticky detection.
+  // Lock the nav's flow-height before going compact to prevent the
+  // shrink → scroll-anchor-adjust → sentinel-re-enters → unshrink loop.
   if (sentinel && 'IntersectionObserver' in window) {
+    var navFullHeight = 0;
     var observer = new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting) {
-        nav.classList.add('cubes-sticky');
+        if (!nav.classList.contains('cubes-sticky')) {
+          navFullHeight = nav.offsetHeight;
+          nav.style.minHeight = navFullHeight + 'px';
+          nav.classList.add('cubes-sticky');
+        }
       } else {
         nav.classList.remove('cubes-sticky');
+        nav.style.minHeight = '';
       }
     }, { threshold: 0 });
     observer.observe(sentinel);

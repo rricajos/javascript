@@ -42,7 +42,6 @@
   min-width: 36px;
   position: relative;
   margin-right: 6px;
-  transition: height 0.3s ease;
 }
 
 /* Offset sides down so the 3D visual is vertically centered */
@@ -113,7 +112,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+  transition: opacity 0.3s ease;
   max-height: 18px;
 }
 
@@ -148,7 +147,7 @@
   max-height: 80px;
   overflow: hidden;
   opacity: 0.4;
-  transition: max-height 0.35s ease, opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .cube.cube-active .cube-info-list {

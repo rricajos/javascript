@@ -128,7 +128,8 @@ a.search-badge:hover {
   top: 0;
   z-index: 50;
   overflow: visible;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+  overflow-anchor: none;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Sticky mode: compact bar with border */
