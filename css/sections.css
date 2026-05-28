@@ -1314,12 +1314,22 @@
   }
 
   .code-toolbar-btn {
-    padding: 0.25em 0.5em;
+    padding: 0.4em 0.6em;
     font-size: 0.8em;
+    min-height: 36px;
   }
 
   .code-toolbar-separator {
     display: none;
+  }
+
+  .quiz-option-btn {
+    padding: 0.5em 0.8em;
+    min-height: 40px;
+  }
+
+  .quiz-hint-btn {
+    min-height: 36px;
   }
 
   .site-footer {

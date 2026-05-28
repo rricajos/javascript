@@ -408,6 +408,28 @@ function closeAll() {
   // Quiz slide close button
   var quizCloseBtn = document.getElementById('quizSlideClose');
   if (quizCloseBtn) quizCloseBtn.addEventListener('click', closeQuizSlide);
+
+  // Swipe-to-close: swipe right on drawer → close, swipe right on quiz → close quiz
+  function addSwipeClose(el, callback, minDist) {
+    var startX = 0, startY = 0;
+    el.addEventListener('touchstart', function (e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    el.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - startX;
+      var dy = Math.abs(e.changedTouches[0].clientY - startY);
+      // Swipe right (drawer slides to right) and mostly horizontal
+      if (dx > (minDist || 80) && dy < dx * 0.5) {
+        callback();
+      }
+    }, { passive: true });
+  }
+
+  var drawer = document.getElementById('drawer');
+  var quizSlide = document.getElementById('quizSlide');
+  if (drawer) addSwipeClose(drawer, closeAll, 80);
+  if (quizSlide) addSwipeClose(quizSlide, closeQuizSlide, 60);
 })();
 
 // Wire up roadmap node clicks
