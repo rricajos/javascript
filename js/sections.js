@@ -109,7 +109,7 @@ function updateProgressUI() {
     }
   });
 
-  // Update section progress counts
+  // Update section progress counts + cube progress bars
   document.querySelectorAll('.section').forEach(function (section) {
     const topics = section.querySelectorAll('.section-topic');
     const done = Array.from(topics).filter(function (t) { return progress[t.dataset.topic]; }).length;
@@ -117,6 +117,17 @@ function updateProgressUI() {
     if (counter) {
       counter.textContent = `${done}/${topics.length}`;
       counter.style.display = done > 0 ? 'inline' : 'none';
+    }
+    // Update matching cube progress bar
+    var sectionId = section.id;
+    var cube = document.querySelector('.cube[data-section="' + sectionId + '"]');
+    if (cube) {
+      var fill = cube.querySelector('.cube-progress-fill');
+      if (fill) {
+        var pct = topics.length > 0 ? Math.round((done / topics.length) * 100) : 0;
+        fill.style.width = pct + '%';
+        fill.setAttribute('data-complete', pct === 100 ? 'true' : 'false');
+      }
     }
   });
 

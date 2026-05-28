@@ -117,6 +117,28 @@
   max-height: 18px;
 }
 
+/* Section progress bar inside each cube */
+.cube-progress {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 3px;
+  overflow: hidden;
+}
+
+.cube-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--yellow-color);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.cube-progress-fill[data-complete="true"] {
+  background: #4caf50;
+}
+
 /* Module list — full width row below cube+title, visible on all cubes */
 .cube-info-list {
   flex-basis: 100%;
@@ -202,10 +224,14 @@
   color: var(--yellow-color);
 }
 
-/* Hide desc and list in sticky */
+/* Hide desc, progress bar and list in sticky */
 .cubes-sticky .cube-info-desc {
   max-height: 0;
   opacity: 0;
+}
+
+.cubes-sticky .cube-progress {
+  display: none;
 }
 
 .cubes-sticky .cube-info-list {
