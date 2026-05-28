@@ -1261,9 +1261,8 @@
 .site-footer {
   max-width: var(--max-width);
   margin: 2em auto 0;
-  padding: 1.2em 1em 60vh;
-  border-top: 1px solid var(--white-second-color);
-  text-align: center;
+  padding: 1.5em 1em 60vh;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-family: monospace;
   font-size: 0.8em;
   color: #888;
@@ -1271,12 +1270,71 @@
 
 .site-footer-inner {
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: 0.5em 1.5em;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8em;
 }
 
-.site-footer-hint kbd {
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.footer-brand strong {
+  color: var(--yellow-color);
+  font-size: 1.1em;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #999;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--yellow-color);
+  border-color: var(--yellow-color);
+}
+
+.footer-links a svg {
+  flex-shrink: 0;
+}
+
+.footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 12px;
+  font-size: 0.85em;
+  color: #666;
+}
+
+.footer-meta a {
+  color: #999;
+  text-decoration: none;
+}
+
+.footer-meta a:hover {
+  color: var(--yellow-color);
+}
+
+.footer-meta kbd {
   background: #333;
   border: 1px solid #555;
   border-radius: 0.3em;
