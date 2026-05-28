@@ -1,3 +1,7 @@
+html {
+  overflow-anchor: none;
+}
+
 :root {
   --black-color: #323330;
   --black-second-color: #20201f;

@@ -1915,24 +1915,26 @@ function filterTopics(query) {
   const sections = document.querySelectorAll('.section');
   if (!nav || !cubes.length) return;
 
-  // Use IntersectionObserver on a sentinel element for sticky detection.
-  // Lock the nav's flow-height before going compact to prevent the
-  // shrink → scroll-anchor-adjust → sentinel-re-enters → unshrink loop.
-  if (sentinel && 'IntersectionObserver' in window) {
-    var navFullHeight = 0;
-    var observer = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) {
-        if (!nav.classList.contains('cubes-sticky')) {
-          navFullHeight = nav.offsetHeight;
-          nav.style.minHeight = navFullHeight + 'px';
-          nav.classList.add('cubes-sticky');
-        }
-      } else {
-        nav.classList.remove('cubes-sticky');
-        nav.style.minHeight = '';
+  // Sticky detection via scroll + rAF.
+  // Checks whether the sentinel (above the nav) has scrolled out of view.
+  // Using getBoundingClientRect is deterministic and immune to the
+  // IntersectionObserver feedback-loop caused by nav height changes.
+  if (sentinel) {
+    var stickyTicking = false;
+    window.addEventListener('scroll', function () {
+      if (!stickyTicking) {
+        requestAnimationFrame(function () {
+          var gone = sentinel.getBoundingClientRect().bottom <= 0;
+          if (gone && !nav.classList.contains('cubes-sticky')) {
+            nav.classList.add('cubes-sticky');
+          } else if (!gone && nav.classList.contains('cubes-sticky')) {
+            nav.classList.remove('cubes-sticky');
+          }
+          stickyTicking = false;
+        });
+        stickyTicking = true;
       }
-    }, { threshold: 0 });
-    observer.observe(sentinel);
+    }, { passive: true });
   }
 
   // Track which section is in view (active cube highlighting)
