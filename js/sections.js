@@ -275,94 +275,123 @@ function setDrawerTab(tab) {
   }
 }
 
-function renderQuizInDrawer(topicName) {
-  var quizContent = document.getElementById('drawerQuizContent');
-  if (!quizContent || !TOPIC_QUIZZES || !TOPIC_QUIZZES[topicName]) return;
+// Shared quiz renderer — builds quiz DOM into containerEl for any context
+function _buildQuizDOM(topicName, containerEl) {
+  var quizData = TOPIC_QUIZZES && TOPIC_QUIZZES[topicName];
+  if (!quizData || !quizData.length) return null;
 
-  var quizData = TOPIC_QUIZZES[topicName];
-  if (!quizData || !quizData.length) return;
-
-  // Reuse the same quiz rendering logic
   var quizDiv = document.createElement('div');
   quizDiv.className = 'topic-quiz';
 
   var answeredCount = 0;
-  var scoresCheck = getQuizScores()[topicName] || {};
-  Object.keys(scoresCheck).forEach(function () { answeredCount++; });
-  var pct = quizData.length ? Math.round((answeredCount / quizData.length) * 100) : 0;
+  var topicScores = (getQuizScores()[topicName]) || {};
+  Object.keys(topicScores).forEach(function () { answeredCount++; });
+  var pct = Math.round((answeredCount / quizData.length) * 100);
 
-  quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:4px">quiz</i> Quick Quiz' +
+  quizDiv.innerHTML =
+    '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz ' +
     '<span class="quiz-progress-label">' + answeredCount + ' / ' + quizData.length + '</span></div>' +
     '<div class="quiz-progress-bar"><div class="quiz-progress-bar-fill" style="width:' + pct + '%"></div></div>';
 
-  var scores = getQuizScores();
-  var topicScores = scores[topicName] || {};
-
-  quizData.forEach(function (q, qi) {
+  quizData.forEach(function (item, qIdx) {
     var qDiv = document.createElement('div');
-    qDiv.className = 'topic-quiz-question';
-    qDiv.innerHTML = '<p class="topic-quiz-q">' + (qi + 1) + '. ' + q.q + '</p>';
+    qDiv.className = 'quiz-question';
+    qDiv.innerHTML = '<p class="quiz-question-text">' + (qIdx + 1) + '. ' + item.q + '</p>';
 
-    var savedAnswer = topicScores['q' + qi];
+    if (item.code) {
+      var codePre = document.createElement('pre');
+      codePre.className = 'quiz-code-snippet';
+      codePre.textContent = item.code;
+      qDiv.appendChild(codePre);
+    }
 
-    q.options.forEach(function (opt, oi) {
+    if (item.hint && topicScores[qIdx] === undefined) {
+      var hintBtn = document.createElement('button');
+      hintBtn.className = 'quiz-hint-btn';
+      hintBtn.innerHTML = '<i class="material-icons" style="font-size:13px;vertical-align:middle">help_outline</i> Hint';
+      hintBtn.addEventListener('click', function () {
+        hintBtn.style.display = 'none';
+        var hintDiv = document.createElement('div');
+        hintDiv.className = 'quiz-hint';
+        hintDiv.textContent = item.hint;
+        qDiv.insertBefore(hintDiv, optsDiv);
+      });
+      qDiv.appendChild(hintBtn);
+    }
+
+    var optsDiv = document.createElement('div');
+    optsDiv.className = 'quiz-options';
+
+    item.opts.forEach(function (opt, oIdx) {
       var btn = document.createElement('button');
       btn.className = 'quiz-option-btn';
       btn.textContent = opt;
 
-      if (savedAnswer !== undefined) {
+      if (topicScores[qIdx] !== undefined) {
         btn.disabled = true;
-        if (oi === q.answer) btn.classList.add('correct');
-        if (savedAnswer === oi && oi !== q.answer) btn.classList.add('wrong');
+        btn.classList.add('quiz-disabled');
+        if (oIdx === item.answer) btn.classList.add('quiz-correct');
       }
 
       btn.addEventListener('click', function () {
-        var btns = qDiv.querySelectorAll('.quiz-option-btn');
-        btns.forEach(function (b) { b.disabled = true; });
-        if (oi === q.answer) {
-          btn.classList.add('correct');
+        optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
+          b.disabled = true;
+          b.classList.add('quiz-disabled');
+        });
+        var hBtn = qDiv.querySelector('.quiz-hint-btn');
+        if (hBtn) hBtn.style.display = 'none';
+
+        var isCorrect = oIdx === item.answer;
+        if (isCorrect) {
+          btn.classList.add('quiz-correct');
         } else {
-          btn.classList.add('wrong');
-          btns[q.answer].classList.add('correct');
+          btn.classList.add('quiz-wrong');
+          optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
         }
-        saveQuizScore(topicName, qi, oi);
 
-        // Update progress
-        var newScores = getQuizScores()[topicName] || {};
-        var newCount = Object.keys(newScores).length;
-        var newPct = Math.round((newCount / quizData.length) * 100);
-        var progLabel = quizContent.querySelector('.quiz-progress-label');
-        if (progLabel) progLabel.textContent = newCount + ' / ' + quizData.length;
-        var progFill = quizContent.querySelector('.quiz-progress-bar-fill');
-        if (progFill) progFill.style.width = newPct + '%';
+        if (item.explanation) {
+          var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+          if (item.mdn) expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
+          var expDiv = document.createElement('div');
+          expDiv.className = 'quiz-explanation';
+          expDiv.innerHTML = expHTML;
+          qDiv.appendChild(expDiv);
+        }
+
+        saveQuizAnswer(topicName, qIdx, isCorrect);
+
+        var sc = getQuizScores()[topicName] || {};
+        var cnt = Object.keys(sc).length;
+        var bar = quizDiv.querySelector('.quiz-progress-bar-fill');
+        var lbl = quizDiv.querySelector('.quiz-progress-label');
+        if (bar) bar.style.width = Math.round((cnt / quizData.length) * 100) + '%';
+        if (lbl) lbl.textContent = cnt + ' / ' + quizData.length;
       });
-
-      qDiv.appendChild(btn);
+      optsDiv.appendChild(btn);
     });
 
-    if (q.explanation) {
+    qDiv.appendChild(optsDiv);
+
+    if (topicScores[qIdx] !== undefined && item.explanation) {
+      var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
+      if (item.mdn) expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
       var expDiv = document.createElement('div');
       expDiv.className = 'quiz-explanation';
-      expDiv.style.display = savedAnswer !== undefined ? '' : 'none';
-      expDiv.innerHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;margin-right:4px">lightbulb</i> ' + q.explanation;
+      expDiv.innerHTML = expHTML;
       qDiv.appendChild(expDiv);
-
-      if (savedAnswer === undefined) {
-        (function (ed, div) {
-          div.addEventListener('click', function handler(e) {
-            if (e.target.classList.contains('quiz-option-btn')) {
-              ed.style.display = '';
-              div.removeEventListener('click', handler);
-            }
-          });
-        })(expDiv, qDiv);
-      }
     }
 
     quizDiv.appendChild(qDiv);
   });
 
-  quizContent.appendChild(quizDiv);
+  containerEl.appendChild(quizDiv);
+  return quizDiv;
+}
+
+function renderQuizInDrawer(topicName) {
+  var quizContent = document.getElementById('drawerQuizContent');
+  if (!quizContent) return;
+  _buildQuizDOM(topicName, quizContent);
 }
 
 // D4: Review mode — open quiz slide with only incorrectly-answered questions
@@ -1216,129 +1245,11 @@ function renderCode(contentEl, code, topicName) {
   // Add mini-quiz if available — render into quiz slide panel
   var quizSlideBody = document.getElementById('quizSlideBody');
   if (quizSlideBody) quizSlideBody.innerHTML = '';
-  const quizData = TOPIC_QUIZZES[topicName];
+  var quizData = TOPIC_QUIZZES && TOPIC_QUIZZES[topicName];
   if (quizData && quizData.length > 0) {
-    const quizDiv = document.createElement('div');
-    quizDiv.className = 'topic-quiz';
-    var answeredCount = 0;
-    var scoresCheck = getQuizScores()[topicName] || {};
-    Object.keys(scoresCheck).forEach(function () { answeredCount++; });
-    quizDiv.innerHTML = '<div class="topic-quiz-header"><i class="material-icons" style="font-size:18px;vertical-align:middle;color:var(--yellow-color)">quiz</i> Quick Quiz <span class="quiz-progress-label">' + answeredCount + ' / ' + quizData.length + '</span></div>' +
-      '<div class="quiz-progress-bar"><div class="quiz-progress-bar-fill" style="width:' + (quizData.length > 0 ? Math.round((answeredCount / quizData.length) * 100) : 0) + '%"></div></div>';
-
-    const savedScores = getQuizScores();
-    const topicScores = savedScores[topicName] || {};
-
-    quizData.forEach(function (item, qIdx) {
-      const qDiv = document.createElement('div');
-      qDiv.className = 'quiz-question';
-      qDiv.innerHTML = '<p class="quiz-question-text">' + (qIdx + 1) + '. ' + item.q + '</p>';
-
-      // Code output question: show code snippet
-      if (item.code) {
-        var codeSnippet = document.createElement('pre');
-        codeSnippet.className = 'quiz-code-snippet';
-        codeSnippet.textContent = item.code;
-        qDiv.appendChild(codeSnippet);
-      }
-
-      // Hint button (before options, only if unanswered)
-      if (item.hint && topicScores[qIdx] === undefined) {
-        var hintBtn = document.createElement('button');
-        hintBtn.className = 'quiz-hint-btn';
-        hintBtn.innerHTML = '<i class="material-icons" style="font-size:13px;vertical-align:middle">help_outline</i> Hint';
-        hintBtn.addEventListener('click', function () {
-          hintBtn.style.display = 'none';
-          var hintDiv = document.createElement('div');
-          hintDiv.className = 'quiz-hint';
-          hintDiv.textContent = item.hint;
-          qDiv.insertBefore(hintDiv, optsDiv);
-        });
-        qDiv.appendChild(hintBtn);
-      }
-
-      const optsDiv = document.createElement('div');
-      optsDiv.className = 'quiz-options';
-
-      item.opts.forEach(function (opt, oIdx) {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-option-btn';
-        btn.textContent = opt;
-
-        // Restore previous answer state
-        if (topicScores[qIdx] !== undefined) {
-          btn.disabled = true;
-          btn.classList.add('quiz-disabled');
-          if (oIdx === item.answer) {
-            btn.classList.add('quiz-correct');
-          }
-        }
-
-        btn.addEventListener('click', function () {
-          optsDiv.querySelectorAll('.quiz-option-btn').forEach(function (b) {
-            b.disabled = true;
-            b.classList.add('quiz-disabled');
-          });
-          // Hide hint button if still visible
-          var hBtn = qDiv.querySelector('.quiz-hint-btn');
-          if (hBtn) hBtn.style.display = 'none';
-
-          const isCorrect = oIdx === item.answer;
-          if (isCorrect) {
-            btn.classList.add('quiz-correct');
-          } else {
-            btn.classList.add('quiz-wrong');
-            optsDiv.querySelectorAll('.quiz-option-btn')[item.answer].classList.add('quiz-correct');
-          }
-          // Show explanation + MDN link if available
-          if (item.explanation) {
-            var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
-            if (item.mdn) {
-              expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
-            }
-            var expDiv = document.createElement('div');
-            expDiv.className = 'quiz-explanation';
-            expDiv.innerHTML = expHTML;
-            qDiv.appendChild(expDiv);
-          }
-          saveQuizAnswer(topicName, qIdx, isCorrect);
-          // Update quiz progress bar
-          var pBar = quizDiv.querySelector('.quiz-progress-bar-fill');
-          var pLabel = quizDiv.querySelector('.quiz-progress-label');
-          if (pBar || pLabel) {
-            var sc = getQuizScores()[topicName] || {};
-            var cnt = Object.keys(sc).length;
-            if (pBar) pBar.style.width = (quizData.length > 0 ? Math.round((cnt / quizData.length) * 100) : 0) + '%';
-            if (pLabel) pLabel.textContent = cnt + ' / ' + quizData.length;
-          }
-        });
-        optsDiv.appendChild(btn);
-      });
-
-      qDiv.appendChild(optsDiv);
-
-      // Show explanation for already-answered questions
-      if (topicScores[qIdx] !== undefined && item.explanation) {
-        var expHTML = '<i class="material-icons" style="font-size:14px;vertical-align:middle;color:var(--yellow-color)">lightbulb</i> ' + item.explanation;
-        if (item.mdn) {
-          expHTML += ' <a class="quiz-mdn-link" href="' + item.mdn + '" target="_blank" rel="noopener">MDN ↗</a>';
-        }
-        var expDiv = document.createElement('div');
-        expDiv.className = 'quiz-explanation';
-        expDiv.innerHTML = expHTML;
-        qDiv.appendChild(expDiv);
-      }
-
-      quizDiv.appendChild(qDiv);
-    });
-
-    // Render into quiz slide and open it
-    if (quizSlideBody) {
-      quizSlideBody.appendChild(quizDiv);
-      openQuizSlide(topicName);
-    } else {
-      contentEl.appendChild(quizDiv);
-    }
+    var target = quizSlideBody || contentEl;
+    _buildQuizDOM(topicName, target);
+    if (quizSlideBody) openQuizSlide(topicName);
   }
 
   contentEl.dataset.loaded = 'true';
