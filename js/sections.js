@@ -1567,11 +1567,44 @@ function search() {
   }, 200);
 }
 
+function highlightLabel(label, query) {
+  var original = label.getAttribute('data-original');
+  if (!original) {
+    original = label.textContent;
+    label.setAttribute('data-original', original);
+  }
+  if (!query) {
+    label.textContent = original;
+    return;
+  }
+  var lc = original.toLowerCase();
+  var idx = lc.indexOf(query);
+  if (idx === -1) {
+    label.textContent = original;
+    return;
+  }
+  var before = original.substring(0, idx);
+  var match = original.substring(idx, idx + query.length);
+  var after = original.substring(idx + query.length);
+  label.innerHTML = escapeHTML(before) + '<mark>' + escapeHTML(match) + '</mark>' + escapeHTML(after);
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+var _searchActiveIdx = -1;
+
 function filterTopics(query) {
   const normalizedQuery = query.toLowerCase().trim();
   const sections = document.querySelectorAll('.section');
   let totalVisible = 0;
   let totalTopics = 0;
+  _searchActiveIdx = -1;
+
+  // Clear previous search-active
+  var prev = document.querySelector('.roadmap-node.search-active');
+  if (prev) prev.classList.remove('search-active');
 
   sections.forEach(function (section) {
     const topics = section.querySelectorAll('.section-topic');
@@ -1599,6 +1632,9 @@ function filterTopics(query) {
       } else {
         topic.classList.add('filtered-out');
       }
+
+      // Highlight matching text in label
+      if (label) highlightLabel(label, normalizedQuery);
     });
 
     if (visibleTopics === 0 && normalizedQuery) {
@@ -1650,12 +1686,57 @@ function filterTopics(query) {
   });
 })();
 
-// Wire search input (no inline oninput)
+// Wire search input + keyboard navigation
 (function () {
   var queryInput = document.getElementById('query');
-  if (queryInput) {
-    queryInput.addEventListener('input', search);
+  if (!queryInput) return;
+
+  queryInput.addEventListener('input', search);
+
+  function getVisibleNodes() {
+    return Array.from(document.querySelectorAll('.roadmap-node:not(.filtered-out)'));
   }
+
+  function setSearchActive(nodes, idx) {
+    var prev = document.querySelector('.roadmap-node.search-active');
+    if (prev) prev.classList.remove('search-active');
+    _searchActiveIdx = idx;
+    if (idx >= 0 && idx < nodes.length) {
+      nodes[idx].classList.add('search-active');
+      nodes[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Update counter with position
+      var counterEl = document.getElementById('searchResultsCount');
+      if (counterEl && counterEl.classList.contains('visible')) {
+        counterEl.textContent = (idx + 1) + ' / ' + nodes.length + ' topics';
+      }
+    }
+  }
+
+  queryInput.addEventListener('keydown', function (e) {
+    var nodes = getVisibleNodes();
+    if (!nodes.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      var next = _searchActiveIdx < nodes.length - 1 ? _searchActiveIdx + 1 : 0;
+      setSearchActive(nodes, next);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      var prev = _searchActiveIdx > 0 ? _searchActiveIdx - 1 : nodes.length - 1;
+      setSearchActive(nodes, prev);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (_searchActiveIdx >= 0 && _searchActiveIdx < nodes.length) {
+        openDrawer(nodes[_searchActiveIdx].dataset.topic);
+      } else if (nodes.length > 0) {
+        openDrawer(nodes[0].dataset.topic);
+      }
+    } else if (e.key === 'Escape') {
+      queryInput.value = '';
+      search();
+      queryInput.blur();
+    }
+  });
 })();
 
 // ============================================================

@@ -666,6 +666,28 @@
   display: block;
 }
 
+/* Search highlight mark */
+.roadmap-label mark {
+  background: rgba(255, 221, 0, 0.35);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+[data-theme="dark"] .roadmap-label mark {
+  background: rgba(255, 221, 0, 0.25);
+}
+
+/* Active search result (keyboard-navigated) */
+.roadmap-node.search-active {
+  background: rgba(255, 221, 0, 0.08);
+  border-radius: 6px;
+}
+
+.roadmap-node.search-active .roadmap-label {
+  color: var(--yellow-color);
+}
+
 /* Search filter — hidden topics / sections */
 .roadmap-node.filtered-out {
   display: none;
