@@ -935,7 +935,21 @@ function loadTopicCode(topicName, contentEl) {
     })
     .catch(function (error) {
       contentEl.classList.remove('loading');
-      contentEl.textContent = 'Error: ' + error.message;
+      contentEl.innerHTML = '';
+      var errDiv = document.createElement('div');
+      errDiv.className = 'load-error';
+      errDiv.innerHTML =
+        '<i class="material-icons" style="font-size:32px;opacity:0.4">cloud_off</i>' +
+        '<p>' + error.message + '</p>';
+      var retryBtn = document.createElement('button');
+      retryBtn.className = 'load-error-retry';
+      retryBtn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">refresh</i> Retry';
+      retryBtn.addEventListener('click', function () {
+        contentEl.innerHTML = '';
+        loadTopicCode(topicName, contentEl);
+      });
+      errDiv.appendChild(retryBtn);
+      contentEl.appendChild(errDiv);
     });
 }
 

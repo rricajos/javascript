@@ -549,6 +549,45 @@
   100% { background-position: -200% 0; }
 }
 
+/* Load error state */
+.load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  padding: 3em 1em;
+  text-align: center;
+  color: #888;
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.load-error p {
+  margin: 0;
+  max-width: 280px;
+  word-break: break-word;
+}
+
+.load-error-retry {
+  background: none;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: var(--yellow-color);
+  font-family: monospace;
+  font-size: 0.85em;
+  padding: 0.4em 1em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.load-error-retry:hover {
+  background: rgba(255, 221, 0, 0.08);
+  border-color: var(--yellow-color);
+}
+
 /* Code content area — inside drawer, always visible */
 .section-topic-content {
   background-color: var(--black-second-color);
