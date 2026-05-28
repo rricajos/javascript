@@ -1465,11 +1465,39 @@ function _getConsolePanel() {
     output.id = 'sjsb-console';
     output.setAttribute('role', 'log');
     output.setAttribute('aria-label', 'Code execution console');
-    output.innerHTML = '<div class="console-header"><span>Console Output</span><button onclick="this.parentElement.parentElement.remove()" class="console-close" aria-label="Close console">&times;</button></div><pre class="console-body" aria-live="polite"></pre>';
+    output.innerHTML = '<div class="console-header"><span>Console Output</span><div class="console-actions"><button class="console-action-btn" data-action="copy" title="Copy output"><i class="material-icons" style="font-size:14px">content_copy</i></button><button class="console-action-btn" data-action="clear" title="Clear"><i class="material-icons" style="font-size:14px">delete_outline</i></button><button class="console-action-btn" data-action="close" title="Close"><i class="material-icons" style="font-size:14px">close</i></button></div></div><pre class="console-body" aria-live="polite"></pre>';
+    output.querySelector('[data-action="close"]').addEventListener('click', function () { output.style.display = 'none'; });
+    output.querySelector('[data-action="clear"]').addEventListener('click', function () { output.querySelector('.console-body').innerHTML = ''; });
+    output.querySelector('[data-action="copy"]').addEventListener('click', function () {
+      var text = output.querySelector('.console-body').textContent;
+      if (navigator.clipboard && text) navigator.clipboard.writeText(text).then(function () { showToast('Copied!', 'check'); });
+    });
     document.body.appendChild(output);
   }
   output.style.display = 'block';
   return output;
+}
+
+function _renderConsoleLogs(body, logs) {
+  body.innerHTML = '';
+  if (!logs.length) {
+    body.textContent = '(no console output)';
+    return;
+  }
+  logs.forEach(function (line) {
+    var span = document.createElement('span');
+    if (line.indexOf('[ERROR]') === 0 || line.indexOf('[TIMEOUT]') === 0) {
+      span.className = 'console-error';
+    } else if (line.indexOf('[WARN]') === 0) {
+      span.className = 'console-warn';
+    } else if (line.indexOf('[INFO]') === 0) {
+      span.className = 'console-info';
+    }
+    span.textContent = line;
+    body.appendChild(span);
+    body.appendChild(document.createTextNode('\n'));
+  });
+  body.scrollTop = body.scrollHeight;
 }
 
 function runCode(code) {
@@ -1506,7 +1534,7 @@ function runCode(code) {
       done = true;
       worker.terminate();
       URL.revokeObjectURL(url);
-      body.textContent = '[TIMEOUT] Execution exceeded ' + (RUN_TIMEOUT_MS / 1000) + 's \u2014 possible infinite loop';
+      _renderConsoleLogs(body, ['[TIMEOUT] Execution exceeded ' + (RUN_TIMEOUT_MS / 1000) + 's \u2014 possible infinite loop']);
     }, RUN_TIMEOUT_MS);
 
     worker.onmessage = function (e) {
@@ -1516,7 +1544,7 @@ function runCode(code) {
       worker.terminate();
       URL.revokeObjectURL(url);
       var logs = e.data || [];
-      body.textContent = logs.length > 0 ? logs.join('\n') : '(no console output)';
+      _renderConsoleLogs(body, logs);
     };
 
     worker.onerror = function (e) {
@@ -1525,7 +1553,7 @@ function runCode(code) {
       clearTimeout(timer);
       worker.terminate();
       URL.revokeObjectURL(url);
-      body.textContent = '[ERROR] ' + (e.message || 'Unknown worker error');
+      _renderConsoleLogs(body, ['[ERROR] ' + (e.message || 'Unknown worker error')]);
     };
   } else {
     // Fallback: main-thread execution (no timeout protection)
@@ -1536,7 +1564,7 @@ function runCode(code) {
     console.warn = function () { logs.push('[WARN] ' + Array.from(arguments).join(' ')); origWarn.apply(console, arguments); };
     try { new Function(_sandboxSrc + '\n' + safeCode)(); } catch (err) { logs.push('[ERROR] ' + err.name + ': ' + err.message); }
     console.log = origLog; console.error = origErr; console.warn = origWarn;
-    body.textContent = logs.length > 0 ? logs.join('\n') : '(no console output)';
+    _renderConsoleLogs(body, logs);
   }
 }
 

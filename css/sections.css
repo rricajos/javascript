@@ -947,16 +947,29 @@
   border-bottom: 1px solid #333;
 }
 
-.console-close {
-  background: none;
-  border: none;
-  color: var(--white-second-color);
-  font-size: 1.4em;
-  cursor: pointer;
-  padding: 0 0.3em;
+.console-actions {
+  display: flex;
+  gap: 2px;
 }
 
-.console-close:hover {
+.console-action-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  border-radius: 3px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.console-action-btn:hover {
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.console-action-btn[data-action="close"]:hover {
   color: #ff5555;
 }
 
@@ -971,6 +984,10 @@
   word-break: break-word;
   flex: 1;
 }
+
+.console-error { color: #f44336; }
+.console-warn  { color: #ff9800; }
+.console-info  { color: #64b5f6; }
 
 /* Shortcuts overlay */
 #shortcuts-overlay {
