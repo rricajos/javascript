@@ -485,6 +485,23 @@
   pointer-events: none;
 }
 
+.quiz-tab-badge {
+  margin-left: 5px;
+  font-size: 0.7em;
+  background: rgba(255, 221, 0, 0.12);
+  color: var(--yellow-color);
+  border-radius: 8px;
+  padding: 1px 6px;
+  font-family: monospace;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.quiz-tab-badge-done {
+  background: rgba(76, 175, 80, 0.15);
+  color: #66bb6a;
+}
+
 .drawer-close {
   background: none;
   border: none;
@@ -660,6 +677,11 @@
 
 .section-topic-content .code-function {
   color: #dcdcaa;
+}
+
+.section-topic-content .code-tmpl-expr {
+  /* Expression inside ${...} — slightly brighter to stand out from the string */
+  filter: brightness(1.25);
 }
 
 .section-topic-content .code-separator {
@@ -1248,6 +1270,28 @@
 .quiz-mdn-link:hover {
   opacity: 1;
   text-decoration: underline;
+}
+
+/* Next topic button shown after quiz completion */
+.quiz-next-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 1.2em auto 0;
+  padding: 0.5em 1.2em;
+  background: none;
+  border: 1px solid var(--yellow-color);
+  border-radius: 6px;
+  color: var(--yellow-color);
+  font-family: monospace;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+.quiz-next-btn:hover {
+  background: rgba(255, 221, 0, 0.1);
 }
 
 /* Prerequisite banner in drawer */

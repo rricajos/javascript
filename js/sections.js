@@ -26,6 +26,36 @@ function showToast(message, icon) {
 }
 
 // ============================================================
+// CONFIRM TOAST — non-blocking confirmation instead of confirm()
+// ============================================================
+var _confirmEl = null;
+function showConfirm(message, onConfirm) {
+  if (_confirmEl) _confirmEl.remove();
+  _confirmEl = document.createElement('div');
+  _confirmEl.className = 'jsdojo-confirm';
+  _confirmEl.innerHTML =
+    '<span class="jsdojo-confirm-msg">' + message + '</span>' +
+    '<div class="jsdojo-confirm-btns">' +
+      '<button class="jsdojo-confirm-yes">Confirm</button>' +
+      '<button class="jsdojo-confirm-no">Cancel</button>' +
+    '</div>';
+  document.body.appendChild(_confirmEl);
+  requestAnimationFrame(function () { _confirmEl.classList.add('visible'); });
+
+  function dismiss() {
+    if (_confirmEl) {
+      _confirmEl.classList.remove('visible');
+      setTimeout(function () { if (_confirmEl) { _confirmEl.remove(); _confirmEl = null; } }, 200);
+    }
+  }
+  _confirmEl.querySelector('.jsdojo-confirm-yes').addEventListener('click', function () {
+    dismiss();
+    onConfirm();
+  });
+  _confirmEl.querySelector('.jsdojo-confirm-no').addEventListener('click', dismiss);
+}
+
+// ============================================================
 // FOCUS TRAP — keeps Tab cycling inside an open panel
 // ============================================================
 var _activeTrap = null;
@@ -60,6 +90,7 @@ function releaseFocus() {
 // ============================================================
 
 const PROGRESS_KEY = 'jsdojo_progress';
+const FONT_SIZE_KEY = 'jsdojo_font_size';
 
 function getProgress() {
   try {
@@ -154,28 +185,32 @@ function updateProgressUI() {
   var progressResetBtn = document.getElementById('progressReset');
   if (progressResetBtn) {
     progressResetBtn.addEventListener('click', function () {
-      if (!confirm('Reset all reading progress?')) return;
-      localStorage.removeItem(PROGRESS_KEY);
-      updateProgressUI();
+      showConfirm('Reset all reading progress?', function () {
+        localStorage.removeItem(PROGRESS_KEY);
+        updateProgressUI();
+        showToast('Progress reset', 'restart_alt');
+      });
     });
   }
 
   var quizResetBtn = document.getElementById('quizReset');
   if (quizResetBtn) {
     quizResetBtn.addEventListener('click', function () {
-      if (!confirm('Reset all quiz scores?')) return;
-      localStorage.removeItem(QUIZ_KEY);
-      updateQuizDashboard();
-      // Re-render drawer if open
-      if (currentDrawerTopic) {
-        var contentEl = document.getElementById('drawerContent');
-        var quizBody = document.getElementById('quizSlideBody');
-        if (quizBody) quizBody.innerHTML = '';
-        var code = codeCache[currentDrawerTopic];
-        if (contentEl && code) {
-          renderCode(contentEl, code, currentDrawerTopic);
+      showConfirm('Reset all quiz scores?', function () {
+        localStorage.removeItem(QUIZ_KEY);
+        updateQuizDashboard();
+        // Re-render drawer if open
+        if (currentDrawerTopic) {
+          var contentEl = document.getElementById('drawerContent');
+          var quizBody = document.getElementById('quizSlideBody');
+          if (quizBody) quizBody.innerHTML = '';
+          var code = codeCache[currentDrawerTopic];
+          if (contentEl && code) {
+            renderCode(contentEl, code, currentDrawerTopic);
+          }
         }
-      }
+        showToast('Quiz scores reset', 'restart_alt');
+      });
     });
   }
   // Review mistakes
@@ -223,9 +258,9 @@ function updateProgressUI() {
             if (data.quizScores) localStorage.setItem(QUIZ_KEY, JSON.stringify(data.quizScores));
             updateProgressUI();
             updateQuizDashboard();
-            alert('Data imported successfully!');
+            showToast('Data imported', 'cloud_done');
           } catch (e) {
-            alert('Invalid backup file.');
+            showToast('Invalid backup file', 'error_outline');
           }
         };
         reader.readAsText(file);
@@ -366,6 +401,18 @@ function _buildQuizDOM(topicName, containerEl) {
         var lbl = quizDiv.querySelector('.quiz-progress-label');
         if (bar) bar.style.width = Math.round((cnt / quizData.length) * 100) + '%';
         if (lbl) lbl.textContent = cnt + ' / ' + quizData.length;
+
+        // Update quiz tab badge
+        var qTab = document.querySelector('.drawer-tab[data-tab="quiz"] .quiz-tab-badge');
+        if (qTab) {
+          qTab.textContent = cnt + '/' + quizData.length;
+          if (cnt === quizData.length) qTab.classList.add('quiz-tab-badge-done');
+        }
+
+        // Show "Next Topic" button when all questions answered
+        if (cnt === quizData.length && !quizDiv.querySelector('.quiz-next-btn')) {
+          _appendNextTopicBtn(quizDiv, topicName);
+        }
       });
       optsDiv.appendChild(btn);
     });
@@ -384,8 +431,29 @@ function _buildQuizDOM(topicName, containerEl) {
     quizDiv.appendChild(qDiv);
   });
 
+  // Already fully answered — show button immediately
+  if (answeredCount === quizData.length) {
+    _appendNextTopicBtn(quizDiv, topicName);
+  }
+
   containerEl.appendChild(quizDiv);
   return quizDiv;
+}
+
+function _appendNextTopicBtn(quizDiv, topicName) {
+  var nodes = Array.from(document.querySelectorAll('.roadmap-node[data-topic]'));
+  var idx = nodes.findIndex(function (n) { return n.dataset.topic === topicName; });
+  var nextNode = (idx >= 0 && idx < nodes.length - 1) ? nodes[idx + 1] : null;
+  if (!nextNode) return;
+  var labelEl = nextNode.querySelector('.roadmap-label');
+  var nextName = labelEl
+    ? (labelEl.getAttribute('data-original') || labelEl.textContent.trim())
+    : nextNode.dataset.topic.replace(/_/g, ' ');
+  var btn = document.createElement('button');
+  btn.className = 'quiz-next-btn';
+  btn.innerHTML = '<i class="material-icons" style="font-size:16px;vertical-align:middle">arrow_forward</i> ' + nextName;
+  btn.addEventListener('click', function () { openDrawer(nextNode.dataset.topic); });
+  quizDiv.appendChild(btn);
 }
 
 function renderQuizInDrawer(topicName) {
@@ -554,10 +622,23 @@ function openDrawer(topicName) {
   // Reset tabs to code view
   setDrawerTab('code');
 
-  // Check if topic has a quiz and update quiz tab state
-  var hasQuiz = TOPIC_QUIZZES && TOPIC_QUIZZES[topicName] && TOPIC_QUIZZES[topicName].length > 0;
+  // Check if topic has a quiz and update quiz tab state + badge
+  var quizData = TOPIC_QUIZZES && TOPIC_QUIZZES[topicName];
+  var hasQuiz = quizData && quizData.length > 0;
   var quizTab = document.querySelector('.drawer-tab[data-tab="quiz"]');
-  if (quizTab) quizTab.setAttribute('data-has-quiz', hasQuiz ? 'true' : 'false');
+  if (quizTab) {
+    quizTab.setAttribute('data-has-quiz', hasQuiz ? 'true' : 'false');
+    var existingBadge = quizTab.querySelector('.quiz-tab-badge');
+    if (existingBadge) existingBadge.remove();
+    if (hasQuiz) {
+      var sc = getQuizScores()[topicName] || {};
+      var answered = Object.keys(sc).length;
+      var badge = document.createElement('span');
+      badge.className = 'quiz-tab-badge' + (answered === quizData.length ? ' quiz-tab-badge-done' : '');
+      badge.textContent = answered + '/' + quizData.length;
+      quizTab.appendChild(badge);
+    }
+  }
 
   loadTopicCode(topicName, contentEl);
 
@@ -1167,13 +1248,25 @@ function renderCode(contentEl, code, topicName) {
   sizeUp.textContent = 'A+';
   sizeUp.title = 'Increase font size';
 
+  // Apply saved font size
+  var savedSize = localStorage.getItem(FONT_SIZE_KEY);
+  if (savedSize) contentEl.style.fontSize = savedSize;
+
   sizeDown.addEventListener('click', function () {
     const current = parseFloat(getComputedStyle(contentEl).fontSize);
-    if (current > 8) contentEl.style.fontSize = (current - 1) + 'px';
+    if (current > 8) {
+      var next = (current - 1) + 'px';
+      contentEl.style.fontSize = next;
+      localStorage.setItem(FONT_SIZE_KEY, next);
+    }
   });
   sizeUp.addEventListener('click', function () {
     const current = parseFloat(getComputedStyle(contentEl).fontSize);
-    if (current < 24) contentEl.style.fontSize = (current + 1) + 'px';
+    if (current < 24) {
+      var next = (current + 1) + 'px';
+      contentEl.style.fontSize = next;
+      localStorage.setItem(FONT_SIZE_KEY, next);
+    }
   });
 
   const shareBtn = createShareBtn(topicName);
@@ -1624,7 +1717,8 @@ function highlightLine(line) {
     } else if (tok.type === 'template') {
       tok.parts.forEach(function (part) {
         if (part.type === 'expr') {
-          html += esc(part.value);
+          // Recursively highlight the expression inside ${}
+          html += '<span class="code-tmpl-expr">' + highlightLine(part.value) + '</span>';
         } else {
           html += '<span class="code-string">' + esc(part.value) + '</span>';
         }
