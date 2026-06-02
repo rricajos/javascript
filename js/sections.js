@@ -2338,3 +2338,76 @@ document.addEventListener('keydown', function (event) {
     return;
   }
 });
+
+////////////////////////////////////////////////////////////////
+// DRAWER RESIZE
+////////////////////////////////////////////////////////////////
+(function () {
+  var DRAWER_W_KEY = 'jsdojo_drawer_w';
+  var MIN_W = 300;
+
+  function applyDrawerWidth(px) {
+    var max = Math.round(window.innerWidth * 0.9);
+    px = Math.max(MIN_W, Math.min(max, px));
+    var root = document.documentElement;
+    root.style.setProperty('--drawer-w', px + 'px');
+    // quiz-slide: slightly narrower, minimum 200px
+    root.style.setProperty('--quiz-slide-w', Math.max(200, px - 24) + 'px');
+  }
+
+  function initResizeHandle() {
+    var drawer = document.getElementById('drawer');
+    if (!drawer) return;
+
+    // Restore saved width
+    var saved = parseInt(localStorage.getItem(DRAWER_W_KEY));
+    if (saved) applyDrawerWidth(saved);
+
+    // Create handle element
+    var handle = document.createElement('div');
+    handle.className = 'drawer-resize-handle';
+    drawer.appendChild(handle);
+
+    var resizing = false, startX = 0, startW = 0;
+
+    handle.addEventListener('mousedown', function (e) {
+      if (window.innerWidth <= 860) return;
+      resizing = true;
+      startX = e.clientX;
+      startW = drawer.getBoundingClientRect().width;
+      handle.classList.add('resizing');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!resizing) return;
+      var delta = startX - e.clientX;
+      applyDrawerWidth(startW + delta);
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!resizing) return;
+      resizing = false;
+      handle.classList.remove('resizing');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      var finalW = Math.round(drawer.getBoundingClientRect().width);
+      localStorage.setItem(DRAWER_W_KEY, finalW);
+    });
+
+    // Reset to default on double-click
+    handle.addEventListener('dblclick', function () {
+      document.documentElement.style.removeProperty('--drawer-w');
+      document.documentElement.style.removeProperty('--quiz-slide-w');
+      localStorage.removeItem(DRAWER_W_KEY);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initResizeHandle);
+  } else {
+    initResizeHandle();
+  }
+})();

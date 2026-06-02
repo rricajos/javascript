@@ -273,8 +273,8 @@
 .quiz-slide {
   position: fixed;
   top: 0;
-  right: 50%;
-  width: 46%;
+  right: var(--drawer-w, 50%);
+  width: var(--quiz-slide-w, 46%);
   height: 100%;
   background: #3d3d3a;
   z-index: 155;
@@ -366,7 +366,9 @@
   position: fixed;
   top: 24px;
   right: 0;
-  width: 50%;
+  width: var(--drawer-w, 50%);
+  min-width: 300px;
+  max-width: 90vw;
   height: calc(100% - 24px);
   background: var(--black-second-color);
   z-index: 160;
@@ -511,6 +513,8 @@
   display: flex;
   align-items: center;
   transition: color 0.2s ease;
+  position: relative;
+  z-index: 3;
 }
 
 .drawer-close:hover {
@@ -519,6 +523,46 @@
 
 .drawer-close .material-icons {
   font-size: 24px;
+}
+
+/* Resize handle — left edge of drawer */
+.drawer-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 5;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.drawer-resize-handle::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 32px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.drawer-resize-handle:hover::after,
+.drawer-resize-handle.resizing::after {
+  background: var(--yellow-color);
+}
+
+.drawer-resize-handle:hover,
+.drawer-resize-handle.resizing {
+  background: rgba(255, 221, 0, 0.06);
+}
+
+@media screen and (max-width: 860px) {
+  .drawer-resize-handle { display: none; }
 }
 
 .drawer-body {
