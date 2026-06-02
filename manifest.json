@@ -1,7 +1,7 @@
 {
-  "name": "Super JavaScript Brain",
-  "short_name": "SJSB",
-  "description": "A comprehensive vanilla JS handbook with interactive topics, quizzes, and code playground",
+  "name": "jsdojo",
+  "short_name": "jsdojo",
+  "description": "Interactive JavaScript roadmap with code examples, quizzes, sandbox console and progress tracking.",
   "start_url": "./",
   "display": "standalone",
   "orientation": "any",

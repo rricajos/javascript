@@ -1,4 +1,4 @@
-// Service Worker for Super JavaScript Brain (SJSB)
+// Service Worker for jsdojo
 const CACHE_NAME = 'sjsb-v6';
 
 // Shell assets only — topic .js files are cached on-demand via fetch handler
