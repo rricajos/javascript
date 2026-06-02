@@ -122,7 +122,7 @@ a {
 }
 
 /* Toast notifications */
-.sjsb-toast {
+.jsdojo-toast {
   position: fixed;
   bottom: 2em;
   left: 50%;
@@ -144,12 +144,12 @@ a {
   pointer-events: none;
 }
 
-.sjsb-toast.visible {
+.jsdojo-toast.visible {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
 
-.sjsb-toast .material-icons {
+.jsdojo-toast .material-icons {
   font-size: 16px;
   color: var(--yellow-color);
 }

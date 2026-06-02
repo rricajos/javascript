@@ -10,11 +10,11 @@ var currentDrawerTopic = null;
 // ============================================================
 var _toastTimer = null;
 function showToast(message, icon) {
-  var el = document.getElementById('sjsb-toast');
+  var el = document.getElementById('jsdojo-toast');
   if (!el) {
     el = document.createElement('div');
-    el.id = 'sjsb-toast';
-    el.className = 'sjsb-toast';
+    el.id = 'jsdojo-toast';
+    el.className = 'jsdojo-toast';
     document.body.appendChild(el);
   }
   el.innerHTML = (icon ? '<i class="material-icons">' + icon + '</i> ' : '') + message;
@@ -59,7 +59,7 @@ function releaseFocus() {
 // PROGRESS TRACKING (localStorage)
 // ============================================================
 
-const PROGRESS_KEY = 'sjsb_progress';
+const PROGRESS_KEY = 'jsdojo_progress';
 
 function getProgress() {
   try {
@@ -193,13 +193,13 @@ function updateProgressUI() {
       var data = {
         progress: getProgress(),
         quizScores: getQuizScores(),
-        theme: localStorage.getItem('sjsb_theme') || 'light',
+        theme: localStorage.getItem('jsdojo_theme') || 'light',
         exported: new Date().toISOString()
       };
       var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'sjsb-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.download = 'jsdojo-backup-' + new Date().toISOString().slice(0, 10) + '.json';
       a.click();
       URL.revokeObjectURL(a.href);
     });
@@ -801,7 +801,7 @@ const PREREQUISITES = {
 // QUIZ SCORE PERSISTENCE (localStorage)
 // ============================================================
 
-const QUIZ_KEY = 'sjsb_quiz_scores';
+const QUIZ_KEY = 'jsdojo_quiz_scores';
 
 function getQuizScores() {
   try {
@@ -1302,7 +1302,7 @@ var _sandboxSrc =
   '  setInterval: setInterval, clearInterval: clearInterval,\n' +
   '  innerWidth: 1024, innerHeight: 768, scrollY: 0, scrollX: 0,\n' +
   '  location: { href: "", origin: "", pathname: "/", hash: "" },\n' +
-  '  navigator: { userAgent: "SJSB Sandbox" },\n' +
+  '  navigator: { userAgent: "jsdojo Sandbox" },\n' +
   '  history: { pushState: function(){}, replaceState: function(){}, back: function(){}, forward: function(){} },\n' +
   '  localStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },\n' +
   '  sessionStorage: { getItem: function(){ return null; }, setItem: function(){}, removeItem: function(){}, clear: function(){} },\n' +
@@ -1376,10 +1376,10 @@ function _prepareCode(code) {
 }
 
 function _getConsolePanel() {
-  var output = document.getElementById('sjsb-console');
+  var output = document.getElementById('jsdojo-console');
   if (!output) {
     output = document.createElement('div');
-    output.id = 'sjsb-console';
+    output.id = 'jsdojo-console';
     output.setAttribute('role', 'log');
     output.setAttribute('aria-label', 'Code execution console');
     output.innerHTML = '<div class="console-header"><span>Console Output</span><div class="console-actions"><button class="console-action-btn" data-action="copy" title="Copy output"><i class="material-icons" style="font-size:14px">content_copy</i></button><button class="console-action-btn" data-action="clear" title="Clear"><i class="material-icons" style="font-size:14px">delete_outline</i></button><button class="console-action-btn" data-action="close" title="Close"><i class="material-icons" style="font-size:14px">close</i></button></div></div><pre class="console-body" aria-live="polite"></pre>';
@@ -2021,7 +2021,7 @@ function filterTopics(query) {
 // ============================================================
 
 (function () {
-  const THEME_KEY = 'sjsb_theme';
+  const THEME_KEY = 'jsdojo_theme';
   const toggle = document.getElementById('themeToggle');
   const icon = document.getElementById('themeIcon');
   if (!toggle || !icon) return;
@@ -2173,7 +2173,7 @@ document.addEventListener('keydown', function (event) {
     const shortcutsOverlay = document.getElementById('shortcuts-overlay');
     if (shortcutsOverlay) { shortcutsOverlay.remove(); return; }
     // Close console if open
-    const consoleEl = document.getElementById('sjsb-console');
+    const consoleEl = document.getElementById('jsdojo-console');
     if (consoleEl) { consoleEl.remove(); return; }
     // Close both panels in sequence: quiz first, then drawer
     if (currentDrawerTopic) { closeAll(); return; }

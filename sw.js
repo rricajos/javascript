@@ -1,5 +1,5 @@
 // Service Worker for jsdojo
-const CACHE_NAME = 'sjsb-v6';
+const CACHE_NAME = 'jsdojo-v1';
 
 // Shell assets only — topic .js files are cached on-demand via fetch handler
 const ASSETS = [
