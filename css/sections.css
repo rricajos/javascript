@@ -278,7 +278,7 @@
   height: 100%;
   background: #3d3d3a;
   z-index: 155;
-  transform: translateX(calc(100% + 50vw));
+  transform: translateX(calc(100% + var(--drawer-w, 50%)));
   transition: transform 0.4s ease;
   display: flex;
   flex-direction: column;
@@ -334,7 +334,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1em 3em 1em 1.5em;
+  padding: 1em 1.2em 1em 1.5em;
   scrollbar-color: var(--yellow-color) var(--black-second-color);
   scrollbar-width: thin;
 }
@@ -1582,6 +1582,22 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+
+/* Medium screens: quiz overlays the drawer instead of sitting beside it */
+@media screen and (max-width: 1200px) and (min-width: 861px) {
+  .quiz-slide {
+    right: 0;
+    width: var(--drawer-w, 50%);
+    z-index: 170;
+    border-left: none;
+    transform: translateX(100%);
+  }
+
+  .quiz-slide.open {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
 @media screen and (max-width: 860px) {
   .drawer {
     width: 100%;
