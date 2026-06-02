@@ -290,6 +290,7 @@
 
 .quiz-slide.open {
   transform: translateX(0) rotate(var(--quiz-tilt, -1deg));
+  z-index: 165;
 }
 
 .quiz-slide-header {
