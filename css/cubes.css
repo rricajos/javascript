@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 4px;
+  overflow: visible;
   transition: background-color 0.3s ease;
 }
 
@@ -37,23 +38,23 @@
    --side: 15px → visual footprint ≈ 26 × 30 px. No scale needed.
    ============================================================ */
 .cube-container {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: min(36px, 7.5vw);
+  height: min(36px, 7.5vw);
+  min-width: min(36px, 7.5vw);
   position: relative;
   margin-right: 6px;
 }
 
 /* Offset sides down so the 3D visual is vertically centered */
 .cube-container .cube-side {
-  top: 7px;
+  top: min(7px, 1.5vw);
 }
 
 /* ============================================================
    CUBE SIDES — isometric 3D, natively small (no scale hack)
    ============================================================ */
 .cube-side {
-  --side: 22px;
+  --side: min(22px, 4.5vw);
   width: var(--side);
   height: var(--side);
   line-height: var(--side);
@@ -93,7 +94,7 @@
 }
 
 .cube-info-title {
-  font-size: clamp(11px, 1.6vw, 14px);
+  font-size: clamp(9px, 1.6vw, 14px);
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
@@ -104,7 +105,7 @@
 
 .cube-info-desc {
   margin: 0;
-  font-size: clamp(8px, 1.2vw, 11px);
+  font-size: clamp(7px, 1.2vw, 11px);
   opacity: 0.5;
   font-style: italic;
   line-height: 1.2;
@@ -199,14 +200,14 @@
 
 /* Smaller cube in sticky */
 .cubes-sticky .cube-container {
-  width: 24px;
-  height: 28px;
-  min-width: 24px;
+  width: min(24px, 5vw);
+  height: min(28px, 5.5vw);
+  min-width: min(24px, 5vw);
   margin-right: 4px;
 }
 
 .cubes-sticky .cube-side {
-  --side: 14px;
+  --side: min(14px, 3vw);
 }
 
 .cubes-sticky .cube-info-title {
@@ -326,14 +327,6 @@
    RESPONSIVE
    ============================================================ */
 @media (max-width: 700px) {
-  .cube-info-title {
-    font-size: 10px;
-  }
-
-  .cube-info-desc {
-    font-size: 8px;
-  }
-
   .cubes-sticky .cube-info-title {
     font-size: 9px;
   }
@@ -360,10 +353,6 @@
 
   .cube-info-desc {
     display: none;
-  }
-
-  .cube-info-title {
-    font-size: 9px;
   }
 
   .cubes-sticky .cube-info {
