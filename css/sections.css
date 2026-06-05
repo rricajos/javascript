@@ -274,7 +274,7 @@
   position: fixed;
   top: 0;
   right: var(--drawer-w, 50%);
-  width: var(--quiz-slide-w, 46%);
+  width: var(--quiz-slide-w, 48%);
   height: 100%;
   background: #3d3d3a;
   z-index: 155;
@@ -1225,6 +1225,8 @@
 }
 
 .quiz-option-btn {
+  flex: 1 1 auto;
+  min-width: calc(50% - 0.4em);
   background: var(--black-color);
   color: #ccc;
   border: 1px solid #444;
