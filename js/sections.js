@@ -2351,8 +2351,10 @@ document.addEventListener('keydown', function (event) {
     px = Math.max(MIN_W, Math.min(max, px));
     var root = document.documentElement;
     root.style.setProperty('--drawer-w', px + 'px');
-    // quiz-slide: slightly narrower, minimum 200px
-    root.style.setProperty('--quiz-slide-w', Math.max(200, px - 24) + 'px');
+    // quiz-slide: fill 70% of remaining space, capped at 48% of viewport
+    var remaining = window.innerWidth - px;
+    var quizW = Math.round(Math.min(remaining * 0.7, window.innerWidth * 0.48));
+    root.style.setProperty('--quiz-slide-w', Math.max(200, quizW) + 'px');
   }
 
   function initResizeHandle() {
