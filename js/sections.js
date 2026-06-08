@@ -2340,43 +2340,62 @@ document.addEventListener('keydown', function (event) {
 });
 
 ////////////////////////////////////////////////////////////////
-// DRAWER RESIZE
+// PANEL RESIZE (drawer + quiz-slide)
 ////////////////////////////////////////////////////////////////
 (function () {
   var DRAWER_W_KEY = 'jsdojo_drawer_w';
-  var MIN_W = 300;
+  var QUIZ_W_KEY   = 'jsdojo_quiz_w';
+  var MIN_DRAWER   = 300;
+  var MIN_QUIZ     = 200;
+  var root         = document.documentElement;
+
+  /* ---- helpers ---- */
+
+  function getDrawerPx() {
+    var v = getComputedStyle(root).getPropertyValue('--drawer-w');
+    return parseInt(v) || Math.round(window.innerWidth * 0.5);
+  }
 
   function applyDrawerWidth(px) {
     var max = Math.round(window.innerWidth * 0.9);
-    px = Math.max(MIN_W, Math.min(max, px));
-    var root = document.documentElement;
+    px = Math.max(MIN_DRAWER, Math.min(max, px));
     root.style.setProperty('--drawer-w', px + 'px');
-    // quiz-slide: fill 70% of remaining space, capped at 48% of viewport
-    var remaining = window.innerWidth - px;
-    var quizW = Math.round(Math.min(remaining * 0.7, window.innerWidth * 0.48));
-    root.style.setProperty('--quiz-slide-w', Math.max(200, quizW) + 'px');
+
+    // If user has a saved quiz width, re-apply it (clamped) instead of auto-calculating
+    var savedQuiz = parseInt(localStorage.getItem(QUIZ_W_KEY));
+    if (savedQuiz) {
+      applyQuizWidth(savedQuiz);
+    } else {
+      var remaining = window.innerWidth - px;
+      var quizW = Math.round(Math.min(remaining * 0.7, window.innerWidth * 0.48));
+      root.style.setProperty('--quiz-slide-w', Math.max(MIN_QUIZ, quizW) + 'px');
+    }
   }
 
-  function initResizeHandle() {
-    var drawer = document.getElementById('drawer');
-    if (!drawer) return;
+  function applyQuizWidth(px) {
+    var drawerW = getDrawerPx();
+    var maxQuiz = window.innerWidth - drawerW - 50;
+    px = Math.max(MIN_QUIZ, Math.min(maxQuiz, px));
+    root.style.setProperty('--quiz-slide-w', px + 'px');
+  }
 
-    // Restore saved width
-    var saved = parseInt(localStorage.getItem(DRAWER_W_KEY));
-    if (saved) applyDrawerWidth(saved);
+  function resetAll() {
+    root.style.removeProperty('--drawer-w');
+    root.style.removeProperty('--quiz-slide-w');
+    localStorage.removeItem(DRAWER_W_KEY);
+    localStorage.removeItem(QUIZ_W_KEY);
+  }
 
-    // Create handle element
-    var handle = document.createElement('div');
-    handle.className = 'drawer-resize-handle';
-    drawer.appendChild(handle);
+  /* ---- generic drag helper ---- */
 
-    var resizing = false, startX = 0, startW = 0;
+  function makeDraggable(handle, onDrag, onDone) {
+    var dragging = false, startX = 0, startW = 0;
 
     handle.addEventListener('mousedown', function (e) {
       if (window.innerWidth <= 860) return;
-      resizing = true;
+      dragging = true;
       startX = e.clientX;
-      startW = drawer.getBoundingClientRect().width;
+      startW = onDrag._getStartW();
       handle.classList.add('resizing');
       document.body.style.cursor = 'col-resize';
       document.body.style.userSelect = 'none';
@@ -2384,32 +2403,66 @@ document.addEventListener('keydown', function (event) {
     });
 
     document.addEventListener('mousemove', function (e) {
-      if (!resizing) return;
-      var delta = startX - e.clientX;
-      applyDrawerWidth(startW + delta);
+      if (!dragging) return;
+      onDrag(startW + (startX - e.clientX));
     });
 
     document.addEventListener('mouseup', function () {
-      if (!resizing) return;
-      resizing = false;
+      if (!dragging) return;
+      dragging = false;
       handle.classList.remove('resizing');
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      var finalW = Math.round(drawer.getBoundingClientRect().width);
-      localStorage.setItem(DRAWER_W_KEY, finalW);
-    });
-
-    // Reset to default on double-click
-    handle.addEventListener('dblclick', function () {
-      document.documentElement.style.removeProperty('--drawer-w');
-      document.documentElement.style.removeProperty('--quiz-slide-w');
-      localStorage.removeItem(DRAWER_W_KEY);
+      if (onDone) onDone();
     });
   }
 
+  /* ---- init ---- */
+
+  function init() {
+    var drawer    = document.getElementById('drawer');
+    var quizSlide = document.getElementById('quizSlide');
+
+    // --- Drawer resize handle ---
+    if (drawer) {
+      var savedDrawer = parseInt(localStorage.getItem(DRAWER_W_KEY));
+      if (savedDrawer) applyDrawerWidth(savedDrawer);
+
+      var dHandle = document.createElement('div');
+      dHandle.className = 'drawer-resize-handle';
+      drawer.appendChild(dHandle);
+
+      applyDrawerWidth._getStartW = function () {
+        return drawer.getBoundingClientRect().width;
+      };
+      makeDraggable(dHandle, applyDrawerWidth, function () {
+        localStorage.setItem(DRAWER_W_KEY, Math.round(drawer.getBoundingClientRect().width));
+      });
+      dHandle.addEventListener('dblclick', resetAll);
+    }
+
+    // --- Quiz-slide resize handle ---
+    if (quizSlide) {
+      var savedQuiz = parseInt(localStorage.getItem(QUIZ_W_KEY));
+      if (savedQuiz) applyQuizWidth(savedQuiz);
+
+      var qHandle = document.createElement('div');
+      qHandle.className = 'quiz-resize-handle';
+      quizSlide.appendChild(qHandle);
+
+      applyQuizWidth._getStartW = function () {
+        return quizSlide.getBoundingClientRect().width;
+      };
+      makeDraggable(qHandle, applyQuizWidth, function () {
+        localStorage.setItem(QUIZ_W_KEY, Math.round(quizSlide.getBoundingClientRect().width));
+      });
+      qHandle.addEventListener('dblclick', resetAll);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initResizeHandle);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initResizeHandle();
+    init();
   }
 })();
