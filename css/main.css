@@ -1,5 +1,6 @@
 html {
   overflow-anchor: none;
+  scroll-behavior: smooth;
 }
 
 :root {
@@ -14,6 +15,7 @@ html {
   --card-bg: #eee;
   --card-border: #bbb;
   --max-width: 800px;
+  --header-h: 24px;
 }
 
 [data-theme="dark"] {

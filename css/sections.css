@@ -272,10 +272,10 @@
    ============================================================ */
 .quiz-slide {
   position: fixed;
-  top: 24px;
+  top: var(--header-h);
   right: var(--drawer-w, 50%);
   width: var(--quiz-slide-w, 48%);
-  height: calc(100% - 24px);
+  height: calc(100% - var(--header-h));
   background: #3d3d3a;
   z-index: 155;
   transform: translateX(calc(100% + var(--drawer-w, 50%)));
@@ -365,12 +365,12 @@
 
 .drawer {
   position: fixed;
-  top: 24px;
+  top: var(--header-h);
   right: 0;
   width: var(--drawer-w, 50%);
   min-width: 300px;
   max-width: 90vw;
-  height: calc(100% - 24px);
+  height: calc(100% - var(--header-h));
   background: var(--black-second-color);
   z-index: 160;
   transform: translateX(100%);
@@ -384,10 +384,10 @@
 /* Folder tab — trapezoid above the drawer (real element) */
 .drawer-folder-tab {
   position: absolute;
-  top: -24px;
+  top: calc(-1 * var(--header-h));
   left: 20px;
   width: 120px;
-  height: 24px;
+  height: var(--header-h);
   background: var(--black-second-color);
   clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
   border-radius: 6px 6px 0 0;
@@ -520,6 +520,12 @@
 
 .drawer-close:hover {
   color: #ff5555;
+}
+
+.drawer-close:focus-visible,
+.quiz-slide-close:focus-visible {
+  outline: 2px solid var(--yellow-color);
+  outline-offset: 2px;
 }
 
 .drawer-close .material-icons {
@@ -943,7 +949,7 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px);
-  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.15s ease-out, visibility 0.15s ease-out, transform 0.15s ease-out;
   z-index: 100;
 }
 
@@ -955,7 +961,7 @@
 
 .back-to-top:hover {
   filter: brightness(110%);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.1);
 }
 
 .back-to-top .material-icons {
@@ -1275,7 +1281,7 @@
   cursor: pointer;
   font-family: monospace;
   font-size: 0.85em;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
   max-width: 100%;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -1314,6 +1320,7 @@
   color: #ccc;
   line-height: 1.5;
   font-family: monospace;
+  animation: fadeIn 0.3s ease;
 }
 
 /* Hint button + hint text */
@@ -1546,7 +1553,7 @@
    DARK MODE
    ============================================================ */
 [data-theme="dark"] .roadmap-section-title {
-  color: var(--black-second-color);
+  color: #bbb;
 }
 
 [data-theme="dark"] .roadmap-track::before {

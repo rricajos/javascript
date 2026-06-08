@@ -1860,14 +1860,6 @@ function filterTopics(query) {
   backToTop.addEventListener('click', function () {
     smoothScrollToTop();
   });
-
-  window.addEventListener('scroll', function () {
-    if (window.scrollY > 300) {
-      backToTop.classList.add('visible');
-    } else {
-      backToTop.classList.remove('visible');
-    }
-  }, { passive: true });
 })();
 
 // Wire cube navigation clicks (no inline onclick)
@@ -1968,28 +1960,6 @@ function filterTopics(query) {
   const sections = document.querySelectorAll('.section');
   if (!nav || !cubes.length) return;
 
-  // Sticky detection via scroll + rAF.
-  // Checks whether the sentinel (above the nav) has scrolled out of view.
-  // Using getBoundingClientRect is deterministic and immune to the
-  // IntersectionObserver feedback-loop caused by nav height changes.
-  if (sentinel) {
-    var stickyTicking = false;
-    window.addEventListener('scroll', function () {
-      if (!stickyTicking) {
-        requestAnimationFrame(function () {
-          var gone = sentinel.getBoundingClientRect().bottom <= 0;
-          if (gone && !nav.classList.contains('cubes-sticky')) {
-            nav.classList.add('cubes-sticky');
-          } else if (!gone && nav.classList.contains('cubes-sticky')) {
-            nav.classList.remove('cubes-sticky');
-          }
-          stickyTicking = false;
-        });
-        stickyTicking = true;
-      }
-    }, { passive: true });
-  }
-
   // Track which section is in view (active cube highlighting)
   function updateActiveSection() {
     var currentSection = null;
@@ -2025,10 +1995,30 @@ function filterTopics(query) {
     });
   }
 
+  // Unified scroll handler — single rAF gate for all scroll work
+  var backToTop = document.getElementById('backToTop');
   var scrollTicking = false;
   window.addEventListener('scroll', function () {
     if (!scrollTicking) {
       requestAnimationFrame(function () {
+        // Back-to-top visibility
+        if (backToTop) {
+          if (window.scrollY > 300) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }
+        // Sticky detection
+        if (sentinel) {
+          var gone = sentinel.getBoundingClientRect().bottom <= 0;
+          if (gone && !nav.classList.contains('cubes-sticky')) {
+            nav.classList.add('cubes-sticky');
+          } else if (!gone && nav.classList.contains('cubes-sticky')) {
+            nav.classList.remove('cubes-sticky');
+          }
+        }
+        // Active section tracking
         updateActiveSection();
         scrollTicking = false;
       });
