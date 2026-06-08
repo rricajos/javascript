@@ -272,10 +272,10 @@
    ============================================================ */
 .quiz-slide {
   position: fixed;
-  top: 0;
+  top: 24px;
   right: var(--drawer-w, 50%);
   width: var(--quiz-slide-w, 48%);
-  height: 100%;
+  height: calc(100% - 24px);
   background: #3d3d3a;
   z-index: 155;
   transform: translateX(calc(100% + var(--drawer-w, 50%)));
